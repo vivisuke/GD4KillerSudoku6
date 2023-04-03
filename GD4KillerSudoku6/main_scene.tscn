@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://df63unibnxvr5"]
+[gd_scene load_steps=3 format=3 uid="uid://df63unibnxvr5"]
 
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ltfgv"]
+[ext_resource type="Script" path="res://scripts/Board.gd" id="2_n82ed"]
 
 [node name="MainScene" type="Node2D"]
 
@@ -20,3 +21,4 @@ offset_left = 7.0
 offset_top = 80.0
 offset_right = 493.0
 offset_bottom = 566.0
+script = ExtResource("2_n82ed")
