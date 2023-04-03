@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://df63unibnxvr5"]
+[gd_scene load_steps=6 format=3 uid="uid://df63unibnxvr5"]
 
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ltfgv"]
 [ext_resource type="Script" path="res://scripts/Board.gd" id="2_n82ed"]
 [ext_resource type="Script" path="res://scripts/Grid.gd" id="3_kpcp0"]
 [ext_resource type="Script" path="res://scripts/CageGrid.gd" id="3_xly3w"]
+[ext_resource type="PackedScene" uid="uid://bohn7tgd730e5" path="res://clue_label.tscn" id="5_6arp8"]
 
 [node name="MainScene" type="Node2D"]
 
@@ -38,3 +39,6 @@ offset_right = 40.0
 offset_bottom = 40.0
 color = Color(1, 1, 1, 0)
 script = ExtResource("3_kpcp0")
+
+[node name="ClueLabel" parent="Board" instance=ExtResource("5_6arp8")]
+layout_mode = 0
