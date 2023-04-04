@@ -13,7 +13,11 @@ config_version=5
 config/name="GD4KillerSudoku6"
 run/main_scene="res://main_scene.tscn"
 config/features=PackedStringArray("4.0", "GL Compatibility")
-config/icon="res://icon.svg"
+config/icon="res://icons/KillerSudoku.png"
+
+[autoload]
+
+g="*res://global.tscn"
 
 [display]
 
