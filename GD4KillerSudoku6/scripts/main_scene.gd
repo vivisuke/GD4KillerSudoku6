@@ -109,17 +109,17 @@ func init_labels():
 			var label = Label.new()
 			cage_labels.push_back(label)
 			label.add_theme_color_override("font_color", Color("#2980b9"))	# VELIZE HOLE
-			label.add_theme_font_size_override("font_size", 24)
-			label.position = Vector2(px + 4, py + 4)
-			label.text = "11"
+			label.add_theme_font_size_override("font_size", 28)
+			label.position = Vector2(px + 6, py + 0)
+			label.text = "%d" % ((x+y)%11 + 1)
 			$Board.add_child(label)
 			# 入力数字用ラベル
 			label = Label.new()
 			input_labels.push_back(label)
 			label.add_theme_color_override("font_color", Color.BLACK)
 			label.add_theme_font_size_override("font_size", 60)
-			label.position = Vector2(px+30, py + 4)
-			label.text = "8"
+			label.position = Vector2(px+32, py + 4)
+			label.text = "%d" % ((x+y)%6 + 1)
 			$Board.add_child(label)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
