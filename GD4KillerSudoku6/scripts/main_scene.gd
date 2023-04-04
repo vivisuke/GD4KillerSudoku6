@@ -493,9 +493,9 @@ func gen_cages():
 		for k in range(lst.size()):
 			sum += bit_to_num(cell_bit[lst[k]])
 		item[CAGE_SUM] = sum
-		#print(cage_list[ix])
-		#if sum != 0:
-		#	cage_labels[lst.min()].text = String(sum)
+		print(cage_list[ix])
+		if sum != 0:
+			cage_labels[lst.min()].text = "%d" % sum
 		#for k in range(lst.size()): cage_ix[lst[k]] = ix
 	quest_cages = cage_list
 	$Board/CageGrid.cage_ix = cage_ix
