@@ -14,6 +14,8 @@ func _ready():
 		for i in range(N_CELLS): cage_ix[i] = i % 4
 	pass # Replace with function body.
 
+func update():
+	pass
 func _draw():
 	if cage_ix == []: return
 	var col = Color.ORANGE

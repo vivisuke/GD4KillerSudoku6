@@ -168,6 +168,7 @@ func _ready():
 	num_used.resize(N_HORZ + 1)		# +1 for 0
 	#
 	gen_ans()
+	gen_cages()
 	pass # Replace with function body.
 
 func xyToIX(x, y) -> int: return x + y * N_HORZ
@@ -181,6 +182,29 @@ func bit_to_num(b):
 func bit_to_numstr(b):
 	if b == 0: return ""
 	return "%d" % bit_to_num(b)
+func get_cell_state() -> Array:
+	var s = []		#
+	for ix in range(N_CELLS):
+		if clue_labels[ix].text != "":
+			s.push_back(int(clue_labels[ix].text))
+		elif input_labels[ix].text != "":
+			s.push_back(int(input_labels[ix].text))
+		else:
+			s.push_back(get_memo_bits(ix) + BIT_MEMO)
+	return s
+func get_cell_numer(ix) -> int:		# ix 位置に入っている数字の値を返す、0 for 空欄
+	#if clue_labels[ix].text != "":
+	#	return int(clue_labels[ix].text)
+	if input_labels[ix].text != "":
+		return int(input_labels[ix].text)
+	return 0
+func get_memo_bits(ix) -> int:
+	var bits = 0
+	var mask = BIT_1
+	for i in range(N_HORZ):
+		if memo_labels[ix][i].text != "": bits |= mask
+		mask <<= 1
+	return bits
 func init_labels():
 	# 手がかり数字、入力数字用 Label 生成
 	for y in range(N_VERT):
@@ -283,3 +307,203 @@ func print_ans_num():
 			ix += 1
 		print(lst)
 	print("")
+func print_cages():
+	for i in range(cage_list.size()):
+		print(cage_list[i])
+func merge_2cell_cage():	# 2セルケージ２つをマージし4セルに
+	#print_cages()
+	while true:
+		var ix = rng.randi_range(0, N_CELLS-1)
+		var cix = cage_ix[ix]
+		if cage_list[cix][CAGE_IX_LIST].size() != 2: continue
+		var lst2 = []
+		var x = ix % N_HORZ
+		var y = ix / N_HORZ
+		if y != 0:
+			var i2 = xyToIX(x, y-1)
+			if cage_ix[i2] != cix && cage_list[cage_ix[i2]][CAGE_IX_LIST].size() == 2:
+				lst2.push_back(i2)
+		if x != 0:
+			var i2 = xyToIX(x-1, y)
+			if cage_ix[i2] != cix && cage_list[cage_ix[i2]][CAGE_IX_LIST].size() == 2:
+				lst2.push_back(i2)
+		if x != N_HORZ-1:
+			var i2 = xyToIX(x+1, y)
+			if cage_ix[i2] != cix && cage_list[cage_ix[i2]][CAGE_IX_LIST].size() == 2:
+				lst2.push_back(i2)
+		if y != N_VERT-1:
+			var i2 = xyToIX(x, y+1)
+			if cage_ix[i2] != cix && cage_list[cage_ix[i2]][CAGE_IX_LIST].size() == 2:
+				lst2.push_back(i2)
+		if lst2.is_empty(): continue
+		var ix2 = lst2[0] if lst2.size() == 1 else lst2[rng.randi_range(0, lst2.size() - 1)]
+		var cix2 = cage_ix[ix2]
+		#print("cix = ", cage_list[cix])
+		#print("cix2 = ", cage_list[cix2])
+		for i in range(cage_list[cix2][CAGE_IX_LIST].size()):
+			cage_ix[cage_list[cix2][CAGE_IX_LIST][i]] = cix
+		cage_list[cix][CAGE_IX_LIST] += cage_list[cix2][CAGE_IX_LIST]
+		cage_list[cix][CAGE_SUM] += cage_list[cix2][CAGE_SUM]
+		cage_list[cix2] = [0, []]
+		#print_cages()
+		return
+func gen_cages_3x2():
+	for i in range(N_CELLS): cage_labels[i].text = ""
+	cage_list = []
+	for y in range(0, N_VERT, N_VERT/3):
+		for x in range(0, N_HORZ, N_HORZ/2):
+			var ix = xyToIX(x, y)
+			if rng.randf_range(0.0, 1.0) < 0.5:
+				# 縦＋横*2行
+				cage_list.push_back([0, [ix, ix+N_HORZ]])
+				cage_list.push_back([0, [ix+1, ix+2]])
+				cage_list.push_back([0, [ix+N_HORZ+1, ix+N_HORZ+2]])
+			else:
+				# 横*2行＋縦
+				cage_list.push_back([0, [ix, ix+1]])
+				cage_list.push_back([0, [ix+N_HORZ, ix+N_HORZ+1]])
+				cage_list.push_back([0, [ix+2, ix+N_HORZ+2]])
+	for i in range(cage_ix.size()): cage_ix[i] = -1
+	for ix in range(cage_list.size()):
+		var lst = cage_list[ix][1]
+		for k in range(lst.size()): cage_ix[lst[k]] = ix
+	$Board/CageGrid.cage_ix = cage_ix
+	$Board/CageGrid.update()
+func sel_from_lst(ix, lst):		# lst からひとつを選ぶ
+	if g.qLevel != LVL_NORMAL:
+		return lst[rng.randi_range(0, lst.size() - 1)]
+	var n = get_cell_numer(ix)
+	if n <= 3:		# 3以下の場合は、最大のものを選ぶ
+		var mx = 0
+		var mxi = 0
+		for i in range(lst.size()):
+			var n2 = get_cell_numer(lst[i])
+			if n2 > mx:
+				mx = n2
+				mxi = i
+		return lst[mxi]
+	else:		# 4以上の場合は、最小のものを選ぶ
+		var mn = N_HORZ + 1
+		var mni = 0
+		for i in range(lst.size()):
+			var n2 = get_cell_numer(lst[i])
+			if n2 < mn:
+				mn = n2
+				mni = i
+		return lst[mni]
+func gen_cages():
+	for i in range(N_CELLS): cage_labels[i].text = ""
+	cage_list = []
+	# 4隅を風車風に２セルケージに分ける
+	if rng.randf_range(0.0, 1.0) < 0.5:
+		cage_list.push_back([0, [0, 1]])
+		var ix0 = N_HORZ-1
+		cage_list.push_back([0, [ix0, ix0+N_HORZ]])
+		ix0 = N_HORZ * (N_VERT - 1)
+		cage_list.push_back([0, [ix0, ix0-N_HORZ]])
+		ix0 = N_CELLS - 1
+		cage_list.push_back([0, [ix0, ix0-1]])
+	else:
+		cage_list.push_back([0, [0, N_HORZ]])
+		var ix0 = N_HORZ-1
+		cage_list.push_back([0, [ix0, ix0-1]])
+		ix0 = N_HORZ * (N_VERT - 1)
+		cage_list.push_back([0, [ix0, ix0+1]])
+		ix0 = N_CELLS - 1
+		cage_list.push_back([0, [ix0, ix0-N_HORZ]])
+	for i in range(cage_ix.size()): cage_ix[i] = -1
+	for ix in range(cage_list.size()):
+		var lst = cage_list[ix][1]
+		for k in range(lst.size()): cage_ix[lst[k]] = ix
+	# undone: 入門問題の場合は１セルケージを8つ、初級の場合は２つ生成
+	if g.qLevel < LVL_NORMAL:
+		var cnt = 4 if g.qLevel == LVL_BEGINNER else 2
+		while cnt > 0:
+			var ix = rng.randi_range(0, N_CELLS-1)
+			if cage_ix[ix] >= 0: continue
+			cage_ix[ix] = cage_list.size()
+			cage_list.push_back([0, [ix]])
+			cnt -= 1
+	#
+	var ar = []
+	for ix in range(N_CELLS): ar.push_back(ix)
+	ar.shuffle()
+	for i in range(ar.size()):
+		var ix = ar[i]
+		if cage_ix[ix] < 0:	# 未分割の場合
+			if false:
+			#if g.qLevel == LVL_BEGINNER && i >= ar.size() - N_HORZ*2.2:
+			#if g.qLevel == LVL_BEGINNER && rng.randf_range(0.0, 1.0) < 0.1:
+				cage_ix[ix] = cage_list.size()
+				cage_list.push_back([0, [ix]])
+			else:
+				var x = ix % N_HORZ
+				var y = ix / N_HORZ
+				var lst0 = []	# 空欄リスト
+				var lst1 = []	# １セルケージリスト
+				var lst2 = []	# ２セルケージリスト
+				if y != 0:
+					var i2 = xyToIX(x, y-1)
+					if cage_ix[i2] < 0: lst0.push_back(i2)	# 空欄の場合
+					elif cage_list[cage_ix[i2]][CAGE_IX_LIST].size() == 1: lst1.push_back(i2)
+					elif cage_list[cage_ix[i2]][CAGE_IX_LIST].size() == 2: lst2.push_back(i2)
+				if x != 0:
+					var i2 = xyToIX(x-1, y)
+					if cage_ix[i2] < 0: lst0.push_back(i2)	# 空欄の場合
+					elif cage_list[cage_ix[i2]][CAGE_IX_LIST].size() == 1: lst1.push_back(i2)
+					elif cage_list[cage_ix[i2]][CAGE_IX_LIST].size() == 2: lst2.push_back(i2)
+				if x != N_HORZ-1:
+					var i2 = xyToIX(x+1, y)
+					if cage_ix[i2] < 0: lst0.push_back(i2)	# 空欄の場合
+					elif cage_list[cage_ix[i2]][CAGE_IX_LIST].size() == 1: lst1.push_back(i2)
+					elif cage_list[cage_ix[i2]][CAGE_IX_LIST].size() == 2: lst2.push_back(i2)
+				if y != N_VERT-1:
+					var i2 = xyToIX(x, y+1)
+					if cage_ix[i2] < 0: lst0.push_back(i2)	# 空欄の場合
+					elif cage_list[cage_ix[i2]][CAGE_IX_LIST].size() == 1: lst1.push_back(i2)
+					elif cage_list[cage_ix[i2]][CAGE_IX_LIST].size() == 2: lst2.push_back(i2)
+				#if ix == 13 || ix == 14:
+				#	print("ix = ", ix)
+				if !lst0.is_empty():	# ４近傍に未分割セルがある場合
+					#var ix2 = lst0[0] if lst0.size() == 1 else lst0[rng.randi_range(0, lst0.size() - 1)]
+					var ix2 = lst0[0] if lst0.size() == 1 else sel_from_lst(ix, lst0)
+					#cage_list.back()[1].push_back(i2)
+					cage_ix[ix] = cage_list.size()
+					cage_ix[ix2] = cage_list.size()
+					cage_list.push_back([0, [ix, ix2]])
+				#if !lst1.is_empty():	# ４近傍に1セルケージがある場合
+				#	# 1セルのケージに ix をマージ
+				#	var i2 = lst1[0] if lst1.size() == 1 else lst1[rng.randi_range(0, lst1.size() - 1)]
+				#	var lstx = cage_ix[i2]
+				#	cage_list[lstx][CAGE_IX_LIST].push_back(ix)
+				#	cage_ix[ix] = lstx
+				elif !lst2.is_empty() && g.qLevel != LVL_BEGINNER:	# ４近傍に２セルのケージがある場合
+					# ２セルのケージに ix をマージ
+					var i2 = lst2[0] if lst2.size() == 1 else lst2[rng.randi_range(0, lst2.size() - 1)]
+					var lstx = cage_ix[i2]
+					cage_list[lstx][1].push_back(ix)
+					cage_ix[ix] = lstx
+				else:
+					cage_ix[ix] = cage_list.size()
+					cage_list.push_back([0, [ix]])
+	for ix in range(cage_list.size()):		# 各ケージの合計を計算
+		var item = cage_list[ix]
+		var sum = 0
+		var lst = item[CAGE_IX_LIST]
+		for k in range(lst.size()):
+			sum += bit_to_num(cell_bit[lst[k]])
+		item[CAGE_SUM] = sum
+		#print(cage_list[ix])
+		#if sum != 0:
+		#	cage_labels[lst.min()].text = String(sum)
+		#for k in range(lst.size()): cage_ix[lst[k]] = ix
+	quest_cages = cage_list
+	$Board/CageGrid.cage_ix = cage_ix
+	$Board/CageGrid.update()
+func update_cages_sum_labels():
+	for ix in range(cage_list.size()):
+		var item = cage_list[ix]
+		var sum = item[CAGE_SUM]
+		var lst = item[CAGE_IX_LIST]
+		if sum != 0:
+			cage_labels[lst.min()].text = String(sum)
