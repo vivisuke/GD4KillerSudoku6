@@ -1,10 +1,46 @@
-[gd_scene load_steps=6 format=3 uid="uid://df63unibnxvr5"]
+[gd_scene load_steps=25 format=3 uid="uid://df63unibnxvr5"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_j8s1i"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ltfgv"]
 [ext_resource type="Script" path="res://scripts/Board.gd" id="2_n82ed"]
 [ext_resource type="Script" path="res://scripts/Grid.gd" id="3_kpcp0"]
 [ext_resource type="Script" path="res://scripts/CageGrid.gd" id="3_xly3w"]
+[ext_resource type="Texture2D" uid="uid://bbgobjrm6nkxf" path="res://images/lightpink_81x81.png" id="4_6xb5c"]
+[ext_resource type="Texture2D" uid="uid://cqec3tqrevdpa" path="res://images/undo_black.png" id="6_al8fh"]
+[ext_resource type="Texture2D" uid="uid://csupj8245mj3o" path="res://images/undo_white.png" id="7_mp20d"]
+[ext_resource type="Texture2D" uid="uid://b1vvkieh6sjf3" path="res://images/undo_gray.png" id="8_83f3t"]
+[ext_resource type="Texture2D" uid="uid://cvj6brboxtj1q" path="res://images/space10.png" id="9_8mpbk"]
+[ext_resource type="Texture2D" uid="uid://b151q57nusn3s" path="res://images/redo_black.png" id="10_rhvmb"]
+[ext_resource type="Texture2D" uid="uid://cmqujhuw7k6rj" path="res://images/redo_white.png" id="11_pfk2j"]
+[ext_resource type="Texture2D" uid="uid://bn4ufuo8thvrx" path="res://images/redo_gray.png" id="12_dbcp6"]
+[ext_resource type="Texture2D" uid="uid://it0eddfgj7sb" path="res://images/space20.png" id="13_fek0i"]
+[ext_resource type="Texture2D" uid="uid://ct15mdlkveiit" path="res://images/edit_black.png" id="14_vf4va"]
+[ext_resource type="Texture2D" uid="uid://b7141qep11cnj" path="res://images/pause_black.png" id="15_o8hf8"]
+[ext_resource type="Texture2D" uid="uid://0fbmfla731tm" path="res://images/done_gold.png" id="16_kqex0"]
+[ext_resource type="Texture2D" uid="uid://b2u05a47ei3hu" path="res://images/lightbulb_gold.png" id="17_l0r4j"]
+[ext_resource type="Texture2D" uid="uid://dqpj3aq71555v" path="res://images/delMemo.png" id="18_ot622"]
+[ext_resource type="Texture2D" uid="uid://cbw1phdyy6ej4" path="res://images/auto_candidates_gold.png" id="19_724fu"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_l5jc0"]
+texture = ExtResource("4_6xb5c")
+texture_region_size = Vector2i(81, 81)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_sghhw"]
+tile_size = Vector2i(81, 81)
+sources/0 = SubResource("TileSetAtlasSource_l5jc0")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rp0c4"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_size = 4
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1av8t"]
+bg_color = Color(0.160784, 0.501961, 0.72549, 1)
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_j8s1i")
@@ -32,6 +68,11 @@ offset_right = 493.0
 offset_bottom = 566.0
 script = ExtResource("2_n82ed")
 
+[node name="TileMap" type="TileMap" parent="Board"]
+tile_set = SubResource("TileSet_sghhw")
+format = 2
+layer_0/tile_data = PackedInt32Array(0, 0, 0)
+
 [node name="CageGrid" type="ColorRect" parent="Board"]
 layout_mode = 0
 offset_right = 40.0
@@ -45,3 +86,178 @@ offset_right = 40.0
 offset_bottom = 40.0
 color = Color(1, 1, 1, 0)
 script = ExtResource("3_kpcp0")
+
+[node name="MessLabel" type="Label" parent="."]
+offset_left = 7.0
+offset_top = 570.0
+offset_right = 492.0
+offset_bottom = 618.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "Message"
+
+[node name="HBC1" type="HBoxContainer" parent="."]
+offset_top = 630.0
+offset_right = 500.0
+offset_bottom = 685.0
+alignment = 1
+
+[node name="UndoButton" type="TextureButton" parent="HBC1"]
+layout_mode = 2
+texture_normal = ExtResource("6_al8fh")
+texture_pressed = ExtResource("7_mp20d")
+texture_disabled = ExtResource("8_83f3t")
+
+[node name="Space1" type="TextureRect" parent="HBC1"]
+layout_mode = 2
+texture = ExtResource("9_8mpbk")
+
+[node name="RedoButton" type="TextureButton" parent="HBC1"]
+layout_mode = 2
+texture_normal = ExtResource("10_rhvmb")
+texture_pressed = ExtResource("11_pfk2j")
+texture_disabled = ExtResource("12_dbcp6")
+
+[node name="Space2" type="TextureRect" parent="HBC1"]
+layout_mode = 2
+texture = ExtResource("9_8mpbk")
+
+[node name="Button1" type="Button" parent="HBC1"]
+custom_minimum_size = Vector2(55, 55)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_rp0c4")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_1av8t")
+text = "1"
+
+[node name="Space3" type="TextureRect" parent="HBC1"]
+layout_mode = 2
+texture = ExtResource("13_fek0i")
+
+[node name="Button2" type="Button" parent="HBC1"]
+custom_minimum_size = Vector2(55, 55)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_rp0c4")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_1av8t")
+text = "2
+"
+
+[node name="Space4" type="TextureRect" parent="HBC1"]
+layout_mode = 2
+texture = ExtResource("13_fek0i")
+
+[node name="Button3" type="Button" parent="HBC1"]
+custom_minimum_size = Vector2(55, 55)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_rp0c4")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_1av8t")
+text = "3
+"
+
+[node name="Space5" type="TextureRect" parent="HBC1"]
+layout_mode = 2
+texture = ExtResource("9_8mpbk")
+
+[node name="MemoButton" type="TextureButton" parent="HBC1"]
+layout_mode = 2
+texture_normal = ExtResource("14_vf4va")
+
+[node name="Space6" type="TextureRect" parent="HBC1"]
+layout_mode = 2
+texture = ExtResource("9_8mpbk")
+
+[node name="PauseButton" type="TextureButton" parent="HBC1"]
+layout_mode = 2
+texture_normal = ExtResource("15_o8hf8")
+
+[node name="HBC2" type="HBoxContainer" parent="."]
+offset_top = 710.0
+offset_right = 500.0
+offset_bottom = 765.0
+alignment = 1
+
+[node name="CheckButton" type="TextureButton" parent="HBC2"]
+layout_mode = 2
+texture_normal = ExtResource("16_kqex0")
+
+[node name="Space1" type="TextureRect" parent="HBC2"]
+layout_mode = 2
+texture = ExtResource("9_8mpbk")
+
+[node name="HintButton" type="TextureButton" parent="HBC2"]
+layout_mode = 2
+texture_normal = ExtResource("17_l0r4j")
+
+[node name="Space2" type="TextureRect" parent="HBC2"]
+layout_mode = 2
+texture = ExtResource("9_8mpbk")
+
+[node name="Button1" type="Button" parent="HBC2"]
+custom_minimum_size = Vector2(55, 55)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_rp0c4")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_1av8t")
+text = "4"
+
+[node name="Space3" type="TextureRect" parent="HBC2"]
+layout_mode = 2
+texture = ExtResource("13_fek0i")
+
+[node name="Button2" type="Button" parent="HBC2"]
+custom_minimum_size = Vector2(55, 55)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_rp0c4")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_1av8t")
+text = "5
+"
+
+[node name="Space4" type="TextureRect" parent="HBC2"]
+layout_mode = 2
+texture = ExtResource("13_fek0i")
+
+[node name="Button3" type="Button" parent="HBC2"]
+custom_minimum_size = Vector2(55, 55)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_rp0c4")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_1av8t")
+text = "6
+"
+
+[node name="Space5" type="TextureRect" parent="HBC2"]
+layout_mode = 2
+texture = ExtResource("9_8mpbk")
+
+[node name="DelMemoButton" type="TextureButton" parent="HBC2"]
+layout_mode = 2
+texture_normal = ExtResource("18_ot622")
+
+[node name="Space6" type="TextureRect" parent="HBC2"]
+layout_mode = 2
+texture = ExtResource("9_8mpbk")
+
+[node name="AutoMemoButton" type="TextureButton" parent="HBC2"]
+layout_mode = 2
+texture_normal = ExtResource("19_724fu")
