@@ -277,7 +277,7 @@ func bit_to_num(b):
 	return 0
 func bit_to_numstr(b):
 	if b == 0: return ""
-	return "%d" % bit_to_num(b)
+	return str(bit_to_num(b))
 func get_cell_state() -> Array:
 	var s = []		#
 	for ix in range(N_CELLS):
@@ -313,7 +313,7 @@ func init_labels():
 			label.add_theme_color_override("font_color", Color("#2980b9"))	# VELIZE HOLE
 			label.add_theme_font_size_override("font_size", 28)
 			label.position = Vector2(px + 6, py + 0)
-			label.text = "%d" % ((x+y)%11 + 1)
+			label.text = str((x+y)%11 + 1)
 			$Board.add_child(label)
 			# 入力数字用ラベル
 			label = Label.new()
@@ -321,7 +321,7 @@ func init_labels():
 			label.add_theme_color_override("font_color", Color.BLACK)
 			label.add_theme_font_size_override("font_size", 60)
 			label.position = Vector2(px+32, py + 4)
-			label.text = "%d" % ((x+y)%6 + 1)
+			label.text = str((x+y)%6 + 1)
 			$Board.add_child(label)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -388,7 +388,7 @@ func print_cells():
 		var lst = []
 		for x in range(N_HORZ):
 			var n = bit_to_num(cell_bit[ix])
-			#input_labels[ix].text = "%d" % n
+			#input_labels[ix].text = str(n)
 			lst.push_back(n)
 			ix += 1
 		print(lst)
@@ -591,7 +591,7 @@ func gen_cages():
 		item[CAGE_SUM] = sum
 		print(cage_list[ix])
 		if sum != 0:
-			cage_labels[lst.min()].text = "%d" % sum
+			cage_labels[lst.min()].text = str(sum)
 		#for k in range(lst.size()): cage_ix[lst[k]] = ix
 	quest_cages = cage_list
 	$Board/CageGrid.cage_ix = cage_ix
