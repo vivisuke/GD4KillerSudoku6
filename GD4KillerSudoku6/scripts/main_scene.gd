@@ -168,8 +168,104 @@ func _ready():
 	num_used.resize(N_HORZ + 1)		# +1 for 0
 	#
 	gen_ans()
-	gen_cages()
+	#gen_cages()
+	gen_quest()
 	pass # Replace with function body.
+func gen_qName():
+	g.qRandom = true
+	g.qName = ""
+	rng.randomize()
+	for i in range(15):
+		var r = rng.randi_range(0, 10+26-1)
+		if r < 10: g.qName += str(r+1)
+		else: g.qName += "%c" % (r - 10 + 0x61)		# 0x61 is 'a'
+func gen_quest():
+	# undone: 問題集以外の場合対応
+	#if g.todaysQuest:		# 今日の問題の場合
+	#	g.qLevel += 1
+	#	if g.qLevel > 2: g.qLevel = 0
+	#elif g.qNumber == 0:		# 問題自動生成の場合
+	#	g.qRandom = true		# 
+	#	gen_qName()
+	#else:					# 問題集の場合
+	#	g.qNumber += 1
+	#	g.qName = "%06d" % g.qNumber
+	if g.qNumber != 0:	# 問題集の場合
+		$NextButton.disabled = g.qNumber > g.nSolved[g.qLevel]
+	elif !g.todaysQuest:		# ランダム生成の場合
+		if g.qName == "":
+			gen_qName()
+			$TitleBar/Label.text = titleText()
+	var stxt = g.qName+str(g.qLevel)
+	if g.qNumber != 0: stxt += "Q"
+	seed(stxt.hash())
+	rng.set_seed(stxt.hash())
+	while true:
+		gen_ans()
+		gen_cages()
+		if g.qLevel == LVL_BEGINNER:
+			if count_n_cell_cage(1) < 8:
+				continue			# 再生成
+		#	#split_2cell_cage()		# 1セルケージ数が４未満なら２セルケージを分割
+		#el
+		if g.qLevel == LVL_NORMAL:
+			merge_2cell_cage()
+			#if count_n_cell_cage(3) <= 3:
+			#merge_2cell_cage()
+		#print_cages()
+		#gen_cages_3x2()		# 3x2 単位で分割
+		#break
+		#ans_bit = cell_bit.duplicate()
+		#break
+		if is_proper_quest():
+			break
+	#print_ans()
+	fill_1cell_cages()
+	update_cages_sum_labels()
+	solvedStat = false
+	g.elapsedTime = 0.0
+	#ans_bit = cell_bit.duplicate()
+	#print_ans()
+	print_ans_num()
+func fill_1cell_cages():
+	for ci in range(cage_list.size()):
+		var cage = cage_list[ci]
+		if cage[CAGE_IX_LIST].size() == 1:
+			var ix = cage[CAGE_IX_LIST][0]
+			cell_bit[ix] = num_to_bit(cage[CAGE_SUM])
+			input_labels[ix].text = str(cage[CAGE_SUM])
+func count_n_cell_cage(n):
+	var cnt = 0
+	for i in range(cage_list.size()):
+		if cage_list[i][CAGE_IX_LIST].size() == n: cnt += 1
+	return cnt
+func find_2cell_cage():		# 2セルケージを探す
+	while true:
+		var ix = rng.randi_range(0, cage_list.size() - 1)
+		if cage_list[ix][CAGE_IX_LIST].size() == 2:
+			return ix
+func split_2cell_cage():		# 1セルケージ数が４未満なら２セルケージを分割
+	if count_n_cell_cage(1) >= 4: return
+	var cix = find_2cell_cage()		# 2セルケージを探す
+	var cage = cage_list[cix]
+	var ix2 = cage[CAGE_IX_LIST][1]		# ２番めの要素
+	cage_ix[ix2] = cage_list.size()
+	var t = [bit_to_num(cell_bit[ix2]), [ix2]]
+	cage_list.push_back(t)
+	var ix1 = cage[CAGE_IX_LIST][0]		# 1番めの要素
+	cage = [bit_to_num(cell_bit[ix1]), [ix1]]
+	#update_cages_sum_labels()
+	cage_labels[ix1].text = str(get_cell_numer(ix1))
+	cage_labels[ix2].text = str(get_cell_numer(ix2))
+func classText() -> String:
+	if g.qLevel == LVL_BEGINNER: return "【入門】"
+	elif g.qLevel == 1: return "【初級】"
+	elif g.qLevel == 2: return "【初中級】"
+	return ""
+func titleText() -> String:
+	var tt = classText()
+	#elif g.qLevel == LVL_NOT_SYMMETRIC: tt = "【非対称】"
+	return tt + "“" + g.qName + "”"
 
 func xyToIX(x, y) -> int: return x + y * N_HORZ
 func num_to_bit(n : int): return 1 << (n-1) if n > 0 else 0
@@ -292,7 +388,7 @@ func print_cells():
 		var lst = []
 		for x in range(N_HORZ):
 			var n = bit_to_num(cell_bit[ix])
-			input_labels[ix].text = "%d" % n
+			#input_labels[ix].text = "%d" % n
 			lst.push_back(n)
 			ix += 1
 		print(lst)
@@ -506,4 +602,145 @@ func update_cages_sum_labels():
 		var sum = item[CAGE_SUM]
 		var lst = item[CAGE_IX_LIST]
 		if sum != 0:
-			cage_labels[lst.min()].text = String(sum)
+			cage_labels[lst.min()].text = str(sum)
+func ipq_sub(cix, lix, ub, sum) -> bool:	# false for 解の個数が２以上
+	if cix == cage_list.size():
+		nAnswer += 1
+		print(nAnswer, ":")
+		print_cells()	# cell_bit の内容を表示
+		for i in range(N_CELLS):
+			ans_num[i] = bit_to_num(cell_bit[i])
+			#ans_bit[i] = cell_bit[i]
+		#print_ans()
+		print_ans_num()
+	else:
+		var cage = cage_list[cix]
+		if cage[CAGE_SUM] == 0:
+			ipq_sub(cix+1, 0, 0, 0)
+			return nAnswer < 2
+		#if cage[CAGE_IX_LIST].size() == 1:
+		#	print("cage[CAGE_IX_LIST].size() == 1")
+		var ix = cage[CAGE_IX_LIST][lix]
+		assert( ix >= 0 && ix < N_CELLS )
+		var x = ix % N_HORZ
+		var y = ix / N_HORZ
+		var x3 = x / 3
+		var y2 = y / 2
+		var bix = y2 * 2 + x3
+		var bits = ~(ub | line_used[y] | column_used[x] | box_used[bix]) & ALL_BITS
+		if !bits: return true		# 配置可能ビット無し
+		if lix == cage[CAGE_IX_LIST].size() - 1:		# 最後のセルの場合
+			var n = cage[CAGE_SUM] - sum
+			var b = num_to_bit(n)
+			if n <= 0 || (bits&b) == 0:
+				return true
+			line_used[y] |= b
+			column_used[x] |= b
+			box_used[bix] |= b
+			cell_bit[ix] = b
+			if !ipq_sub(cix+1, 0, 0, 0):
+				return false
+			line_used[y] ^= b
+			column_used[x] ^= b
+			box_used[bix] ^= b
+		else:	# 最後のセルでない場合
+			while bits != 0:
+				var b = -bits & bits		# 最も小さい１のビット
+				bits ^= b					# b のビットを消去
+				line_used[y] |= b
+				column_used[x] |= b
+				box_used[bix] |= b
+				cell_bit[ix] = b
+				if !ipq_sub(cix, lix+1, (ub | b), sum+bit_to_num(b)):
+					return false
+				line_used[y] ^= b
+				column_used[x] ^= b
+				box_used[bix] ^= b
+		#assert( ix >= 0 && ix < N_CELLS )
+		cell_bit[ix] = 0
+	return nAnswer < 2
+# cage_list をチェック、手がかり数字は無し
+func is_proper_quest() -> bool:
+	nAnswer = 0
+	for ix in range(N_CELLS): cell_bit[ix] = 0
+	for ix in range(N_HORZ):
+		line_used[ix] = 0
+		column_used[ix] = 0
+		box_used[ix] = 0
+	ipq_sub(0, 0, 0, 0)
+	return nAnswer == 1
+func set_quest(cages):
+	quest_cages = cages
+	##for y in range(N_VERT):
+	##	for x in range(N_HORZ):
+	##		$Board/CageTileMap.set_cell(x, y, -1)
+	#var col = 0
+	for cix in range(cages.size()):
+		var item = cages[cix]			# [sum, col, ix1, ix2, ... ]
+		cage_labels[item[1]].text = String(item[0])
+		var x1 = item[1] % N_HORZ
+		var y1 = item[1] / N_HORZ
+		#while( $Board/CageTileMap.get_cell(x1, y1-1) == col || $Board/CageTileMap.get_cell(x1-1, y1) == col ||
+		#		$Board/CageTileMap.get_cell(x1, y1+1) == col || $Board/CageTileMap.get_cell(x1+1, y1) == col ):
+		#	col = (col + 1) % N_COLOR
+		#var col = item[1]
+		for k in range(1, item.size()):
+			cage_ix[item[k]] = cix
+			#var x = item[k] % N_HORZ
+			#var y = item[k] / N_HORZ
+			#$Board/CageTileMap.set_cell(x, y, col)
+	$Board/CageGrid.cage_ix = cage_ix
+	$Board/CageGrid.update()
+	#update()
+func is_duplicated(ix : int):
+	var n = get_cell_numer(ix)
+	if n == 0: return false
+	var x = ix % N_HORZ
+	var y = ix / N_HORZ
+	for t in range(N_HORZ):
+		if t != x && get_cell_numer(xyToIX(t, y)) == n:
+			return true
+		if t != y && get_cell_numer(xyToIX(x, t)) == n:
+			return true
+	var x0 = x - x % 3		# 3x2ブロック左上位置
+	var y0 = y - y % 2
+	for v in range(N_BOX_VERT):
+		for h in range(N_BOX_HORZ):
+			var ix3 = xyToIX(x0+h, y0+v)
+			if ix3 != ix && get_cell_numer(ix3) == n:
+				return true
+	# ケージ内の重複チェック
+	var cage = cage_list[cage_ix[ix]]
+	if cage[CAGE_IX_LIST].size() != 1:
+		#var bit = cell_bit[ix]
+		var lst = cage[CAGE_IX_LIST]
+		for i in range(lst.size()):
+			if lst[i] != ix && get_cell_numer(lst[i]) == n:
+				return true
+	return false
+func check_duplicated():
+	nDuplicated = 0
+	for ix in range(N_CELLS):
+		if is_duplicated(ix):
+			nDuplicated += 1
+			clue_labels[ix].add_color_override("font_color", COLOR_DUP)
+			input_labels[ix].add_color_override("font_color", COLOR_DUP)
+		else:
+			clue_labels[ix].add_color_override("font_color", COLOR_CLUE)
+			input_labels[ix].add_color_override("font_color", COLOR_INPUT)
+	pass
+func check_cages():		# 必ず check_duplicated() の直後にコールすること
+	for i in range(cage_list.size()):
+		var ixs = cage_list[i][1]
+		var sum = 0
+		for k in range(ixs.size()):
+			var n = get_cell_numer(ixs[k])
+			if n == 0:
+				sum = 0
+				break
+			sum += n
+		if sum != 0 && sum != cage_list[i][0]:
+			nDuplicated += 1
+			for k in range(ixs.size()):
+				input_labels[ixs[k]].add_color_override("font_color", COLOR_DUP)
+	pass
