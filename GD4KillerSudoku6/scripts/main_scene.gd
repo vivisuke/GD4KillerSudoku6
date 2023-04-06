@@ -163,10 +163,12 @@ func _ready():
 	memo_text.resize(N_CELLS)
 	num_used.resize(N_HORZ + 1)		# +1 for 0
 	#
+	clear_cell_cursor()
 	#
 	num_buttons.push_back($DeleteButton)
 	for i in range(N_HORZ):
 		num_buttons.push_back(get_node("HBC%d/Button%d" % [i/3+1, (i+1)]))
+	#
 	gen_ans()
 	#gen_cages()
 	gen_quest()
