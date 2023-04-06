@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://df63unibnxvr5"]
+[gd_scene load_steps=31 format=3 uid="uid://df63unibnxvr5"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_j8s1i"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ltfgv"]
@@ -21,6 +21,10 @@
 [ext_resource type="Texture2D" uid="uid://b2u05a47ei3hu" path="res://images/lightbulb_gold.png" id="17_l0r4j"]
 [ext_resource type="Texture2D" uid="uid://dqpj3aq71555v" path="res://images/delMemo.png" id="18_ot622"]
 [ext_resource type="Texture2D" uid="uid://cbw1phdyy6ej4" path="res://images/auto_candidates_gold.png" id="19_724fu"]
+[ext_resource type="AudioStream" uid="uid://cgnli6tk6h1x6" path="res://sounds/button-3.mp3" id="22_e8kby"]
+[ext_resource type="AudioStream" uid="uid://c5dv6nwa70eyj" path="res://sounds/incorrect.mp3" id="23_6p0ak"]
+[ext_resource type="AudioStream" uid="uid://dsxpn8m8gnipb" path="res://sounds/don.mp3" id="24_p6251"]
+[ext_resource type="AudioStream" uid="uid://2mfnwo0of14r" path="res://sounds/kirakira-3.mp3" id="25_14ktp"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_l5jc0"]
 texture = ExtResource("4_6xb5c")
@@ -291,14 +295,25 @@ layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
 
-[node name="AudioNumClicked" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(250, 450)
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
 
-[node name="AudioIncorrect" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(250, 450)
+[node name="Audio" type="Node" parent="."]
 
-[node name="AudioNumCompleted" type="AudioStreamPlayer2D" parent="."]
+[node name="NumClicked" type="AudioStreamPlayer2D" parent="Audio"]
 position = Vector2(250, 450)
+stream = ExtResource("22_e8kby")
+
+[node name="Incorrect" type="AudioStreamPlayer2D" parent="Audio"]
+position = Vector2(250, 450)
+stream = ExtResource("23_6p0ak")
+
+[node name="NumCompleted" type="AudioStreamPlayer2D" parent="Audio"]
+position = Vector2(250, 450)
+stream = ExtResource("24_p6251")
+
+[node name="Solved" type="AudioStreamPlayer2D" parent="Audio"]
+position = Vector2(250, 450)
+stream = ExtResource("25_14ktp")
 
 [connection signal="pressed" from="HBC1/Button1" to="." method="_on_button_1_pressed"]
 [connection signal="pressed" from="HBC1/Button2" to="." method="_on_button_2_pressed"]

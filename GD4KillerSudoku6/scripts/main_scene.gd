@@ -844,13 +844,11 @@ func push_to_undo_stack(item):
 func sound_effect(selected):
 	if sound:
 		if nDuplicated != 0:
-			$AudioIncorrect.play()
+			$Audio/Incorrect.play()
 		elif input_num > 0 && num_used[input_num] >= N_HORZ:
-			$AudioNumCompleted.play()
-		#elif selected:
-		#	$AudioNumClicked2.play()
+			$Audio/NumCompleted.play()
 		else:
-			$AudioNumClicked.play()		# pon
+			$Audio/NumClicked.play()		# pon
 func clear_cell_cursor():
 	for y in range(N_VERT):
 		for x in range(N_HORZ):
@@ -882,11 +880,11 @@ func is_all_solved_todaysQuest():
 func on_solved():
 	solvedStat = true
 	confetti_count_down = 5.0
-	$FakeConfettiParticles.emitting = true
+	$CPUParticles2D.emitting = true
 	$CanvasLayer/ColorRect.show()
 	shock_wave_timer = 0.0      # start shock wave
 	if sound:
-		$AudioSolved.play()		# （どんっ）効果音再生
+		$Audio/Solved.play()		# （キラーン）効果音再生
 	var six = g.qLevel		# g.stat インデックス
 	if g.todaysQuest:		# 今日の問題の場合
 		if g.tqSolvedSec[six] < 0 || int(g.elapsedTime) < g.tqSolvedSec[six]:
