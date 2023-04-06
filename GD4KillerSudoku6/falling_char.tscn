@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://d2sqjkgxohqea"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hnsc8"]
+size = Vector2(50, 50)
+
+[node name="FallingChar" type="RigidBody2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(25, 42)
+shape = SubResource("RectangleShape2D_hnsc8")
+
+[node name="Label" type="Label" parent="."]
+offset_left = 6.0
+offset_right = 46.0
+offset_bottom = 86.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 60
+text = "8"
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(17, 44)
