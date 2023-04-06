@@ -167,6 +167,10 @@ func _ready():
 	memo_text.resize(N_CELLS)
 	num_used.resize(N_HORZ + 1)		# +1 for 0
 	#
+	#
+	num_buttons.push_back($DeleteButton)
+	for i in range(N_HORZ):
+		num_buttons.push_back(get_node("HBC%d/Button%d" % [i/3+1, (i+1)]))
 	gen_ans()
 	#gen_cages()
 	gen_quest()
@@ -301,6 +305,71 @@ func get_memo_bits(ix) -> int:
 		if memo_labels[ix][i].text != "": bits |= mask
 		mask <<= 1
 	return bits
+func update_cell_cursor(num):		# 選択数字ボタンと同じ数字セルを強調
+	if num > 0 && !paused:
+		var num_str = str(num)
+		for y in range(N_VERT):
+			for x in range(N_HORZ):
+				var ix = xyToIX(x, y)
+				if num != 0 && get_cell_numer(ix) == num:
+					$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_EMPHASIZE)
+				else:
+					$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_NONE)
+	else:
+		for y in range(N_VERT):
+			for x in range(N_HORZ):
+				$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_NONE)
+				##for v in range(N_BOX_VERT):
+				##	for h in range(N_BOX_HORZ):
+				##		$Board/MemoTileMap.set_cell(x*3+h, y*3+v), TILE_NONE)
+		if cur_cell_ix >= 0:
+			do_emphasize_cell(cur_cell_ix)
+	pass
+func set_num_cursor(num):	# 当該ボタンだけを選択状態に
+	cur_num = num
+	for i in range(num_buttons.size()):
+		num_buttons[i].button_pressed = (i == num)
+func update_NEmptyLabel():
+	nEmpty = 0
+	for ix in range(N_CELLS):
+		if get_cell_numer(ix) == 0: nEmpty += 1
+	$NEmptyLabel.text = "空欄数: %d" % nEmpty
+func update_all_status():
+	update_undo_redo()
+	update_cell_cursor(cur_num)
+	$Board.cur_num = cur_num
+	$Board.update()
+	update_NEmptyLabel()
+	update_num_buttons_disabled()
+	check_duplicated()
+	check_cages()
+	if solvedStat:
+		if !g.todaysQuest:
+			var six = g.qLevel if g.qNumber == 0 else g.qLevel + 3
+			var n = g.stats[six]["NSolved"]
+			print("TotalSec = ", g.stats[six]["TotalSec"])
+			var avg : int = int(g.stats[six]["TotalSec"] / n)
+			var txt = g.sec_to_MSStr(avg)
+			var bst = g.sec_to_MSStr(g.stats[six]["BestTime"])
+			$MessLabel.text = "グッジョブ！ クリア回数: %d、平均: %s、最短: %s" % [n, txt, bst]
+		else:
+			$MessLabel.text = "グッジョブ！"
+	elif paused:
+		$MessLabel.text = "ポーズ中です。解除にはポーズボタンを押してください。"
+	elif cur_num > 0:
+		$MessLabel.text = "現数字（%d）を入れるセルをクリックしてください。" % cur_num
+	elif cur_cell_ix >= 0:
+		$MessLabel.text = "セルに入れる数字ボタンをクリックしてください。"
+	else:
+		$MessLabel.text = "数字ボタンまたは空セルをクリックしてください。"
+	##$CoinButton/NCoinLabel.text = str(g.env[g.KEY_N_COINS])
+func update_nEmpty():
+	nEmpty = 0
+	for ix in range(N_CELLS):
+		if get_cell_numer(ix) == 0: nEmpty += 1
+func is_solved():
+	update_nEmpty()
+	return nEmpty == 0 && nDuplicated == 0
 func init_labels():
 	# 手がかり数字、入力数字用 Label 生成
 	for y in range(N_VERT):
@@ -673,11 +742,11 @@ func set_quest(cages):
 	quest_cages = cages
 	##for y in range(N_VERT):
 	##	for x in range(N_HORZ):
-	##		$Board/CageTileMap.set_cell(x, y, -1)
+	##		$Board/CageTileMap.set_cell(0, Vector2i(x, y), -1)
 	#var col = 0
 	for cix in range(cages.size()):
 		var item = cages[cix]			# [sum, col, ix1, ix2, ... ]
-		cage_labels[item[1]].text = String(item[0])
+		cage_labels[item[1]].text = str(item[0])
 		var x1 = item[1] % N_HORZ
 		var y1 = item[1] / N_HORZ
 		#while( $Board/CageTileMap.get_cell(x1, y1-1) == col || $Board/CageTileMap.get_cell(x1-1, y1) == col ||
@@ -688,7 +757,7 @@ func set_quest(cages):
 			cage_ix[item[k]] = cix
 			#var x = item[k] % N_HORZ
 			#var y = item[k] / N_HORZ
-			#$Board/CageTileMap.set_cell(x, y, col)
+			#$Board/CageTileMap.set_cell(0, Vector2i(x, y), col)
 	$Board/CageGrid.cage_ix = cage_ix
 	$Board/CageGrid.update()
 	#update()
@@ -723,11 +792,11 @@ func check_duplicated():
 	for ix in range(N_CELLS):
 		if is_duplicated(ix):
 			nDuplicated += 1
-			clue_labels[ix].add_color_override("font_color", COLOR_DUP)
-			input_labels[ix].add_color_override("font_color", COLOR_DUP)
+			#clue_labels[ix].add_theme_color_override("font_color", COLOR_DUP)
+			input_labels[ix].add_theme_color_override("font_color", COLOR_DUP)
 		else:
-			clue_labels[ix].add_color_override("font_color", COLOR_CLUE)
-			input_labels[ix].add_color_override("font_color", COLOR_INPUT)
+			#clue_labels[ix].add_theme_color_override("font_color", COLOR_CLUE)
+			input_labels[ix].add_theme_color_override("font_color", COLOR_INPUT)
 	pass
 func check_cages():		# 必ず check_duplicated() の直後にコールすること
 	for i in range(cage_list.size()):
@@ -742,5 +811,291 @@ func check_cages():		# 必ず check_duplicated() の直後にコールするこ�
 		if sum != 0 && sum != cage_list[i][0]:
 			nDuplicated += 1
 			for k in range(ixs.size()):
-				input_labels[ixs[k]].add_color_override("font_color", COLOR_DUP)
+				input_labels[ixs[k]].add_theme_color_override("font_color", COLOR_DUP)
 	pass
+func update_num_buttons_disabled():		# 使い切った数字ボタンをディセーブル
+	#var nUsed = []		# 各数字の使用数 [0] for EMPTY
+	if paused:
+		for i in range(N_HORZ+1):
+			num_buttons[i].disabled = true
+	else:
+		for i in range(N_HORZ+1): num_used[i] = 0
+		for ix in range(N_CELLS):
+			num_used[get_cell_numer(ix)] += 1
+		for i in range(N_HORZ):
+			num_buttons[i+1].disabled = num_used[i+1] >= N_HORZ
+func update_undo_redo():
+	$HBC1/UndoButton.disabled = undo_ix == 0
+	$HBC1/RedoButton.disabled = undo_ix == undo_stack.size()
+func push_to_undo_stack(item):
+	if undo_stack.size() > undo_ix:
+		undo_stack.resize(undo_ix)
+	undo_stack.push_back(item)
+	undo_ix += 1
+func sound_effect(selected):
+	if sound:
+		if nDuplicated != 0:
+			$AudioIncorrect.play()
+		elif input_num > 0 && num_used[input_num] >= N_HORZ:
+			$AudioNumCompleted.play()
+		#elif selected:
+		#	$AudioNumClicked2.play()
+		else:
+			$AudioNumClicked.play()		# pon
+func clear_cell_cursor():
+	for y in range(N_VERT):
+		for x in range(N_HORZ):
+			$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_NONE)
+func reset_TileMap():
+	for y in range(N_VERT):
+		for x in range(N_HORZ):
+			$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_NONE)
+func do_emphasize_cell(ix : int):
+	if paused: return
+	reset_TileMap()
+	var n = get_cell_numer(ix)
+	if n != 0:
+		update_cell_cursor(n)
+	var x = ix % N_HORZ
+	var y = ix / N_HORZ
+	$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_CURSOR)
+func do_emphasize(ix : int, type, fullhouse):
+	reset_TileMap()
+	if paused: return
+	var x = ix % N_HORZ
+	var y = ix / N_HORZ
+	if type == CELL || fullhouse:
+		$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_CURSOR)
+	pass
+
+func is_all_solved_todaysQuest():
+	return g.tqSolvedSec[0] >= 0 && g.tqSolvedSec[1] >= 0 && g.tqSolvedSec[2] >= 0
+func on_solved():
+	solvedStat = true
+	confetti_count_down = 5.0
+	$FakeConfettiParticles.emitting = true
+	$CanvasLayer/ColorRect.show()
+	shock_wave_timer = 0.0      # start shock wave
+	if sound:
+		$AudioSolved.play()		# （どんっ）効果音再生
+	var six = g.qLevel		# g.stat インデックス
+	if g.todaysQuest:		# 今日の問題の場合
+		if g.tqSolvedSec[six] < 0 || int(g.elapsedTime) < g.tqSolvedSec[six]:
+			g.tqSolvedSec[six] = int(g.elapsedTime)	# 最短クリア時間更新
+		if is_all_solved_todaysQuest() && g.tqConsSolvedDays != g.tqConsYesterdayDays + 1:
+			# 全問クリアの場合
+			g.tqConsSolvedDays = g.tqConsYesterdayDays + 1
+			if g.tqConsSolvedDays > g.tqMaxConsSolvedDays:
+				g.tqMaxConsSolvedDays = g.tqConsSolvedDays		# 最大連続クリア日数
+			g.env[g.KEY_N_COINS] += g.TODAYS_QUEST_N_COINS
+			$CoinButton/NCoinLabel.text = str(g.env[g.KEY_N_COINS])
+			g.save_environment()
+		g.tqSolvedYMD = g.today_string()
+		g.save_todaysQuest()
+	else:	# 今日の問題でない場合
+		if g.qNumber != 0:		# 問題集の場合
+			if g.nSolved[g.qLevel] == g.qNumber - 1:	
+				g.nSolved[g.qLevel] += 1
+				g.save_nSolved()
+				$NextButton.disabled = false
+			six += 3		# for 統計情報
+		if g.stats[six].has("NSolved"):
+			g.stats[six]["NSolved"] += 1
+		else:
+			g.stats[six]["NSolved"] = 1
+		if g.stats[six].has("TotalSec"):
+			print("TotalSec = ", g.stats[six]["TotalSec"])
+			g.stats[six]["TotalSec"] += int(g.elapsedTime)
+		else:
+			g.stats[six]["TotalSec"] = int(g.elapsedTime)
+		if !g.stats[six].has("BestTime") || g.stats[six]["BestTime"] < 1 || int(g.elapsedTime) < g.stats[six]["BestTime"]:
+			g.stats[six]["BestTime"] = int(g.elapsedTime)
+		g.save_stats()
+	cur_cell_ix = -1		# 選択解除
+	cur_num = -1
+	update_all_status()
+func remove_all_memo_at(ix):
+	for i in range(N_HORZ):
+		if memo_labels[ix][i].text != "":
+			add_falling_memo(int(memo_labels[ix][i].text), ix)
+			memo_labels[ix][i].text = ""
+func remove_all_memo():
+	for ix in range(N_CELLS):
+		for i in range(N_HORZ):
+			if memo_labels[ix][i].text != "":
+				add_falling_memo(int(memo_labels[ix][i].text), ix)
+				memo_labels[ix][i].text = ""
+	for v in range(N_VERT*3):
+		for h in range(N_HORZ*3):
+			$Board/MemoTileMap.set_cell(0, Vector2i(h, v), TILE_NONE)
+func remove_memo_num(ix : int, num : int):		# ix に num を入れたときに、メモ数字削除
+	var lst = []
+	var x = ix % N_HORZ
+	var y = ix / N_HORZ
+	for h in range(N_HORZ):
+		var ix2 = xyToIX(h, y)
+		if memo_labels[ix2][num-1].text != "":
+			add_falling_memo(num, ix2)
+			memo_labels[ix2][num-1].text = ""
+			lst.push_back(ix2)
+		ix2 = xyToIX(x, h)
+		if memo_labels[ix2][num-1].text != "":
+			add_falling_memo(num, ix2)
+			memo_labels[ix2][num-1].text = ""
+			lst.push_back(ix2)
+	var x0 = x - x % 3
+	var y0 = y - y % 2
+	for v in range(N_BOX_VERT):
+		for h in range(N_BOX_HORZ):
+			var ix2 = xyToIX(x0 + h, y0 + v)
+			if memo_labels[ix2][num-1].text != "":
+				add_falling_memo(num, ix2)
+				memo_labels[ix2][num-1].text = ""
+				lst.push_back(ix2)
+	return lst
+func flip_memo_num(ix : int, num : int):
+	if memo_labels[ix][num-1].text == "":
+		memo_labels[ix][num-1].text = str(num)
+	else:
+		add_falling_memo(int(memo_labels[ix][num-1].text), ix)
+		memo_labels[ix][num-1].text = ""
+func flip_memo_bits(ix, bits):
+	var mask = BIT_1
+	for n in range(N_HORZ):
+		if (bits & mask) != 0:
+			flip_memo_num(ix, n+1)
+		mask <<= 1
+func set_memo_bits(ix, bits):
+	var mask = BIT_1
+	for i in range(N_HORZ):
+		if (bits & mask) != 0:
+			memo_labels[ix][i].text = str(i+1)
+		else:
+			memo_labels[ix][i].text = ""
+		mask <<= 1
+func clear_all_memo(ix):
+	for i in range(N_HORZ): memo_labels[ix][i].text = ""
+func _input(event):
+	#print("_input()")
+	if menuPopuped: return
+	if event is InputEventMouseButton && event.is_pressed():
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP || event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				return
+		print("event.is_pressed()")
+		var mp = $Board/TileMap.local_to_map($Board/TileMap.get_local_mouse_position())
+		print(mp)
+		if mp.x < 0 || mp.x >= N_HORZ || mp.y < 0 || mp.y >= N_VERT:
+			return		# 盤面セル以外の場合
+	pass
+#func _unhandled_input(event):
+#	print("_unhandled_input()")
+#	pass
+func add_falling_char(num_str, ix : int):
+	var fc = Label.new()
+	var x = ix % N_HORZ
+	var y = ix / N_HORZ
+	fc.position = $Board.rect_position + Vector2(x*CELL_WIDTH, y*CELL_WIDTH)
+	fc.text = num_str
+	var th = rng.randf_range(0, 3.1415926535*2)
+	fc.linear_velocity = Vector2(cos(th), sin(th))*100
+	fc.angular_velocity = rng.randf_range(0, 1)
+	add_child(fc)
+	pass
+func add_falling_memo(num : int, ix : int):
+	var fc = Label.new()
+	#var x = (ix % N_HORZ) * 3 + (num-1) % 3
+	#var y = (ix / N_HORZ) * 3 + (num-1) / 3
+	#fc.position = $Board.rect_position + Vector2(x*CELL_WIDTH/3, y*CELL_WIDTH/3)
+	var px = (ix % N_HORZ) * CELL_WIDTH
+	var py = (ix / N_HORZ) * CELL_WIDTH
+	var h = (num-1) % 3
+	var v = (num-1) / 3
+	fc.position = $Board.rect_position + g.memo_label_pos(px, py, h, v)
+	fc.text = str(num)
+	var th = rng.randf_range(0, 3.1415926535*2)
+	fc.linear_velocity = Vector2(cos(th), sin(th))*100
+	fc.angular_velocity = rng.randf_range(0, 1)
+	#fc.set_scale(1.0/3.0)
+	add_child(fc)
+	pass
+func add_falling_coin():
+	var fc = Label.new()	# ほんとは TextureRect
+	fc.position = $CoinButton.rect_position + $CoinButton.rect_size / 2
+	var th = rng.randf_range(0, 3.1415926535*2)
+	fc.linear_velocity = Vector2(cos(th), sin(th))*100
+	fc.angular_velocity = rng.randf_range(0, 1)
+	add_child(fc)
+func num_button_pressed(num : int, button_pressed):
+	#print("num = ", num)
+	if in_button_pressed: return		# ボタン押下処理中の場合
+	if paused: return			# ポーズ中
+	in_button_pressed = true
+	if cur_cell_ix >= 0:		# セルが選択されている場合
+		if num == 0:			# 削除ボタン押下の場合
+			var old = get_cell_numer(cur_cell_ix)
+			if old != 0:
+				add_falling_char(input_labels[cur_cell_ix].text, cur_cell_ix)
+				push_to_undo_stack([UNDO_TYPE_CELL, cur_cell_ix, old, 0, [], 0])
+				input_labels[cur_cell_ix].text = ""
+			##else:
+			##	remove_all_memo_at(cur_cell_ix)
+		else:		# 数字ボタン押下の場合
+			if !memo_mode:
+				if button_pressed:
+					var old = get_cell_numer(cur_cell_ix)
+					if old != 0:
+						add_falling_char(input_labels[cur_cell_ix].text, cur_cell_ix)
+					if num == old:		# 同じ数字を入れる → 削除
+						push_to_undo_stack([UNDO_TYPE_CELL, cur_cell_ix, old, 0, [], 0])
+						input_labels[cur_cell_ix].text = ""
+					else:
+						input_num = num
+						var lst = remove_memo_num(cur_cell_ix, num)
+						var mb = get_memo_bits(cur_cell_ix)
+						push_to_undo_stack([UNDO_TYPE_CELL, cur_cell_ix, old, num, lst, mb])
+						#undo_stack.back().back() = lst
+						input_labels[cur_cell_ix].text = str(num)
+					for i in range(N_HORZ):
+						if memo_labels[cur_cell_ix][i].text != "":
+							add_falling_memo(int(memo_labels[cur_cell_ix][i].text), cur_cell_ix)
+							memo_labels[cur_cell_ix][i].text = ""
+					num_buttons[num].button_pressed = false
+					update_all_status()
+					sound_effect(false)
+					if !solvedStat && is_solved():
+						on_solved()
+				pass
+			else:		# メモ数字エディットモード
+				if get_cell_numer(cur_cell_ix) == 0:	# 数字が入っていない場合
+					push_to_undo_stack([UNDO_TYPE_MEMO, cur_cell_ix, num])
+					flip_memo_num(cur_cell_ix, num)
+				set_num_cursor(-1)
+		pass
+	else:	# セルが選択されていない場合
+		if button_pressed:
+			set_num_cursor(num)
+		else:
+			cur_num = -1		# toggled
+		update_cell_cursor(cur_num)
+		#sound_effect(true)
+	in_button_pressed = false
+	update_all_status()
+	pass
+
+func _on_button_1_pressed():
+	num_button_pressed(1, true)
+func _on_button_2_pressed():
+	num_button_pressed(2, true)
+	pass # Replace with function body.
+func _on_button_3_pressed():
+	num_button_pressed(3, true)
+	pass # Replace with function body.
+func _on_button_4_pressed():
+	pass # Replace with function body.
+	num_button_pressed(4, true)
+func _on_button_5_pressed():
+	num_button_pressed(5, true)
+	pass # Replace with function body.
+func _on_button_6_pressed():
+	num_button_pressed(6, true)
+	pass # Replace with function body.

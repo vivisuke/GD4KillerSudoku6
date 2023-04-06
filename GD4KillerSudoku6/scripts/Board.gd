@@ -22,6 +22,8 @@ var cur_num = -1
 func _ready():
 	pass # Replace with function body.
 
+func update():
+	pass
 func _draw():
 	draw_rect(Rect2(0, 0, BOX_WIDTH, BOX_HEIGHT), COL)
 	draw_rect(Rect2(BOX_WIDTH, BOX_HEIGHT, BOX_WIDTH, BOX_HEIGHT), COL)

@@ -61,6 +61,15 @@ layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
 
+[node name="NEmptyLabel" type="Label" parent="."]
+offset_top = 50.0
+offset_right = 500.0
+offset_bottom = 73.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 16
+text = "#0"
+vertical_alignment = 2
+
 [node name="Board" type="ColorRect" parent="."]
 offset_left = 7.0
 offset_top = 80.0
@@ -93,7 +102,7 @@ offset_top = 570.0
 offset_right = 492.0
 offset_bottom = 618.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 20
 text = "Message"
 
 [node name="HBC1" type="HBoxContainer" parent="."]
@@ -203,7 +212,7 @@ texture_normal = ExtResource("17_l0r4j")
 layout_mode = 2
 texture = ExtResource("9_8mpbk")
 
-[node name="Button1" type="Button" parent="HBC2"]
+[node name="Button4" type="Button" parent="HBC2"]
 custom_minimum_size = Vector2(55, 55)
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -218,7 +227,7 @@ text = "4"
 layout_mode = 2
 texture = ExtResource("13_fek0i")
 
-[node name="Button2" type="Button" parent="HBC2"]
+[node name="Button5" type="Button" parent="HBC2"]
 custom_minimum_size = Vector2(55, 55)
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -234,7 +243,7 @@ text = "5
 layout_mode = 2
 texture = ExtResource("13_fek0i")
 
-[node name="Button3" type="Button" parent="HBC2"]
+[node name="Button6" type="Button" parent="HBC2"]
 custom_minimum_size = Vector2(55, 55)
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -261,3 +270,23 @@ texture = ExtResource("9_8mpbk")
 [node name="AutoMemoButton" type="TextureButton" parent="HBC2"]
 layout_mode = 2
 texture_normal = ExtResource("19_724fu")
+
+[node name="DeleteButton" type="TextureButton" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CoinButton" type="TextureButton" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="NCoinLabel" type="Label" parent="CoinButton"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[connection signal="pressed" from="HBC1/Button1" to="." method="_on_button_1_pressed"]
+[connection signal="pressed" from="HBC1/Button2" to="." method="_on_button_2_pressed"]
+[connection signal="pressed" from="HBC1/Button3" to="." method="_on_button_3_pressed"]
+[connection signal="pressed" from="HBC2/Button4" to="." method="_on_button_4_pressed"]
+[connection signal="pressed" from="HBC2/Button5" to="." method="_on_button_5_pressed"]
+[connection signal="pressed" from="HBC2/Button6" to="." method="_on_button_6_pressed"]
