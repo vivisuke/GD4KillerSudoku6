@@ -114,22 +114,20 @@ func auto_load():
 ##	file.store_var(settings)
 ##	file.close()
 ###
-##func save_stats():
-##	var file = File.new()
-##	file.open(StatsFileName, File.WRITE)
-##	file.store_var(stats)
-##	file.close()
-##func load_stats():
-##	var file = File.new()
-##	if file.file_exists(StatsFileName):		# 統計情報ファイル
-##		file.open(StatsFileName, File.READ)
-##		stats = file.get_var()
-##		file.close()
-##		if stats.size() == 3:
-##			stats += [{}, {}, {}, ]
-##	else:
-##		stats = [{}, {}, {}, {}, {}, {}, ]		# [0] for 入門問題生成
-##	#print(stats)
+func save_stats():
+	var file = FileAccess.open(StatsFileName, FileAccess.WRITE)
+	file.store_var(stats)
+	file.close()
+func load_stats():
+	if FileAccess.file_exists(StatsFileName):		# 統計情報ファイル
+		var file = FileAccess.open(StatsFileName, FileAccess.READ)
+		stats = file.get_var()
+		file.close()
+		if stats.size() == 3:
+			stats += [{}, {}, {}, ]
+	else:
+		stats = [{}, {}, {}, {}, {}, {}, ]		# [0] for 入門問題生成
+	#print(stats)
 ###
 ##func save_nSolved():
 ##	var file = File.new()

@@ -315,6 +315,13 @@ stream = ExtResource("24_p6251")
 position = Vector2(250, 450)
 stream = ExtResource("25_14ktp")
 
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(1, 1, 1, 0)
+
 [connection signal="pressed" from="HBC1/Button1" to="." method="_on_button_1_pressed"]
 [connection signal="pressed" from="HBC1/Button2" to="." method="_on_button_2_pressed"]
 [connection signal="pressed" from="HBC1/Button3" to="." method="_on_button_3_pressed"]

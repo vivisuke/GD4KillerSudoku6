@@ -151,6 +151,7 @@ var FallingChar = load("res://falling_char.tscn")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	init_labels()
+	g.load_stats()
 	#
 	cell_bit.resize(N_CELLS)
 	ans_num.resize(N_CELLS)
