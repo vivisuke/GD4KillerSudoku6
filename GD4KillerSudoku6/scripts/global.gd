@@ -168,6 +168,6 @@ func auto_load():
 ##	else:
 ##		tqSolvedYMD = ""
 ##		tqSolvedSec = [-1, -1, -1]
-##func memo_label_pos(px, py, h, v):
-##	return Vector2(px + CELL_WIDTH4*(h+1)-3, py + CELL_WIDTH3*(v+1)+2)
-##
+func memo_label_pos(px, py, h, v):
+	return Vector2(px + CELL_WIDTH4*(h+1)-3, py + CELL_WIDTH3*(v+1)+2)
+

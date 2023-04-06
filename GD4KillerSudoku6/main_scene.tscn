@@ -284,6 +284,8 @@ layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
 
+[node name="AudioNumClicked" type="AudioStreamPlayer2D" parent="."]
+
 [connection signal="pressed" from="HBC1/Button1" to="." method="_on_button_1_pressed"]
 [connection signal="pressed" from="HBC1/Button2" to="." method="_on_button_2_pressed"]
 [connection signal="pressed" from="HBC1/Button3" to="." method="_on_button_3_pressed"]
