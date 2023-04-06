@@ -24,7 +24,7 @@
 0022 ◎ C 04/05 04/06 0.001│ToDo│数字ボタンを選択→セルクリックで数字入力
 0023 ◎ C 04/06 04/06 0.001│ToDo│数字ボタン押下ハンドラ、num_button_pressed(num : int, button_pressed) 実装
 0024 ● C 04/06            │ToDo│落下数字、候補数字用ラベルオブジェクト生成関数
-0025 ● C 04/06            │ToDo│memo_labels[] 設定
+0025 ◎ C 04/06 04/06 0.001│ToDo│memo_labels[] 設定
 0026 ● C 04/06            │ToDo│
 0027 ● C 04/06            │ToDo│
 0028 ● C 04/06            │ToDo│

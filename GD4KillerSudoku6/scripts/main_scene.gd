@@ -1057,7 +1057,7 @@ func add_falling_char(num_str, ix : int):
 	var fc = Label.new()
 	var x = ix % N_HORZ
 	var y = ix / N_HORZ
-	fc.position = $Board.rect_position + Vector2(x*CELL_WIDTH, y*CELL_WIDTH)
+	fc.position = $Board.position + Vector2(x*CELL_WIDTH, y*CELL_WIDTH)
 	fc.text = num_str
 	var th = rng.randf_range(0, 3.1415926535*2)
 	fc.linear_velocity = Vector2(cos(th), sin(th))*100
