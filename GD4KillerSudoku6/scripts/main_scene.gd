@@ -41,16 +41,11 @@ const BIT_9 = 1<<8
 const ALL_BITS = (1<<N_HORZ) - 1
 const BIT_MEMO = 1<<10
 const TILE_NONE = -1
-const TILE_EMPHASIZE = 0				# 強調カーソル（薄ピンク）
-const TILE_CURSOR = 1
-#const TILE_LTPINK = 1				# 強調カーソル（薄ピンク）
-#const TILE_LTBLUE = 1				# 強調カーソル（薄青）
-#const TILE_LTORANGE = 2				# 強調カーソル（薄橙）
-#const TILE_PINK = 3					# 強調カーソル（薄ピンク）
+const TILE_CURSOR = 0					# カーソル（薄ピンク）
+const TILE_EMPHASIZE = 1				# 強調カーソル（薄黄色）
 const COLOR_INCORRECT = Color.RED
 const COLOR_DUP = Color.RED
 const COLOR_CLUE = Color.BLACK
-#const COLOR_INPUT = Color("#2980b9")	# VELIZE HOLE
 const COLOR_INPUT = Color.BLACK
 const UNDO_TYPE_CELL = 0		# セル数字入力
 const UNDO_TYPE_MEMO = 1		# メモ数字反転
@@ -313,7 +308,7 @@ func update_cell_cursor(num):		# 選択数字ボタンと同じ数字セルを�
 			for x in range(N_HORZ):
 				var ix = xyToIX(x, y)
 				if num != 0 && get_cell_numer(ix) == num:
-					$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_EMPHASIZE)
+					$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_EMPHASIZE, Vector2i(0, 0))
 				else:
 					$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_NONE)
 	else:
@@ -870,14 +865,14 @@ func do_emphasize_cell(ix : int):
 		update_cell_cursor(n)
 	var x = ix % N_HORZ
 	var y = ix / N_HORZ
-	$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_CURSOR)
+	$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_CURSOR, Vector2i(0, 0))
 func do_emphasize(ix : int, type, fullhouse):
 	reset_TileMap()
 	if paused: return
 	var x = ix % N_HORZ
 	var y = ix / N_HORZ
 	if type == CELL || fullhouse:
-		$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_CURSOR)
+		$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_CURSOR, Vector2i(0, 0))
 	pass
 
 func is_all_solved_todaysQuest():

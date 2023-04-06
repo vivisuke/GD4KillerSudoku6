@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://df63unibnxvr5"]
+[gd_scene load_steps=27 format=3 uid="uid://df63unibnxvr5"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_j8s1i"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ltfgv"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scripts/Grid.gd" id="3_kpcp0"]
 [ext_resource type="Script" path="res://scripts/CageGrid.gd" id="3_xly3w"]
 [ext_resource type="Texture2D" uid="uid://bbgobjrm6nkxf" path="res://images/lightpink_81x81.png" id="4_6xb5c"]
+[ext_resource type="Texture2D" uid="uid://7ahs8j7adk62" path="res://images/lightyellow81x81.png" id="5_aa34c"]
 [ext_resource type="Texture2D" uid="uid://cqec3tqrevdpa" path="res://images/undo_black.png" id="6_al8fh"]
 [ext_resource type="Texture2D" uid="uid://csupj8245mj3o" path="res://images/undo_white.png" id="7_mp20d"]
 [ext_resource type="Texture2D" uid="uid://b1vvkieh6sjf3" path="res://images/undo_gray.png" id="8_83f3t"]
@@ -26,9 +27,15 @@ texture = ExtResource("4_6xb5c")
 texture_region_size = Vector2i(81, 81)
 0:0/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_v1gic"]
+texture = ExtResource("5_aa34c")
+texture_region_size = Vector2i(81, 81)
+0:0/0 = 0
+
 [sub_resource type="TileSet" id="TileSet_sghhw"]
 tile_size = Vector2i(81, 81)
 sources/0 = SubResource("TileSetAtlasSource_l5jc0")
+sources/1 = SubResource("TileSetAtlasSource_v1gic")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rp0c4"]
 bg_color = Color(1, 1, 1, 1)
@@ -80,7 +87,7 @@ script = ExtResource("2_n82ed")
 [node name="TileMap" type="TileMap" parent="Board"]
 tile_set = SubResource("TileSet_sghhw")
 format = 2
-layer_0/tile_data = PackedInt32Array(0, 0, 0)
+layer_0/tile_data = PackedInt32Array(0, 0, 0, 262147, 1, 0)
 
 [node name="CageGrid" type="ColorRect" parent="Board"]
 layout_mode = 0
@@ -285,8 +292,13 @@ offset_right = 40.0
 offset_bottom = 23.0
 
 [node name="AudioNumClicked" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(250, 450)
 
 [node name="AudioIncorrect" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(250, 450)
+
+[node name="AudioNumCompleted" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(250, 450)
 
 [connection signal="pressed" from="HBC1/Button1" to="." method="_on_button_1_pressed"]
 [connection signal="pressed" from="HBC1/Button2" to="." method="_on_button_2_pressed"]
