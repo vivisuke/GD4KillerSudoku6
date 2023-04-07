@@ -1085,12 +1085,27 @@ func _input(event):
 	if event is InputEventKey && event.is_pressed():
 		#print(event.as_text())
 		if paused: return
-		if event.as_text() == "W" :
+		if event.as_text() == "H" :
+			var bix = find_last_blank_cell_in_cage()
+			print("last_blank_cell_in_cage: ", bix)
+		elif event.as_text() == "W" :
 			shock_wave_timer = 0.0      # start shock wave
 		var n = int(event.as_text())
 		if n >= 1 && n <= N_HORZ:
 			num_button_pressed(n, true)
 	pass
+func find_last_blank_cell_in_cage():
+	for ci in range(cage_list.size()):
+		var cage = cage_list[ci]
+		var lst = cage[CAGE_IX_LIST]
+		var n = lst.size()		# 当該ケージ内の空白セル数
+		var bix					# 空欄セル位置
+		for i in range(lst.size()):
+			if get_cell_numer(lst[i]) != 0: n -= 1
+			else: bix = lst[i]
+		if n == 1:
+			return bix
+	return -1
 #func _unhandled_input(event):
 #	print("_unhandled_input()")
 #	pass
