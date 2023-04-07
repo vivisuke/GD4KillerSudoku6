@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://df63unibnxvr5"]
+[gd_scene load_steps=33 format=3 uid="uid://df63unibnxvr5"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_j8s1i"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ltfgv"]
@@ -25,6 +25,7 @@
 [ext_resource type="AudioStream" uid="uid://c5dv6nwa70eyj" path="res://sounds/incorrect.mp3" id="23_6p0ak"]
 [ext_resource type="AudioStream" uid="uid://dsxpn8m8gnipb" path="res://sounds/don.mp3" id="24_p6251"]
 [ext_resource type="AudioStream" uid="uid://2mfnwo0of14r" path="res://sounds/kirakira-3.mp3" id="25_14ktp"]
+[ext_resource type="Shader" path="res://scripts/main_scene.gdshader" id="26_3tet4"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_l5jc0"]
 texture = ExtResource("4_6xb5c")
@@ -52,6 +53,13 @@ shadow_offset = Vector2(2, 2)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1av8t"]
 bg_color = Color(0.160784, 0.501961, 0.72549, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j8egs"]
+shader = ExtResource("26_3tet4")
+shader_parameter/center = null
+shader_parameter/force = null
+shader_parameter/size = null
+shader_parameter/tichness = null
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_j8s1i")
@@ -318,8 +326,9 @@ stream = ExtResource("25_14ktp")
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
-offset_right = 40.0
-offset_bottom = 40.0
+material = SubResource("ShaderMaterial_j8egs")
+offset_right = 500.0
+offset_bottom = 900.0
 color = Color(1, 1, 1, 0)
 
 [connection signal="pressed" from="HBC1/Button1" to="." method="_on_button_1_pressed"]

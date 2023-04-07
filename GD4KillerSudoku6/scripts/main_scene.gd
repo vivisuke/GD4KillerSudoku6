@@ -1046,6 +1046,12 @@ func _input(event):
 		sound_effect(false)
 		if !solvedStat && is_solved():
 			on_solved()
+	if event is InputEventKey && event.is_pressed():
+		#print(event.as_text())
+		if paused: return
+		var n = int(event.as_text())
+		if n >= 1 && n <= N_HORZ:
+			num_button_pressed(n, true)
 	pass
 #func _unhandled_input(event):
 #	print("_unhandled_input()")
