@@ -150,6 +150,7 @@ var FallingChar = load("res://falling_char.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	g.qLevel = LVL_NORMAL
 	init_labels()
 	g.load_stats()
 	#
@@ -198,7 +199,8 @@ func gen_quest():
 		$NextButton.disabled = g.qNumber > g.nSolved[g.qLevel]
 	elif !g.todaysQuest:		# ランダム生成の場合
 		if g.qName == "":
-			gen_qName()
+			##gen_qName()
+			g.qName = "0001"
 			$TitleBar/Label.text = titleText()
 	var stxt = g.qName+str(g.qLevel)
 	if g.qNumber != 0: stxt += "Q"
@@ -262,9 +264,9 @@ func split_2cell_cage():		# 1セルケージ数が４未満なら２セルケー
 	cage_labels[ix1].text = str(get_cell_numer(ix1))
 	cage_labels[ix2].text = str(get_cell_numer(ix2))
 func classText() -> String:
-	if g.qLevel == LVL_BEGINNER: return "【入門】"
-	elif g.qLevel == 1: return "【初級】"
-	elif g.qLevel == 2: return "【初中級】"
+	if g.qLevel == LVL_BEGINNER: return "【入門】 "
+	elif g.qLevel == 1: return "【初級】 "
+	elif g.qLevel == 2: return "【初中級】 "
 	return ""
 func titleText() -> String:
 	var tt = classText()
@@ -402,7 +404,7 @@ func init_labels():
 					label.add_theme_font_size_override("font_size", 18)
 					label.position = g.memo_label_pos(px, py, h, v)
 					label.text = ""
-					label.text = str(v*3+h+1)
+					#label.text = str(v*3+h+1)
 					$Board.add_child(label)
 			memo_labels.push_back(lst)
 
@@ -714,6 +716,8 @@ func gen_cages():
 	$Board/CageGrid.cage_ix = cage_ix
 	$Board/CageGrid.update()
 func update_cages_sum_labels():
+	for ix in range(cage_labels.size()):
+		cage_labels[ix].text = ""
 	for ix in range(cage_list.size()):
 		var item = cage_list[ix]
 		var sum = item[CAGE_SUM]

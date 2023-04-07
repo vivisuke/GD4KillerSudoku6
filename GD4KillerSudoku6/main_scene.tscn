@@ -77,8 +77,10 @@ script = ExtResource("1_ltfgv")
 
 [node name="Label" type="Label" parent="TitleBar"]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
+offset_right = 500.0
+offset_bottom = 50.0
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="NEmptyLabel" type="Label" parent="."]
 offset_top = 50.0
@@ -147,6 +149,15 @@ texture_normal = ExtResource("6_al8fh")
 texture_pressed = ExtResource("7_mp20d")
 texture_disabled = ExtResource("8_83f3t")
 
+[node name="Label" type="Label" parent="HBC1/UndoButton"]
+layout_mode = 0
+offset_top = 40.0
+offset_right = 48.0
+offset_bottom = 67.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "undo"
+horizontal_alignment = 1
+
 [node name="Space1" type="TextureRect" parent="HBC1"]
 layout_mode = 2
 texture = ExtResource("9_8mpbk")
@@ -156,6 +167,15 @@ layout_mode = 2
 texture_normal = ExtResource("10_rhvmb")
 texture_pressed = ExtResource("11_pfk2j")
 texture_disabled = ExtResource("12_dbcp6")
+
+[node name="Label" type="Label" parent="HBC1/RedoButton"]
+layout_mode = 0
+offset_top = 40.0
+offset_right = 48.0
+offset_bottom = 67.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "redo"
+horizontal_alignment = 1
 
 [node name="Space2" type="TextureRect" parent="HBC1"]
 layout_mode = 2
@@ -212,6 +232,15 @@ texture = ExtResource("9_8mpbk")
 layout_mode = 2
 texture_normal = ExtResource("14_vf4va")
 
+[node name="Label" type="Label" parent="HBC1/MemoButton"]
+layout_mode = 0
+offset_top = 40.0
+offset_right = 48.0
+offset_bottom = 67.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "memo"
+horizontal_alignment = 1
+
 [node name="Space6" type="TextureRect" parent="HBC1"]
 layout_mode = 2
 texture = ExtResource("9_8mpbk")
@@ -219,6 +248,15 @@ texture = ExtResource("9_8mpbk")
 [node name="PauseButton" type="TextureButton" parent="HBC1"]
 layout_mode = 2
 texture_normal = ExtResource("15_o8hf8")
+
+[node name="Label" type="Label" parent="HBC1/PauseButton"]
+layout_mode = 0
+offset_top = 40.0
+offset_right = 48.0
+offset_bottom = 67.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "pause"
+horizontal_alignment = 1
 
 [node name="HBC2" type="HBoxContainer" parent="."]
 offset_top = 710.0
@@ -230,6 +268,15 @@ alignment = 1
 layout_mode = 2
 texture_normal = ExtResource("16_kqex0")
 
+[node name="Label" type="Label" parent="HBC2/CheckButton"]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 48.0
+offset_bottom = 71.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "check"
+horizontal_alignment = 1
+
 [node name="Space1" type="TextureRect" parent="HBC2"]
 layout_mode = 2
 texture = ExtResource("9_8mpbk")
@@ -237,6 +284,15 @@ texture = ExtResource("9_8mpbk")
 [node name="HintButton" type="TextureButton" parent="HBC2"]
 layout_mode = 2
 texture_normal = ExtResource("17_l0r4j")
+
+[node name="Label" type="Label" parent="HBC2/HintButton"]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 48.0
+offset_bottom = 71.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "hint"
+horizontal_alignment = 1
 
 [node name="Space2" type="TextureRect" parent="HBC2"]
 layout_mode = 2
@@ -293,6 +349,15 @@ texture = ExtResource("9_8mpbk")
 layout_mode = 2
 texture_normal = ExtResource("18_ot622")
 
+[node name="Label" type="Label" parent="HBC2/DelMemoButton"]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 48.0
+offset_bottom = 71.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "del"
+horizontal_alignment = 1
+
 [node name="Space6" type="TextureRect" parent="HBC2"]
 layout_mode = 2
 texture = ExtResource("9_8mpbk")
@@ -300,6 +365,15 @@ texture = ExtResource("9_8mpbk")
 [node name="AutoMemoButton" type="TextureButton" parent="HBC2"]
 layout_mode = 2
 texture_normal = ExtResource("19_724fu")
+
+[node name="Label" type="Label" parent="HBC2/AutoMemoButton"]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 48.0
+offset_bottom = 71.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "auto"
+horizontal_alignment = 1
 
 [node name="DeleteButton" type="TextureButton" parent="."]
 offset_right = 40.0
