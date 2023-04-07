@@ -413,7 +413,7 @@ func _process(delta):
 		sec -= h * (60*60)
 		var m = sec / 60
 		sec -= m * 60
-		##$TimeLabel.text = "%02d:%02d:%02d" % [h, m, sec]
+		$TimeLabel.text = "%02d:%02d:%02d" % [h, m, sec]
 	##if confetti_count_down > 0.0:
 	##	confetti_count_down -= delta
 	##	if confetti_count_down <= 0.0:
