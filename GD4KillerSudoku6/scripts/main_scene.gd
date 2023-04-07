@@ -398,9 +398,11 @@ func init_labels():
 				for h in range(N_BOX_HORZ):
 					label = Label.new()
 					lst.push_back(label)
+					label.add_theme_color_override("font_color", Color.BLACK)
+					label.add_theme_font_size_override("font_size", 18)
 					label.position = g.memo_label_pos(px, py, h, v)
 					label.text = ""
-					#label.text = str(v*3+h+1)
+					label.text = str(v*3+h+1)
 					$Board.add_child(label)
 			memo_labels.push_back(lst)
 
@@ -1097,15 +1099,20 @@ func _input(event):
 func find_last_blank_cell_in_cage():
 	for ci in range(cage_list.size()):
 		var cage = cage_list[ci]
+		var sum = cage[CAGE_SUM]
 		var lst = cage[CAGE_IX_LIST]
-		var n = lst.size()		# 当該ケージ内の空白セル数
+		var nspc = lst.size()		# 当該ケージ内の空白セル数
 		var bix					# 空欄セル位置
 		for i in range(lst.size()):
-			if get_cell_numer(lst[i]) != 0: n -= 1
-			else: bix = lst[i]
-		if n == 1:
-			return bix
-	return -1
+			var cn = get_cell_numer(lst[i])
+			if get_cell_numer(lst[i]) != 0:
+				nspc -= 1
+				sum -= cn
+			else:
+				bix = lst[i]
+		if nspc == 1:
+			return [bix, sum]
+	return [-1, -1]
 #func _unhandled_input(event):
 #	print("_unhandled_input()")
 #	pass
