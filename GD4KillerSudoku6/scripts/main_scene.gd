@@ -173,6 +173,7 @@ func _ready():
 	gen_ans()
 	#gen_cages()
 	gen_quest()
+	$CanvasLayer/ColorRect.material.set("shader_param/size", 0)
 	pass # Replace with function body.
 func gen_qName():
 	g.qRandom = true
@@ -405,6 +406,41 @@ func init_labels():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if !solvedStat && !paused:
+		g.elapsedTime += delta
+		var sec = int(g.elapsedTime)
+		var h = sec / (60*60)
+		sec -= h * (60*60)
+		var m = sec / 60
+		sec -= m * 60
+		##$TimeLabel.text = "%02d:%02d:%02d" % [h, m, sec]
+	##if confetti_count_down > 0.0:
+	##	confetti_count_down -= delta
+	##	if confetti_count_down <= 0.0:
+	##		$FakeConfettiParticles.emitting = false
+	##if hint_count_down > 0.0:
+	##	hint_count_down -= delta
+	##	if hint_count_down <= 0.0:
+	##		#var num = bit_to_num(ans_bit[hint_ix])
+	##		var num = ans_num[hint_ix]
+	##		var lst = remove_memo_num(hint_ix, num)
+	##		var mb = get_memo_bits(hint_ix)
+	##		remove_all_memo_at(hint_ix)
+	##		push_to_undo_stack([UNDO_TYPE_CELL, hint_ix, 0, num, lst, mb])
+	##		input_labels[hint_ix].text = str(num)
+	##		if is_solved():
+	##			on_solved()
+	##		update_all_status()
+	##		input_num = num
+	##		sound_effect(false)		# ヒント数字確定
+	##	else:
+	##		var num = rng.randi_range(1, N_HORZ)
+	##		input_labels[hint_ix].text = str(num)
+	if shock_wave_timer >= 0:
+		shock_wave_timer += delta
+		$CanvasLayer/ColorRect.material.set("shader_param/size", shock_wave_timer)
+		if shock_wave_timer > 2:
+			shock_wave_timer = -1.0
 	pass
 func gen_ans_sub(ix : int, line_used):
 	#print_cells()
@@ -1049,6 +1085,8 @@ func _input(event):
 	if event is InputEventKey && event.is_pressed():
 		#print(event.as_text())
 		if paused: return
+		if event.as_text() == "W" :
+			shock_wave_timer = 0.0      # start shock wave
 		var n = int(event.as_text())
 		if n >= 1 && n <= N_HORZ:
 			num_button_pressed(n, true)

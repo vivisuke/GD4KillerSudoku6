@@ -30,8 +30,8 @@
 0028 ● C 04/07            │ToDo│削除ボタン設置
 0029 ◎ C 04/07 04/07 0.001│ToDo│選択数字強調
 0030 ◎ C 04/07 04/07 0.001│問題│$AudioNumCompleted が null というエラーが出る
-0031 ● C 04/07            │問題│$FakeConfettiParticles が null というエラーが出る
-0032 ● C 04/07            │ToDo│ショックウェーブ
+0031 ◎ C 04/07 04/07 0.001│問題│$FakeConfettiParticles が null というエラーが出る
+0032 ◎ C 04/07 04/07 0.001│ToDo│解時：ショックウェーブ
 0033 ◎ C 04/07 04/07 0.001│問題│起動時：セルカーソル・強調がクリアされない
 0034 ◎ C 04/07 04/07 0.001│ToDo│$CanvasLayer/ColorRect 設置
 0035 ◎ C 04/07 04/07 0.001│ToDo│AudioXXX は $Audio ノード下にまとめる

@@ -56,10 +56,10 @@ bg_color = Color(0.160784, 0.501961, 0.72549, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_j8egs"]
 shader = ExtResource("26_3tet4")
-shader_parameter/center = null
-shader_parameter/force = null
-shader_parameter/size = null
-shader_parameter/tichness = null
+shader_parameter/center = Vector2(0.5, 0.5)
+shader_parameter/force = 0.024
+shader_parameter/size = 2.0
+shader_parameter/tichness = 0.1
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_j8s1i")
