@@ -200,7 +200,7 @@ func gen_quest():
 	elif !g.todaysQuest:		# ランダム生成の場合
 		if g.qName == "":
 			##gen_qName()
-			g.qName = "0001"
+			g.qName = "0007"
 			$TitleBar/Label.text = titleText()
 	var stxt = g.qName+str(g.qLevel)
 	if g.qNumber != 0: stxt += "Q"
@@ -1088,35 +1088,18 @@ func _input(event):
 		sound_effect(false)
 		if !solvedStat && is_solved():
 			on_solved()
-	if event is InputEventKey && event.is_pressed():
+	elif event is InputEventKey && event.is_pressed():
 		#print(event.as_text())
 		if paused: return
 		if event.as_text() == "H" :
-			var bix = find_last_blank_cell_in_cage()
-			print("last_blank_cell_in_cage: ", bix)
+			_on_hint_button_pressed()
+			return
 		elif event.as_text() == "W" :
 			shock_wave_timer = 0.0      # start shock wave
 		var n = int(event.as_text())
 		if n >= 1 && n <= N_HORZ:
 			num_button_pressed(n, true)
 	pass
-func find_last_blank_cell_in_cage():
-	for ci in range(cage_list.size()):
-		var cage = cage_list[ci]
-		var sum = cage[CAGE_SUM]
-		var lst = cage[CAGE_IX_LIST]
-		var nspc = lst.size()		# 当該ケージ内の空白セル数
-		var bix					# 空欄セル位置
-		for i in range(lst.size()):
-			var cn = get_cell_numer(lst[i])
-			if get_cell_numer(lst[i]) != 0:
-				nspc -= 1
-				sum -= cn
-			else:
-				bix = lst[i]
-		if nspc == 1:
-			return [bix, sum]
-	return [-1, -1]
 #func _unhandled_input(event):
 #	print("_unhandled_input()")
 #	pass
@@ -1228,4 +1211,89 @@ func _on_button_5_pressed():
 	pass # Replace with function body.
 func _on_button_6_pressed():
 	num_button_pressed(6, true)
+	pass # Replace with function body.
+func find_last_blank_cell_in_cage():		# ケージ内の最後の空白セルを探す
+	for ci in range(cage_list.size()):
+		var cage = cage_list[ci]
+		var sum = cage[CAGE_SUM]
+		var lst = cage[CAGE_IX_LIST]
+		var nspc = lst.size()		# 当該ケージ内の空白セル数
+		var bix					# 空欄セル位置
+		for i in range(lst.size()):
+			var cn = get_cell_numer(lst[i])
+			if get_cell_numer(lst[i]) != 0:
+				nspc -= 1
+				sum -= cn
+			else:
+				bix = lst[i]
+		if nspc == 1:
+			return [bix, sum]
+	return [-1, -1]
+# (x0, y0)-(x0+wd, y0+ht) 範囲にルール21を適用できるかどうかチェック
+# return: [数字が決まる位置, 入る数字]
+func check_rule21(x0:int, y0:int, wd:int, ht:int):
+	var cage_processed = []				# ケージ処理済みフラグ
+	cage_processed.resize(cage_list.size())
+	cage_processed.fill(false)
+	var cxio = -1		# ケージ内セルのエリア内外数が1のケージIX
+	var ix0				# 確定する箇所
+	var nis				# ケージ内セルのエリア内数
+	for v in range(ht):
+		for h in range(wd):
+			var cx = cage_ix[xyToIX(x0+h, y0+v)]
+			if !cage_processed[cx]:		# ケージが未処理の場合
+				cage_processed[cx] = true	# 処理済みフラグON
+				var cage = cage_list[cx]
+				var ni = 0		# 当該ケージのエリア内セル数
+				var no = 0		# 当該ケージのエリア外セル数
+				var ixin		# エリア内セル位置
+				var ixout		# エリア外セル位置
+				for i in range(cage[CAGE_IX_LIST].size()):
+					var x = cage[CAGE_IX_LIST][i] % N_HORZ
+					var y = cage[CAGE_IX_LIST][i] / N_HORZ
+					if x >= x0 && x < x0 + wd && y >= y0 && y < y0 + ht:
+						ni += 1
+						ixin = cage[CAGE_IX_LIST][i]
+					else:
+						no += 1
+						ixout = cage[CAGE_IX_LIST][i]
+				#var no = cage[CAGE_IX_LIST].size() - ni		# エリア外セル数
+				if ni == 1 || no == 1:
+					if cxio >= 0: return [-1, -1]
+					cxio = cx
+					nis = ni
+					if ni == 1: ix0 = ixin
+					else: ix0 = ixout
+				elif ni > 1 && no > 1: return [-1, -1]
+	if cxio < 0: return [-1, -1]
+	var r = 21
+	for c in range(cage_list.size()):
+		if cage_processed[c] && c != cxio:
+			r -= cage_list[c][CAGE_SUM]
+	if nis == 1:	# エリア内に1箇所だけ不定セルがある場合
+		return [ix0, r]
+	else:			# エリア内に複数箇所の不定セルがある場合
+		return [ix0, cage_list[cxio][CAGE_SUM] - r]
+
+func find_rule21():			# ルール21で決まるセルを探す
+	for y in range(N_VERT):		# y 行をチェック
+		var r = check_rule21(0, y, N_HORZ, 1)
+		if r[0] >= 0: return r
+	for x in range(N_HORZ):		# x 列をチェック
+		var r = check_rule21(x, 0, 1, N_VERT)
+		if r[0] >= 0: return r
+	for y in range(3):
+		for x in range(2):
+			var r = check_rule21(x*3, y*2, 3, 2)
+			if r[0] >= 0: return r
+	return [-1, -1]
+
+func _on_hint_button_pressed():
+	var bix = find_last_blank_cell_in_cage()
+	print("last_blank_cell_in_cage: ", bix)
+	#bix = check_rule21(0, 0, 6, 1)
+	#bix = check_rule21(0, 0, 1, 6)
+	#bix = check_rule21(0, 0, 1, 6)
+	bix = find_rule21()
+	print("rule21: ", bix)
 	pass # Replace with function body.
