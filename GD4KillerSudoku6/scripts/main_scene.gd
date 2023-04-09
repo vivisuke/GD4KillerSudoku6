@@ -200,7 +200,7 @@ func gen_quest():
 	elif !g.todaysQuest:		# ランダム生成の場合
 		if g.qName == "":
 			##gen_qName()
-			g.qName = "0007"
+			g.qName = "0000"
 			$TitleBar/Label.text = titleText()
 	var stxt = g.qName+str(g.qLevel)
 	if g.qNumber != 0: stxt += "Q"
@@ -294,6 +294,8 @@ func get_cell_state() -> Array:
 		else:
 			s.push_back(get_memo_bits(ix) + BIT_MEMO)
 	return s
+func is_empty_cell(ix) -> bool:
+	return input_labels[ix].text == ""
 func get_cell_numer(ix) -> int:		# ix 位置に入っている数字の値を返す、0 for 空欄
 	#if clue_labels[ix].text != "":
 	#	return int(clue_labels[ix].text)
@@ -1249,14 +1251,16 @@ func check_rule21(x0:int, y0:int, wd:int, ht:int):
 				var ixin		# エリア内セル位置
 				var ixout		# エリア外セル位置
 				for i in range(cage[CAGE_IX_LIST].size()):
-					var x = cage[CAGE_IX_LIST][i] % N_HORZ
-					var y = cage[CAGE_IX_LIST][i] / N_HORZ
-					if x >= x0 && x < x0 + wd && y >= y0 && y < y0 + ht:
-						ni += 1
-						ixin = cage[CAGE_IX_LIST][i]
-					else:
-						no += 1
-						ixout = cage[CAGE_IX_LIST][i]
+					var ix = cage[CAGE_IX_LIST][i]
+					if is_empty_cell(ix):
+						var x = ix % N_HORZ
+						var y = ix / N_HORZ
+						if x >= x0 && x < x0 + wd && y >= y0 && y < y0 + ht:
+							ni += 1
+							ixin = ix
+						else:
+							no += 1
+							ixout = cage[CAGE_IX_LIST][i]
 				#var no = cage[CAGE_IX_LIST].size() - ni		# エリア外セル数
 				if ni == 1 || no == 1:
 					if cxio >= 0: return [-1, -1]
