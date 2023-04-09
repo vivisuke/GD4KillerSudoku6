@@ -1270,7 +1270,7 @@ func check_rule21(x0:int, y0:int, wd:int, ht:int):
 					else: ix0 = ixout
 				elif ni > 1 && no > 1: return [-1, -1]
 	if cxio < 0: return [-1, -1]
-	var r = 21
+	var r = 21 * wd * ht / 6
 	for c in range(cage_list.size()):
 		if cage_processed[c] && c != cxio:
 			r -= cage_list[c][CAGE_SUM]
@@ -1290,6 +1290,10 @@ func find_rule21():			# ルール21で決まるセルを探す
 		for x in range(2):
 			var r = check_rule21(x*3, y*2, 3, 2)
 			if r[0] >= 0: return r
+	var r = check_rule21(0, 0, N_HORZ, 2)
+	if r[0] >= 0: return r
+	r = check_rule21(0, 0, N_HORZ, 3)
+	if r[0] >= 0: return r
 	return [-1, -1]
 
 func _on_hint_button_pressed():
