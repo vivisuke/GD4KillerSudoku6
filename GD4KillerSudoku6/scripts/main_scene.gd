@@ -200,7 +200,7 @@ func gen_quest():
 	elif !g.todaysQuest:		# ランダム生成の場合
 		if g.qName == "":
 			##gen_qName()
-			g.qName = "0000"
+			g.qName = "0002"
 			$TitleBar/Label.text = titleText()
 	var stxt = g.qName+str(g.qLevel)
 	if g.qNumber != 0: stxt += "Q"
@@ -1326,12 +1326,42 @@ func find_locked_double():
 					for y in range(N_VERT):
 						bits0 |= cell_bit[xyToIX(x0, y)]
 						bits1 |= cell_bit[xyToIX(x1, y)]
+					for y in range(N_VERT-1):
+						if cage_ix[xyToIX(x0, y)] == cage_ix[xyToIX(x0, y+1)]:
+							var cg = cage_list[cage_ix[xyToIX(x0, y)]]
+							if cg[CAGE_IX_LIST].size() == 2:
+								if cg[CAGE_SUM] == 3: bits0 |= BIT_1 | BIT_2
+								elif cg[CAGE_SUM] == 4: bits0 |= BIT_1 | BIT_3
+								elif cg[CAGE_SUM] == 10: bits0 |= BIT_4 | BIT_6
+								elif cg[CAGE_SUM] == 11: bits0 |= BIT_5 | BIT_6
+						if cage_ix[xyToIX(x1, y)] == cage_ix[xyToIX(x1, y+1)]:
+							var cg = cage_list[cage_ix[xyToIX(x1, y)]]
+							if cg[CAGE_IX_LIST].size() == 2:
+								if cg[CAGE_SUM] == 3: bits1 |= BIT_1 | BIT_2
+								elif cg[CAGE_SUM] == 4: bits1 |= BIT_1 | BIT_3
+								elif cg[CAGE_SUM] == 10: bits1 |= BIT_4 | BIT_6
+								elif cg[CAGE_SUM] == 11: bits1 |= BIT_5 | BIT_6
 				else:	# ２セルケージが縦
 					var y0 = cage[CAGE_IX_LIST][0] / N_HORZ
 					var y1 = cage[CAGE_IX_LIST][1] / N_HORZ
 					for x in range(N_VERT):
 						bits0 |= cell_bit[xyToIX(x, y0)]
 						bits1 |= cell_bit[xyToIX(x, y1)]
+					for x in range(N_HORZ-1):
+						if cage_ix[xyToIX(x, y0)] == cage_ix[xyToIX(x+1, y0)]:
+							var cg = cage_list[cage_ix[xyToIX(x, y0)]]
+							if cg[CAGE_IX_LIST].size() == 2:
+								if cg[CAGE_SUM] == 3: bits0 |= BIT_1 | BIT_2
+								elif cg[CAGE_SUM] == 4: bits0 |= BIT_1 | BIT_3
+								elif cg[CAGE_SUM] == 10: bits0 |= BIT_4 | BIT_6
+								elif cg[CAGE_SUM] == 11: bits0 |= BIT_5 | BIT_6
+						if cage_ix[xyToIX(x, y1)] == cage_ix[xyToIX(x+1, y1)]:
+							var cg = cage_list[cage_ix[xyToIX(x, y1)]]
+							if cg[CAGE_IX_LIST].size() == 2:
+								if cg[CAGE_SUM] == 3: bits1 |= BIT_1 | BIT_2
+								elif cg[CAGE_SUM] == 4: bits1 |= BIT_1 | BIT_3
+								elif cg[CAGE_SUM] == 10: bits1 |= BIT_4 | BIT_6
+								elif cg[CAGE_SUM] == 11: bits1 |= BIT_5 | BIT_6
 				if cage[CAGE_SUM] == 3:
 					if (bits0 & BIT_1) != 0: return [cage[CAGE_IX_LIST][0], 2]
 					if (bits0 & BIT_2) != 0: return [cage[CAGE_IX_LIST][0], 1]
