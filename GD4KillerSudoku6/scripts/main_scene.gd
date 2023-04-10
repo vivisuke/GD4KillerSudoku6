@@ -1060,6 +1060,7 @@ func _input(event):
 					add_falling_char(input_labels[ix].text, ix)
 					push_to_undo_stack([UNDO_TYPE_CELL, ix, int(input_labels[ix].text), 0, [], 0])		# ix, old, new
 					input_labels[ix].text = ""
+					cell_bit[ix] = 0
 				else:
 					for i in range(N_HORZ):
 						if memo_labels[ix][i].text != "":
@@ -1074,12 +1075,14 @@ func _input(event):
 				if input_labels[ix].text == num_str:	# 同じ数字が入っていれば消去
 					push_to_undo_stack([UNDO_TYPE_CELL, ix, int(cur_num), 0, [], 0])		# ix, old, new
 					input_labels[ix].text = ""
+					cell_bit[ix] = 0
 				else:	# 上書き
 					input_num = int(cur_num)
 					var lst = remove_memo_num(ix, cur_num)
 					var mb = get_memo_bits(ix)
 					push_to_undo_stack([UNDO_TYPE_CELL, ix, int(input_labels[ix].text), input_num, lst, mb])
 					input_labels[ix].text = num_str
+					cell_bit[ix] = num_to_bit(cur_num)
 				for i in range(N_HORZ): memo_labels[ix][i].text = ""	# メモ数字削除
 			else:	# 候補数字モード
 				if get_cell_numer(ix) != 0:
@@ -1152,6 +1155,7 @@ func num_button_pressed(num : int, button_pressed):
 				add_falling_char(input_labels[cur_cell_ix].text, cur_cell_ix)
 				push_to_undo_stack([UNDO_TYPE_CELL, cur_cell_ix, old, 0, [], 0])
 				input_labels[cur_cell_ix].text = ""
+				cell_bit[cur_cell_ix] = 0
 			##else:
 			##	remove_all_memo_at(cur_cell_ix)
 		else:		# 数字ボタン押下の場合
@@ -1163,6 +1167,7 @@ func num_button_pressed(num : int, button_pressed):
 					if num == old:		# 同じ数字を入れる → 削除
 						push_to_undo_stack([UNDO_TYPE_CELL, cur_cell_ix, old, 0, [], 0])
 						input_labels[cur_cell_ix].text = ""
+						cell_bit[cur_cell_ix] = 0
 					else:
 						input_num = num
 						var lst = remove_memo_num(cur_cell_ix, num)
@@ -1170,6 +1175,7 @@ func num_button_pressed(num : int, button_pressed):
 						push_to_undo_stack([UNDO_TYPE_CELL, cur_cell_ix, old, num, lst, mb])
 						#undo_stack.back().back() = lst
 						input_labels[cur_cell_ix].text = str(num)
+						cell_bit[cur_cell_ix] = num_to_bit(num)
 					for i in range(N_HORZ):
 						if memo_labels[cur_cell_ix][i].text != "":
 							add_falling_memo(int(memo_labels[cur_cell_ix][i].text), cur_cell_ix)
@@ -1274,6 +1280,7 @@ func check_rule21(x0:int, y0:int, wd:int, ht:int):
 	for c in range(cage_list.size()):
 		if cage_processed[c] && c != cxio:
 			r -= cage_list[c][CAGE_SUM]
+	print("(%d %d %d %d)" % [x0, y0, wd, ht])
 	if nis == 1:	# エリア内に1箇所だけ不定セルがある場合
 		return [ix0, r]
 	else:			# エリア内に複数箇所の不定セルがある場合
@@ -1294,6 +1301,57 @@ func find_rule21():			# ルール21で決まるセルを探す
 	if r[0] >= 0: return r
 	r = check_rule21(0, 0, N_HORZ, 3)
 	if r[0] >= 0: return r
+	r = check_rule21(0, 4, N_HORZ, 2)
+	if r[0] >= 0: return r
+	r = check_rule21(0, 0, 2, N_VERT)
+	if r[0] >= 0: return r
+	r = check_rule21(0, 0, 3, N_VERT)
+	if r[0] >= 0: return r
+	r = check_rule21(4, 0, 2, N_VERT)
+	if r[0] >= 0: return r
+	return [-1, -1]
+# 候補が２つしかないセルの組の片方の数字がロックされている箇所を探す
+func find_locked_double():
+	for ci in range(cage_list.size()):
+		var cage = cage_list[ci]
+		if cage[CAGE_SUM] == 0: continue
+		if cage[CAGE_SUM] <= 4 || cage[CAGE_SUM] >= 10 && cage[CAGE_IX_LIST].size() == 2:
+			if is_empty_cell(cage[CAGE_IX_LIST][0]) && is_empty_cell(cage[CAGE_IX_LIST][1]):
+				var horz = abs(cage[CAGE_IX_LIST][0] - cage[CAGE_IX_LIST][1]) == 1
+				var bits0 = 0
+				var bits1 = 0
+				if horz:	# ２セルケージが横
+					var x0 = cage[CAGE_IX_LIST][0] % N_HORZ
+					var x1 = cage[CAGE_IX_LIST][1] % N_HORZ
+					for y in range(N_VERT):
+						bits0 |= cell_bit[xyToIX(x0, y)]
+						bits1 |= cell_bit[xyToIX(x1, y)]
+				else:	# ２セルケージが縦
+					var y0 = cage[CAGE_IX_LIST][0] / N_HORZ
+					var y1 = cage[CAGE_IX_LIST][1] / N_HORZ
+					for x in range(N_VERT):
+						bits0 |= cell_bit[xyToIX(x, y0)]
+						bits1 |= cell_bit[xyToIX(x, y1)]
+				if cage[CAGE_SUM] == 3:
+					if (bits0 & BIT_1) != 0: return [cage[CAGE_IX_LIST][0], 2]
+					if (bits0 & BIT_2) != 0: return [cage[CAGE_IX_LIST][0], 1]
+					if (bits1 & BIT_1) != 0: return [cage[CAGE_IX_LIST][1], 2]
+					if (bits1 & BIT_2) != 0: return [cage[CAGE_IX_LIST][1], 1]
+				elif cage[CAGE_SUM] == 4:
+					if (bits0 & BIT_1) != 0: return [cage[CAGE_IX_LIST][0], 3]
+					if (bits0 & BIT_3) != 0: return [cage[CAGE_IX_LIST][0], 1]
+					if (bits1 & BIT_1) != 0: return [cage[CAGE_IX_LIST][1], 3]
+					if (bits1 & BIT_3) != 0: return [cage[CAGE_IX_LIST][1], 1]
+				elif cage[CAGE_SUM] == 10:
+					if (bits0 & BIT_6) != 0: return [cage[CAGE_IX_LIST][0], 4]
+					if (bits0 & BIT_4) != 0: return [cage[CAGE_IX_LIST][0], 6]
+					if (bits1 & BIT_6) != 0: return [cage[CAGE_IX_LIST][1], 4]
+					if (bits1 & BIT_4) != 0: return [cage[CAGE_IX_LIST][1], 6]
+				elif cage[CAGE_SUM] == 11:
+					if (bits0 & BIT_6) != 0: return [cage[CAGE_IX_LIST][0], 5]
+					if (bits0 & BIT_5) != 0: return [cage[CAGE_IX_LIST][0], 6]
+					if (bits1 & BIT_6) != 0: return [cage[CAGE_IX_LIST][1], 5]
+					if (bits1 & BIT_5) != 0: return [cage[CAGE_IX_LIST][1], 6]
 	return [-1, -1]
 
 func _on_hint_button_pressed():
@@ -1304,4 +1362,6 @@ func _on_hint_button_pressed():
 	#bix = check_rule21(0, 0, 1, 6)
 	bix = find_rule21()
 	print("rule21: ", bix)
+	bix = find_locked_double()
+	print("locked double: ", bix)
 	pass # Replace with function body.
