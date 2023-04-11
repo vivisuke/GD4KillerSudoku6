@@ -448,6 +448,22 @@ func _process(delta):
 		if shock_wave_timer > 2:
 			shock_wave_timer = -1.0
 	pass
+func init_candidates():		# cell_bit から各セルの候補数字計算
+	for i in range(N_CELLS):
+		candidates_bit[i] = ALL_BITS if cell_bit[i] == 0 else 0
+	for y in range(N_VERT):
+		for x in range(N_HORZ):
+			var b = cell_bit[xyToIX(x, y)]
+			if b != 0:
+				for t in range(N_HORZ):
+					candidates_bit[xyToIX(t, y)] &= ~b
+					candidates_bit[xyToIX(x, t)] &= ~b
+				var x0 = x - x % 3		# 3x2ブロック左上位置
+				var y0 = y - y % 2
+				for v in range(N_BOX_VERT):
+					for h in range(N_BOX_HORZ):
+						candidates_bit[xyToIX(x0 + h, y0 + v)] &= ~b
+	pass
 func gen_ans_sub(ix : int, line_used):
 	#print_cells()
 	#print_box_used()
@@ -1128,7 +1144,7 @@ func add_falling_memo(num : int, ix : int):
 	var py = (ix / N_HORZ) * CELL_WIDTH
 	var h = (num-1) % 3
 	var v = (num-1) / 3
-	fc.position = $Board.rect_position + g.memo_label_pos(px, py, h, v)
+	fc.position = $Board.position + g.memo_label_pos(px, py, h, v)
 	fc.text = str(num)
 	var th = rng.randf_range(0, 3.1415926535*2)
 	fc.linear_velocity = Vector2(cos(th), sin(th))*100
@@ -1440,4 +1456,26 @@ func _on_hint_button_pressed():
 	print("rule21: ", bix)
 	bix = find_locked_double()
 	print("locked double: ", bix)
+	pass # Replace with function body.
+
+
+func do_auto_memo():
+	#init_cell_bit()
+	init_candidates()		# 可能候補数字計算 → candidates_bit[]
+	for ix in range(N_CELLS):
+		#var bits = 0		# 以前の状態
+		if get_cell_numer(ix) != 0:		# 数字が入っている場合
+			for i in range(N_HORZ):
+				memo_labels[ix][i].text = ""
+		else:							# 数字が入っていない場合
+			var mask = BIT_1
+			for i in range(N_HORZ):
+				#if memo_labels[ix][i].text != "": bits |= mask
+				if (candidates_bit[ix] & mask) != 0:
+					memo_labels[ix][i].text = str(i+1)
+				else:
+					memo_labels[ix][i].text = ""
+				mask <<= 1
+func _on_auto_memo_button_pressed():
+	do_auto_memo()
 	pass # Replace with function body.

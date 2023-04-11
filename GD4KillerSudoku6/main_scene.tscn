@@ -414,6 +414,7 @@ stream = ExtResource("25_14ktp")
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+visible = false
 material = SubResource("ShaderMaterial_j8egs")
 offset_right = 500.0
 offset_bottom = 900.0
@@ -427,3 +428,4 @@ color = Color(1, 1, 1, 0)
 [connection signal="pressed" from="HBC2/Button4" to="." method="_on_button_4_pressed"]
 [connection signal="pressed" from="HBC2/Button5" to="." method="_on_button_5_pressed"]
 [connection signal="pressed" from="HBC2/Button6" to="." method="_on_button_6_pressed"]
+[connection signal="pressed" from="HBC2/AutoMemoButton" to="." method="_on_auto_memo_button_pressed"]
