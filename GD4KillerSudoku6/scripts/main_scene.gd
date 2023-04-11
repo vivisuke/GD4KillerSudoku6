@@ -200,7 +200,7 @@ func gen_quest():
 	elif !g.todaysQuest:		# ランダム生成の場合
 		if g.qName == "":
 			##gen_qName()
-			g.qName = "0002"
+			g.qName = "0007"
 			$TitleBar/Label.text = titleText()
 	var stxt = g.qName+str(g.qLevel)
 	if g.qNumber != 0: stxt += "Q"
@@ -1246,7 +1246,7 @@ func check_rule21(x0:int, y0:int, wd:int, ht:int):
 	var cage_sum_in = []				# 各ケージのエリア内数字合計
 	cage_sum_in.resize(cage_list.size())
 	cage_sum_in.fill(0)
-	#var cage_sum_out = cage_sum_in.duplicate()	# 各ケージのエリア外数字合計
+	var cage_sum_out = cage_sum_in.duplicate()	# 各ケージのエリア外数字合計
 	#var not_empty_cage = []				# ケージが非空欄セルを含むか？
 	#not_empty_cage.resize(cage_list.size())
 	#not_empty_cage.fill(false)
@@ -1277,8 +1277,8 @@ func check_rule21(x0:int, y0:int, wd:int, ht:int):
 						if is_empty_cell(ix):		# セルが空欄
 							no += 1
 							ixout = cage[CAGE_IX_LIST][i]
-						#else:
-						#	cage_sum_out[cx] += get_cell_numer(ix)
+						else:
+							cage_sum_out[cx] += get_cell_numer(ix)
 				#var no = cage[CAGE_IX_LIST].size() - ni		# エリア外セル数
 				if ni == 1 || no == 1:
 					if cxio >= 0: return [-1, -1]
@@ -1302,7 +1302,7 @@ func check_rule21(x0:int, y0:int, wd:int, ht:int):
 	if nis == 1:	# エリア内に1箇所だけ不定セルがある場合
 		return [ix0, r]
 	else:			# エリア内に複数箇所の不定セルがある場合
-		return [ix0, cage_list[cxio][CAGE_SUM] - r]
+		return [ix0, cage_list[cxio][CAGE_SUM] - cage_sum_out[cxio] - r]
 
 func find_rule21():			# ルール21で決まるセルを探す
 	for y in range(N_VERT):		# y 行をチェック
