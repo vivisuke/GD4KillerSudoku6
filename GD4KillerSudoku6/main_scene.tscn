@@ -428,4 +428,5 @@ color = Color(1, 1, 1, 0)
 [connection signal="pressed" from="HBC2/Button4" to="." method="_on_button_4_pressed"]
 [connection signal="pressed" from="HBC2/Button5" to="." method="_on_button_5_pressed"]
 [connection signal="pressed" from="HBC2/Button6" to="." method="_on_button_6_pressed"]
+[connection signal="pressed" from="HBC2/DelMemoButton" to="." method="_on_del_memo_button_pressed"]
 [connection signal="pressed" from="HBC2/AutoMemoButton" to="." method="_on_auto_memo_button_pressed"]

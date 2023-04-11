@@ -983,20 +983,6 @@ func on_solved():
 	cur_cell_ix = -1		# 選択解除
 	cur_num = -1
 	update_all_status()
-func remove_all_memo_at(ix):
-	for i in range(N_HORZ):
-		if memo_labels[ix][i].text != "":
-			add_falling_memo(int(memo_labels[ix][i].text), ix)
-			memo_labels[ix][i].text = ""
-func remove_all_memo():
-	for ix in range(N_CELLS):
-		for i in range(N_HORZ):
-			if memo_labels[ix][i].text != "":
-				add_falling_memo(int(memo_labels[ix][i].text), ix)
-				memo_labels[ix][i].text = ""
-	for v in range(N_VERT*3):
-		for h in range(N_HORZ*3):
-			$Board/MemoTileMap.set_cell(0, Vector2i(h, v), TILE_NONE)
 func remove_memo_num(ix : int, num : int):		# ix に num を入れたときに、メモ数字削除
 	var lst = []
 	var x = ix % N_HORZ
@@ -1479,4 +1465,23 @@ func do_auto_memo():
 				mask <<= 1
 func _on_auto_memo_button_pressed():
 	do_auto_memo()
+	pass # Replace with function body.
+
+func remove_all_memo_at(ix):
+	for i in range(N_HORZ):
+		if memo_labels[ix][i].text != "":
+			add_falling_memo(int(memo_labels[ix][i].text), ix)
+			memo_labels[ix][i].text = ""
+func remove_all_memo():
+	for ix in range(N_CELLS):
+		for i in range(N_HORZ):
+			if memo_labels[ix][i].text != "":
+				add_falling_memo(int(memo_labels[ix][i].text), ix)
+				memo_labels[ix][i].text = ""
+	##for v in range(N_VERT*3):
+	##	for h in range(N_HORZ*3):
+	##		$Board/MemoTileMap.set_cell(h, v, TILE_NONE)
+
+func _on_del_memo_button_pressed():
+	remove_all_memo()
 	pass # Replace with function body.
