@@ -200,7 +200,7 @@ func gen_quest():
 	elif !g.todaysQuest:		# ランダム生成の場合
 		if g.qName == "":
 			##gen_qName()
-			g.qName = "0007"
+			g.qName = "0000"
 			$TitleBar/Label.text = titleText()
 	var stxt = g.qName+str(g.qLevel)
 	if g.qNumber != 0: stxt += "Q"
@@ -1237,6 +1237,32 @@ func find_last_blank_cell_in_cage():		# ケージ内の最後の空白セルを�
 		if nspc == 1:
 			return [bix, sum]
 	return [-1, -1]
+func check_fullhouse(x0:int, y0:int, wd:int, ht:int):
+	var bits = 0
+	var bix = -1		# 空欄位置
+	for v in range(ht):
+		for h in range(wd):
+			var ix = xyToIX(x0+h, y0+v)
+			if cell_bit[ix] == 0:
+				if bix >= 0: return [-1, -1]		# ２箇所以上空欄あり
+				bix = ix
+			else:
+				bits |= cell_bit[ix]
+	if bix < 0: return [-1, -1]		# 空欄無し
+	var n = bit_to_num(~bits & ALL_BITS)
+	return [bix, n]
+func find_fullhouse():		# 縦・横・ブロック内の最後の空白セルを探す
+	for y in range(N_VERT):
+		var r = check_fullhouse(0, y, N_HORZ, 1)
+		if r[0] >= 0: return r
+	for x in range(N_HORZ):
+		var r = check_fullhouse(x, 0, 1, N_HORZ)
+		if r[0] >= 0: return r
+	for v in range(3):
+		for h in range(2):
+			var r = check_fullhouse(h*3, v*2, 3, 2)
+			if r[0] >= 0: return r
+	return [-1, -1]
 # (x0, y0)-(x0+wd, y0+ht) 範囲にルール21を適用できるかどうかチェック
 # return: [数字が決まる位置, 入る数字]
 func check_rule21(x0:int, y0:int, wd:int, ht:int):
@@ -1405,6 +1431,8 @@ func find_locked_double():
 func _on_hint_button_pressed():
 	var bix = find_last_blank_cell_in_cage()
 	print("last_blank_cell_in_cage: ", bix)
+	bix = find_fullhouse()
+	print("fullhouse: ", bix)
 	#bix = check_rule21(0, 0, 6, 1)
 	#bix = check_rule21(0, 0, 1, 6)
 	#bix = check_rule21(0, 0, 1, 6)
