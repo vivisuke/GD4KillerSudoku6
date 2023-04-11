@@ -417,6 +417,7 @@ stream = ExtResource("25_14ktp")
 material = SubResource("ShaderMaterial_j8egs")
 offset_right = 500.0
 offset_bottom = 900.0
+mouse_filter = 2
 color = Color(1, 1, 1, 0)
 
 [connection signal="pressed" from="HBC1/Button1" to="." method="_on_button_1_pressed"]
