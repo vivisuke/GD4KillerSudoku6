@@ -1243,6 +1243,13 @@ func check_rule21(x0:int, y0:int, wd:int, ht:int):
 	var cage_processed = []				# ケージ処理済みフラグ
 	cage_processed.resize(cage_list.size())
 	cage_processed.fill(false)
+	var cage_sum_in = []				# 各ケージのエリア内数字合計
+	cage_sum_in.resize(cage_list.size())
+	cage_sum_in.fill(0)
+	#var cage_sum_out = cage_sum_in.duplicate()	# 各ケージのエリア外数字合計
+	#var not_empty_cage = []				# ケージが非空欄セルを含むか？
+	#not_empty_cage.resize(cage_list.size())
+	#not_empty_cage.fill(false)
 	var cxio = -1		# ケージ内セルのエリア内外数が1のケージIX
 	var ix0				# 確定する箇所
 	var nis				# ケージ内セルのエリア内数
@@ -1258,15 +1265,20 @@ func check_rule21(x0:int, y0:int, wd:int, ht:int):
 				var ixout		# エリア外セル位置
 				for i in range(cage[CAGE_IX_LIST].size()):
 					var ix = cage[CAGE_IX_LIST][i]
-					if is_empty_cell(ix):
-						var x = ix % N_HORZ
-						var y = ix / N_HORZ
-						if x >= x0 && x < x0 + wd && y >= y0 && y < y0 + ht:
+					var x = ix % N_HORZ
+					var y = ix / N_HORZ
+					if x >= x0 && x < x0 + wd && y >= y0 && y < y0 + ht:	# エリア内
+						if is_empty_cell(ix):		# セルが空欄
 							ni += 1
 							ixin = ix
 						else:
+							cage_sum_in[cx] += get_cell_numer(ix)
+					else:	# エリア外
+						if is_empty_cell(ix):		# セルが空欄
 							no += 1
 							ixout = cage[CAGE_IX_LIST][i]
+						#else:
+						#	cage_sum_out[cx] += get_cell_numer(ix)
 				#var no = cage[CAGE_IX_LIST].size() - ni		# エリア外セル数
 				if ni == 1 || no == 1:
 					if cxio >= 0: return [-1, -1]
@@ -1275,11 +1287,17 @@ func check_rule21(x0:int, y0:int, wd:int, ht:int):
 					if ni == 1: ix0 = ixin
 					else: ix0 = ixout
 				elif ni > 1 && no > 1: return [-1, -1]
+				else:
+					if ni != 0: cage_sum_in[cx] = 0		# 空欄がエリア内にある場合
 	if cxio < 0: return [-1, -1]
 	var r = 21 * wd * ht / 6
 	for c in range(cage_list.size()):
 		if cage_processed[c] && c != cxio:
-			r -= cage_list[c][CAGE_SUM]
+			#if !not_empty_cage[c]:
+			if cage_sum_in[c] == 0:
+				r -= cage_list[c][CAGE_SUM]
+			else:
+				r -= cage_sum_in[c]
 	print("(%d %d %d %d)" % [x0, y0, wd, ht])
 	if nis == 1:	# エリア内に1箇所だけ不定セルがある場合
 		return [ix0, r]
