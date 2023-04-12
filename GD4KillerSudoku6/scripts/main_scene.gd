@@ -201,7 +201,7 @@ func gen_quest():
 	elif !g.todaysQuest:		# ランダム生成の場合
 		if g.qName == "":
 			##gen_qName()
-			g.qName = "0001"
+			g.qName = "0004"
 			$TitleBar/Label.text = titleText()
 	var stxt = g.qName+str(g.qLevel)
 	if g.qNumber != 0: stxt += "Q"
@@ -1359,7 +1359,7 @@ func check_rule21(x0:int, y0:int, wd:int, ht:int):
 				r -= cage_sum_in[c]
 	print("(%d %d %d %d)" % [x0, y0, wd, ht])
 	if nis == 1:	# エリア内に1箇所だけ不定セルがある場合
-		return [ix0, r]
+		return [ix0, r - cage_sum_in[cxio]]
 	else:			# エリア内に複数箇所の不定セルがある場合
 		return [ix0, cage_list[cxio][CAGE_SUM] - cage_sum_out[cxio] - r]
 
