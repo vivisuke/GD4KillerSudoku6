@@ -68,17 +68,17 @@ const AUTO_MEMO_N_COINS = 3				# 自動メモ消費コイン数
 
 const CAGE_TABLE = [
 	[	# for 2セルケージ
-		0b000000, 0b000000, 0b000011, 0b000101, 0b001111,	# for 1, 2, ... 5
+		0b000011, 0b000101, 0b001111,						# for 3, 4, 5
 		0b011011, 0b111111, 0b110110, 0b111100, 0b101000, 	# for 6, 7, ... 10
 		0b110000, 											# for 11
 	],
 	[	# for 3セルケージ
-		0b000000, 0b000000, 0b000000, 0b000000, 0b000000,	# for 1, 2, ... 5
+		0b000000, 0b000000, 0b000000,						# for 3, 4, 5
 		0b000111, 0b001011, 0b011111, 0b111111, 0b111111,	# for 6, 7, ... 10
 		0b111111, 0b111111, 0b111110, 0b110100, 0b111000,	# for 11, 12, ... 15
 	],
 	[	# for 4セルケージ
-		0b000000, 0b000000, 0b000000, 0b000000, 0b000000,	# for 1, 2, ... 5
+		0b000000, 0b000000, 0b000000,						# for 3, 4, 5
 		0b000000, 0b000000, 0b000000, 0b000000, 0b001111,	# for 6, 7, ... 10
 		0b010111, 0b111111, 0b111111, 0b111111, 0b111111,	# for 11, 12, ... 15
 		0b111111, 0b111111, 0b111111, 0b111010, 0b111100,	# for 16, 17, 18
@@ -201,7 +201,7 @@ func gen_quest():
 	elif !g.todaysQuest:		# ランダム生成の場合
 		if g.qName == "":
 			##gen_qName()
-			g.qName = "0000"
+			g.qName = "0001"
 			$TitleBar/Label.text = titleText()
 	var stxt = g.qName+str(g.qLevel)
 	if g.qNumber != 0: stxt += "Q"
@@ -465,6 +465,36 @@ func init_candidates():		# cell_bit から各セルの候補数字計算
 					for h in range(N_BOX_HORZ):
 						candidates_bit[xyToIX(x0 + h, y0 + v)] &= ~b
 	pass
+func remove_candidates_in_cage():	# 各ケージで不可能な候補数字を消す
+	for cx in range(cage_list.size()):
+		#var b = 0
+		var cage = cage_list[cx]
+		var b = cage_bits(cage)
+		for i in range(cage[CAGE_IX_LIST].size()):
+			candidates_bit[cage[CAGE_IX_LIST][i]] &= b
+		#if cage[CAGE_IX_LIST].size() == 2:
+		#	if cage[CAGE_SUM] == 3: b = BIT_1 | BIT_2
+		#	elif cage[CAGE_SUM] == 4: b = BIT_1 | BIT_3
+		#	elif cage[CAGE_SUM] == 5: b = BIT_1 | BIT_2 | BIT_3 | BIT_4
+		#	elif cage[CAGE_SUM] == 6: b = BIT_1 | BIT_2 | BIT_4 | BIT_5
+		#	elif cage[CAGE_SUM] == 8: b = BIT_2 | BIT_3 | BIT_5 | BIT_6
+		#	elif cage[CAGE_SUM] == 9: b = BIT_3 | BIT_4 | BIT_5 | BIT_6
+		#	elif cage[CAGE_SUM] == 10: b = BIT_4 | BIT_6
+		#	elif cage[CAGE_SUM] == 11: b = BIT_5 | BIT_6
+		#elif cage[CAGE_IX_LIST].size() == 3:
+		#	if cage[CAGE_SUM] == 6: b = BIT_1 | BIT_2 | BIT_3
+		#	elif cage[CAGE_SUM] == 7: b = BIT_1 | BIT_2 | BIT_4
+		#	elif cage[CAGE_SUM] == 8: b = BIT_1 | BIT_2 | BIT_3 | BIT_4 | BIT_5
+		#	elif cage[CAGE_SUM] == 14: b = BIT_3 | BIT_5 | BIT_6
+		#	elif cage[CAGE_SUM] == 15: b = BIT_4 | BIT_5 | BIT_6
+		#elif cage[CAGE_IX_LIST].size() == 4:
+		#	if cage[CAGE_SUM] == 10: b = BIT_1 | BIT_2 | BIT_3 | BIT_4
+		#	elif cage[CAGE_SUM] == 11: b = BIT_1 | BIT_2 | BIT_4 | BIT_5
+		#	elif cage[CAGE_SUM] == 17: b = BIT_2 | BIT_4 | BIT_5 | BIT_6
+		#	elif cage[CAGE_SUM] == 18: b = BIT_3 | BIT_4 | BIT_5 | BIT_6
+		#if b != 0:
+		#	for i in range(cage[CAGE_IX_LIST].size()):
+		#		candidates_bit[cage[CAGE_IX_LIST][i]] &= b
 func gen_ans_sub(ix : int, line_used):
 	#print_cells()
 	#print_box_used()
@@ -1446,9 +1476,17 @@ func _on_hint_button_pressed():
 	pass # Replace with function body.
 
 
+func cage_bits(cage):
+	var sum = cage[CAGE_SUM]
+	var nc = cage[CAGE_IX_LIST].size()		# セル数
+	if nc == 1:
+		return num_to_bit(sum)
+	else:
+		return CAGE_TABLE[nc-2][sum-3]
 func do_auto_memo():
 	#init_cell_bit()
 	init_candidates()		# 可能候補数字計算 → candidates_bit[]
+	remove_candidates_in_cage()
 	for ix in range(N_CELLS):
 		#var bits = 0		# 以前の状態
 		if get_cell_numer(ix) != 0:		# 数字が入っている場合
