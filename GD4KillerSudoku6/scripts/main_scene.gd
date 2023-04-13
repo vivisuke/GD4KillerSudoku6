@@ -202,7 +202,7 @@ func gen_quest():
 	elif !g.todaysQuest:		# ランダム生成の場合
 		if g.qName == "":
 			##gen_qName()
-			g.qName = "0004"
+			g.qName = "0006"
 			$TitleBar/Label.text = titleText()
 	var stxt = g.qName+str(g.qLevel)
 	if g.qNumber != 0: stxt += "Q"
@@ -1465,7 +1465,7 @@ func find_hidden_single_sub(x0:int, y0:int, wd:int, ht:int):
 			#b0 ^= c
 			#print("c, b1, b2 = 0x%x, 0x%x, 0x%x" % [c, b1, b2])
 	b1 &= ~b2
-	if b1 == 0: return [-1, -1]
+	if b1 == 0 || ((b1-1)&b1) != 0: return [-1, -1]
 	for v in range(ht):
 		for h in range(wd):
 			var ix = xyToIX(x0+h, y0+v)
@@ -1488,6 +1488,21 @@ func find_hidden_single():
 			if r[0] >= 0: return r
 	return [-1, -1]
 
+func find_pos_num():
+	var r = find_last_blank_cell_in_cage()
+	if r[0] >= 0: return r
+	r = find_fullhouse()
+	if r[0] >= 0: return r
+	r = find_locked_double()
+	if r[0] >= 0: return r
+	r = find_hidden_single()
+	if r[0] >= 0: return r
+	r = find_naked_single()
+	if r[0] >= 0: return r
+	r = find_rule21()
+	if r[0] >= 0: return r
+	return [-1, -1]
+
 func _on_hint_button_pressed():
 	var bix = find_last_blank_cell_in_cage()
 	print("last_blank_cell_in_cage: ", bix)
@@ -1507,6 +1522,13 @@ func _on_hint_button_pressed():
 	print("hidden single: ", bix)
 	bix = find_naked_single()
 	print("naked single: ", bix)
+	#
+	var r = find_pos_num()
+	if r[0] >= 0:
+		var x = r[0] % N_HORZ
+		var y = r[0] / N_HORZ
+		print("pos = (", x, ", ", y, "), num = ", r[1])
+		$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_CURSOR, Vector2i(0, 0))
 	pass # Replace with function body.
 
 
