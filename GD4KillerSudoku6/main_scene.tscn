@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://df63unibnxvr5"]
+[gd_scene load_steps=44 format=3 uid="uid://df63unibnxvr5"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_j8s1i"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ltfgv"]
@@ -24,9 +24,19 @@
 [ext_resource type="Texture2D" uid="uid://brxf8led13w4p" path="res://images/lightbulb_black.png" id="20_phwyq"]
 [ext_resource type="AudioStream" uid="uid://cgnli6tk6h1x6" path="res://sounds/button-3.mp3" id="22_e8kby"]
 [ext_resource type="AudioStream" uid="uid://c5dv6nwa70eyj" path="res://sounds/incorrect.mp3" id="23_6p0ak"]
+[ext_resource type="Texture2D" uid="uid://dedvu8xj0ikfl" path="res://images/gold_medal.png" id="23_n7jlg"]
 [ext_resource type="AudioStream" uid="uid://dsxpn8m8gnipb" path="res://sounds/don.mp3" id="24_p6251"]
+[ext_resource type="Texture2D" uid="uid://bnl6nf6aaqukh" path="res://images/space19.png" id="24_vkisw"]
 [ext_resource type="AudioStream" uid="uid://2mfnwo0of14r" path="res://sounds/kirakira-3.mp3" id="25_14ktp"]
+[ext_resource type="Texture2D" uid="uid://dobnyk302s430" path="res://images/volume_off_black.png" id="25_fqafo"]
 [ext_resource type="Shader" path="res://scripts/main_scene.gdshader" id="26_3tet4"]
+[ext_resource type="Texture2D" uid="uid://fhxjibcpgpnx" path="res://images/loop_black.png" id="26_k4u2k"]
+[ext_resource type="Texture2D" uid="uid://b7xqlm2l5tanw" path="res://images/deselect_black.png" id="27_qobb0"]
+[ext_resource type="Texture2D" uid="uid://h65sn7lbycy7" path="res://images/deselect_white.png" id="28_ncf1d"]
+[ext_resource type="Texture2D" uid="uid://dgcy303al5xia" path="res://images/backspace_black.png" id="29_xx2c0"]
+[ext_resource type="Texture2D" uid="uid://bhjfklpvlht5x" path="res://images/first_page_black.png" id="30_2b01f"]
+[ext_resource type="Texture2D" uid="uid://basg0uvvwmpiq" path="res://images/first_page_white.png" id="31_3jio0"]
+[ext_resource type="Texture2D" uid="uid://b41jpfr3dsmmk" path="res://images/skip_next_black.png" id="32_pa8pe"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_l5jc0"]
 texture = ExtResource("4_6xb5c")
@@ -376,6 +386,134 @@ offset_right = 48.0
 offset_bottom = 71.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "auto"
+horizontal_alignment = 1
+
+[node name="HBC3" type="HBoxContainer" parent="."]
+offset_top = 790.0
+offset_right = 500.0
+offset_bottom = 845.0
+mouse_filter = 0
+alignment = 1
+
+[node name="CoinButton" type="TextureButton" parent="HBC3"]
+layout_mode = 2
+texture_normal = ExtResource("23_n7jlg")
+
+[node name="Label" type="Label" parent="HBC3/CoinButton"]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 48.0
+offset_bottom = 71.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "coin
+"
+horizontal_alignment = 1
+
+[node name="Space1" type="TextureRect" parent="HBC3"]
+layout_mode = 2
+texture = ExtResource("24_vkisw")
+
+[node name="SoundButton" type="TextureButton" parent="HBC3"]
+layout_mode = 2
+texture_normal = ExtResource("25_fqafo")
+
+[node name="Label" type="Label" parent="HBC3/SoundButton"]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 48.0
+offset_bottom = 71.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "sound"
+horizontal_alignment = 1
+
+[node name="Space2" type="TextureRect" parent="HBC3"]
+layout_mode = 2
+texture = ExtResource("24_vkisw")
+
+[node name="LoopButton" type="TextureButton" parent="HBC3"]
+layout_mode = 2
+texture_normal = ExtResource("26_k4u2k")
+
+[node name="Label" type="Label" parent="HBC3/LoopButton"]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 48.0
+offset_bottom = 71.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "restart
+"
+horizontal_alignment = 1
+
+[node name="Space3" type="TextureRect" parent="HBC3"]
+layout_mode = 2
+texture = ExtResource("24_vkisw")
+
+[node name="DeselectButton" type="TextureButton" parent="HBC3"]
+layout_mode = 2
+texture_normal = ExtResource("27_qobb0")
+texture_pressed = ExtResource("28_ncf1d")
+
+[node name="Label" type="Label" parent="HBC3/DeselectButton"]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 48.0
+offset_bottom = 71.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "desel
+"
+horizontal_alignment = 1
+
+[node name="Space4" type="TextureRect" parent="HBC3"]
+layout_mode = 2
+texture = ExtResource("24_vkisw")
+
+[node name="BackspaceButton" type="TextureButton" parent="HBC3"]
+layout_mode = 2
+texture_normal = ExtResource("29_xx2c0")
+
+[node name="Label" type="Label" parent="HBC3/BackspaceButton"]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 48.0
+offset_bottom = 71.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "bs
+"
+horizontal_alignment = 1
+
+[node name="Space5" type="TextureRect" parent="HBC3"]
+layout_mode = 2
+texture = ExtResource("24_vkisw")
+
+[node name="FirstPageButton" type="TextureButton" parent="HBC3"]
+layout_mode = 2
+texture_normal = ExtResource("30_2b01f")
+texture_pressed = ExtResource("31_3jio0")
+
+[node name="Label" type="Label" parent="HBC3/FirstPageButton"]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 48.0
+offset_bottom = 71.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "first"
+horizontal_alignment = 1
+
+[node name="Space6" type="TextureRect" parent="HBC3"]
+layout_mode = 2
+texture = ExtResource("24_vkisw")
+
+[node name="NextButton" type="TextureButton" parent="HBC3"]
+layout_mode = 2
+texture_normal = ExtResource("32_pa8pe")
+
+[node name="Label" type="Label" parent="HBC3/NextButton"]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 48.0
+offset_bottom = 71.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "next"
 horizontal_alignment = 1
 
 [node name="DeleteButton" type="TextureButton" parent="."]
