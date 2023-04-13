@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://df63unibnxvr5"]
+[gd_scene load_steps=45 format=3 uid="uid://df63unibnxvr5"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_j8s1i"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ltfgv"]
@@ -37,6 +37,7 @@
 [ext_resource type="Texture2D" uid="uid://bhjfklpvlht5x" path="res://images/first_page_black.png" id="30_2b01f"]
 [ext_resource type="Texture2D" uid="uid://basg0uvvwmpiq" path="res://images/first_page_white.png" id="31_3jio0"]
 [ext_resource type="Texture2D" uid="uid://b41jpfr3dsmmk" path="res://images/skip_next_black.png" id="32_pa8pe"]
+[ext_resource type="Texture2D" uid="uid://dpsl53fjnrpyh" path="res://images/skip_next_white.png" id="33_l0fyx"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_l5jc0"]
 texture = ExtResource("4_6xb5c")
@@ -506,6 +507,7 @@ texture = ExtResource("24_vkisw")
 [node name="NextButton" type="TextureButton" parent="HBC3"]
 layout_mode = 2
 texture_normal = ExtResource("32_pa8pe")
+texture_pressed = ExtResource("33_l0fyx")
 
 [node name="Label" type="Label" parent="HBC3/NextButton"]
 layout_mode = 0
@@ -568,3 +570,4 @@ color = Color(1, 1, 1, 0)
 [connection signal="pressed" from="HBC2/Button6" to="." method="_on_button_6_pressed"]
 [connection signal="pressed" from="HBC2/DelMemoButton" to="." method="_on_del_memo_button_pressed"]
 [connection signal="pressed" from="HBC2/AutoMemoButton" to="." method="_on_auto_memo_button_pressed"]
+[connection signal="pressed" from="HBC3/NextButton" to="." method="_on_next_button_pressed"]

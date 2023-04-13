@@ -202,7 +202,7 @@ func gen_quest():
 	elif !g.todaysQuest:		# ランダム生成の場合
 		if g.qName == "":
 			##gen_qName()
-			g.qName = "0023"
+			g.qName = "0000"
 			$TitleBar/Label.text = titleText()
 	var stxt = g.qName+str(g.qLevel)
 	if g.qNumber != 0: stxt += "Q"
@@ -417,6 +417,9 @@ func _process(delta):
 	if waiting > 0:
 		#print(waiting)
 		waiting -= 1
+		if waiting == 0:
+			if sound:
+				$Audio/Solved.play()		# （キラーン）効果音再生
 		return
 	if !solvedStat && !paused:
 		g.elapsedTime += delta
@@ -957,8 +960,8 @@ func on_solved():
 	$CanvasLayer/ColorRect.show()
 	waiting = 60				# 0.5秒ウェイト
 	shock_wave_timer = 0.0      # start shock wave
-	if sound:
-		$Audio/Solved.play()		# （キラーン）効果音再生
+	#if sound:
+	#	$Audio/Solved.play()		# （キラーン）効果音再生
 	var six = g.qLevel		# g.stat インデックス
 	if g.todaysQuest:		# 今日の問題の場合
 		if g.tqSolvedSec[six] < 0 || int(g.elapsedTime) < g.tqSolvedSec[six]:
@@ -1577,4 +1580,19 @@ func remove_all_memo():
 
 func _on_del_memo_button_pressed():
 	remove_all_memo()
+	pass # Replace with function body.
+
+
+func _on_next_button_pressed():
+	g.qName = "%04d" % (int(g.qName) + 1)
+	$TitleBar/Label.text = titleText()
+	remove_all_memo()
+	#gen_quest_greedy()
+	gen_quest()
+	cur_cell_ix = -1
+	cur_num = -1
+	#update_cell_cursor(cur_num)
+	#update_num_buttons_disabled()
+	set_num_cursor(-1)
+	update_all_status()
 	pass # Replace with function body.
