@@ -125,6 +125,7 @@ var cur_cell_ix = -1		# 選択されているセルインデックス、-1 for �
 var input_num = 0			# 入力された数字
 var nRemoved
 var nAnswer = 0				# 解答数
+var waiting = 0				# ウェイト状態
 
 var cage_labels = []		# ケージ合計数字用ラベル配列
 var clue_labels = []		# 手がかり数字用ラベル配列
@@ -201,7 +202,7 @@ func gen_quest():
 	elif !g.todaysQuest:		# ランダム生成の場合
 		if g.qName == "":
 			##gen_qName()
-			g.qName = "0004"
+			g.qName = "0003"
 			$TitleBar/Label.text = titleText()
 	var stxt = g.qName+str(g.qLevel)
 	if g.qNumber != 0: stxt += "Q"
@@ -413,6 +414,10 @@ func init_labels():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if waiting > 0:
+		#print(waiting)
+		waiting -= 1
+		return
 	if !solvedStat && !paused:
 		g.elapsedTime += delta
 		var sec = int(g.elapsedTime)
@@ -467,34 +472,10 @@ func init_candidates():		# cell_bit から各セルの候補数字計算
 	pass
 func remove_candidates_in_cage():	# 各ケージで不可能な候補数字を消す
 	for cx in range(cage_list.size()):
-		#var b = 0
 		var cage = cage_list[cx]
 		var b = cage_bits(cage)
 		for i in range(cage[CAGE_IX_LIST].size()):
 			candidates_bit[cage[CAGE_IX_LIST][i]] &= b
-		#if cage[CAGE_IX_LIST].size() == 2:
-		#	if cage[CAGE_SUM] == 3: b = BIT_1 | BIT_2
-		#	elif cage[CAGE_SUM] == 4: b = BIT_1 | BIT_3
-		#	elif cage[CAGE_SUM] == 5: b = BIT_1 | BIT_2 | BIT_3 | BIT_4
-		#	elif cage[CAGE_SUM] == 6: b = BIT_1 | BIT_2 | BIT_4 | BIT_5
-		#	elif cage[CAGE_SUM] == 8: b = BIT_2 | BIT_3 | BIT_5 | BIT_6
-		#	elif cage[CAGE_SUM] == 9: b = BIT_3 | BIT_4 | BIT_5 | BIT_6
-		#	elif cage[CAGE_SUM] == 10: b = BIT_4 | BIT_6
-		#	elif cage[CAGE_SUM] == 11: b = BIT_5 | BIT_6
-		#elif cage[CAGE_IX_LIST].size() == 3:
-		#	if cage[CAGE_SUM] == 6: b = BIT_1 | BIT_2 | BIT_3
-		#	elif cage[CAGE_SUM] == 7: b = BIT_1 | BIT_2 | BIT_4
-		#	elif cage[CAGE_SUM] == 8: b = BIT_1 | BIT_2 | BIT_3 | BIT_4 | BIT_5
-		#	elif cage[CAGE_SUM] == 14: b = BIT_3 | BIT_5 | BIT_6
-		#	elif cage[CAGE_SUM] == 15: b = BIT_4 | BIT_5 | BIT_6
-		#elif cage[CAGE_IX_LIST].size() == 4:
-		#	if cage[CAGE_SUM] == 10: b = BIT_1 | BIT_2 | BIT_3 | BIT_4
-		#	elif cage[CAGE_SUM] == 11: b = BIT_1 | BIT_2 | BIT_4 | BIT_5
-		#	elif cage[CAGE_SUM] == 17: b = BIT_2 | BIT_4 | BIT_5 | BIT_6
-		#	elif cage[CAGE_SUM] == 18: b = BIT_3 | BIT_4 | BIT_5 | BIT_6
-		#if b != 0:
-		#	for i in range(cage[CAGE_IX_LIST].size()):
-		#		candidates_bit[cage[CAGE_IX_LIST][i]] &= b
 func gen_ans_sub(ix : int, line_used):
 	#print_cells()
 	#print_box_used()
@@ -974,6 +955,7 @@ func on_solved():
 	confetti_count_down = 5.0
 	$CPUParticles2D.emitting = true
 	$CanvasLayer/ColorRect.show()
+	waiting = 60				# 0.5秒ウェイト
 	shock_wave_timer = 0.0      # start shock wave
 	if sound:
 		$Audio/Solved.play()		# （キラーン）効果音再生
@@ -1133,6 +1115,7 @@ func _input(event):
 			_on_hint_button_pressed()
 			return
 		elif event.as_text() == "W" :
+			waiting = 60
 			shock_wave_timer = 0.0      # start shock wave
 		var n = int(event.as_text())
 		if n >= 1 && n <= N_HORZ:
@@ -1354,7 +1337,7 @@ func check_rule21(x0:int, y0:int, wd:int, ht:int):
 		if cage_processed[c] && c != cxio:
 			#if !not_empty_cage[c]:
 			if cage_sum_in[c] == 0:
-				r -= cage_list[c][CAGE_SUM]
+				r -= cage_list[c][CAGE_SUM] - cage_sum_out[c]
 			else:
 				r -= cage_sum_in[c]
 	print("(%d %d %d %d)" % [x0, y0, wd, ht])
@@ -1460,6 +1443,50 @@ func find_locked_double():
 					if (bits1 & BIT_6) != 0: return [cage[CAGE_IX_LIST][1], 5]
 					if (bits1 & BIT_5) != 0: return [cage[CAGE_IX_LIST][1], 6]
 	return [-1, -1]
+# 裸のシングルを探す
+# ただし、候補数字がすでに計算されているものとする
+func find_naked_single():
+	for ix in range(N_CELLS):
+		var c = candidates_bit[ix]
+		if c != 0 && ((c-1)&c) == 0:
+			return [ix, bit_to_num(c)]
+	return [-1, -1]
+# 指定エリア内で候補数字数を数え、一箇所だけの位置・数字を返す
+func find_hidden_single_sub(x0:int, y0:int, wd:int, ht:int):
+	#var b0 = 0b111111	# ビットの数が0
+	var b1 = 0			# ビットの数が1
+	var b2 = 0			# ビットの数が2以上
+	#print("b1, b2 = 0x%x, 0x%x" % [b1, b2])
+	for v in range(ht):
+		for h in range(wd):
+			var c = candidates_bit[xyToIX(x0+h, y0+v)]
+			b2 |= c & b1
+			b1 ^= c
+			#b0 ^= c
+			#print("c, b1, b2 = 0x%x, 0x%x, 0x%x" % [c, b1, b2])
+	b1 &= ~b2
+	if b1 == 0: return [-1, -1]
+	for v in range(ht):
+		for h in range(wd):
+			var ix = xyToIX(x0+h, y0+v)
+			var c = candidates_bit[ix]
+			if (c & b1) != 0:
+				return [ix, bit_to_num(b1)]
+	return [-1, -1]		# ここには来ないはずだが、念のため
+# 隠れたシングルを探す
+# ただし、候補数字がすでに計算されているものとする
+func find_hidden_single():
+	for y in range(N_VERT):
+		var r = find_hidden_single_sub(0, y, N_HORZ, 1)
+		if r[0] >= 0: return r
+	for x in range(N_HORZ):
+		var r = find_hidden_single_sub(x, 0, 1, N_VERT)
+		if r[0] >= 0: return r
+	for y in range(3):
+		for x in range(2):
+			var r = find_hidden_single_sub(x*3, y*2, 3, 2)
+			if r[0] >= 0: return r
+	return [-1, -1]
 
 func _on_hint_button_pressed():
 	var bix = find_last_blank_cell_in_cage()
@@ -1473,6 +1500,13 @@ func _on_hint_button_pressed():
 	print("rule21: ", bix)
 	bix = find_locked_double()
 	print("locked double: ", bix)
+	#
+	init_candidates()		# 可能候補数字計算 → candidates_bit[]
+	remove_candidates_in_cage()		# 各ケージに入らない候補数字削除
+	bix = find_hidden_single()
+	print("hidden single: ", bix)
+	bix = find_naked_single()
+	print("naked single: ", bix)
 	pass # Replace with function body.
 
 
@@ -1495,7 +1529,6 @@ func do_auto_memo():
 		else:							# 数字が入っていない場合
 			var mask = BIT_1
 			for i in range(N_HORZ):
-				#if memo_labels[ix][i].text != "": bits |= mask
 				if (candidates_bit[ix] & mask) != 0:
 					memo_labels[ix][i].text = str(i+1)
 				else:
