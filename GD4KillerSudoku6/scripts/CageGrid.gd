@@ -14,10 +14,22 @@ func _ready():
 		for i in range(N_CELLS): cage_ix[i] = i % 4
 	pass # Replace with function body.
 
-func update():
-	pass
+#func print_cages():
+#	#for i in range(cage_list.size()):
+#	#	print(cage_list[i])
+#	print("cage_ix[]:")
+#	var ix = 0
+#	for y in range(N_VERT):
+#		var lst = []
+#		for x in range(N_HORZ):
+#			lst.push_back(cage_ix[ix])
+#			ix += 1
+#		print(lst)
+#	print("")
 func _draw():
 	if cage_ix == []: return
+	#print("CageGrid.draw()")
+	#print_cages()
 	var col = Color.ORANGE
 	var ix = 0
 	for y in range(N_VERT):

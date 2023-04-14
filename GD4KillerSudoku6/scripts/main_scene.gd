@@ -558,6 +558,15 @@ func print_ans_num():
 func print_cages():
 	for i in range(cage_list.size()):
 		print(cage_list[i])
+	print("cage_ix[]:")
+	var ix = 0
+	for y in range(N_VERT):
+		var lst = []
+		for x in range(N_HORZ):
+			lst.push_back(cage_ix[ix])
+			ix += 1
+		print(lst)
+	print("")
 func merge_2cell_cage():	# 2セルケージ２つをマージし4セルに
 	#print_cages()
 	while true:
@@ -616,7 +625,7 @@ func gen_cages_3x2():
 		var lst = cage_list[ix][1]
 		for k in range(lst.size()): cage_ix[lst[k]] = ix
 	$Board/CageGrid.cage_ix = cage_ix
-	$Board/CageGrid.update()
+	$Board/CageGrid.queue_redraw()
 func sel_from_lst(ix, lst):		# lst からひとつを選ぶ
 	if g.qLevel != LVL_NORMAL:
 		return lst[rng.randi_range(0, lst.size() - 1)]
@@ -746,8 +755,9 @@ func gen_cages():
 			cage_labels[lst.min()].text = str(sum)
 		#for k in range(lst.size()): cage_ix[lst[k]] = ix
 	quest_cages = cage_list
+	#print_cages()
 	$Board/CageGrid.cage_ix = cage_ix
-	$Board/CageGrid.update()
+	$Board/CageGrid.queue_redraw()
 func update_cages_sum_labels():
 	for ix in range(cage_labels.size()):
 		cage_labels[ix].text = ""
@@ -844,7 +854,7 @@ func set_quest(cages):
 			#var y = item[k] / N_HORZ
 			#$Board/CageTileMap.set_cell(0, Vector2i(x, y), col)
 	$Board/CageGrid.cage_ix = cage_ix
-	$Board/CageGrid.update()
+	$Board/CageGrid.queue_redraw()
 	#update()
 func is_duplicated(ix : int):
 	var n = get_cell_numer(ix)
@@ -1595,4 +1605,5 @@ func _on_next_button_pressed():
 	#update_num_buttons_disabled()
 	set_num_cursor(-1)
 	update_all_status()
+	print_cages()
 	pass # Replace with function body.
