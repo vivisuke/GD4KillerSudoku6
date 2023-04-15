@@ -561,6 +561,8 @@ offset_bottom = 900.0
 mouse_filter = 2
 color = Color(1, 1, 1, 0)
 
+[connection signal="pressed" from="HBC1/UndoButton" to="." method="_on_undo_button_pressed"]
+[connection signal="pressed" from="HBC1/RedoButton" to="." method="_on_redo_button_pressed"]
 [connection signal="pressed" from="HBC1/Button1" to="." method="_on_button_1_pressed"]
 [connection signal="pressed" from="HBC1/Button2" to="." method="_on_button_2_pressed"]
 [connection signal="pressed" from="HBC1/Button3" to="." method="_on_button_3_pressed"]

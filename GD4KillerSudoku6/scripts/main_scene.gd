@@ -1534,9 +1534,11 @@ func _on_hint_button_pressed():
 	print("locked double: ", bix)
 	#
 	init_candidates()		# 可能候補数字計算 → candidates_bit[]
+	bix = find_hidden_single()
+	print("hidden single basic: ", bix)
 	remove_candidates_in_cage()		# 各ケージに入らない候補数字削除
 	bix = find_hidden_single()
-	print("hidden single: ", bix)
+	print("hidden single cand: ", bix)
 	bix = find_naked_single()
 	print("naked single: ", bix)
 	#
@@ -1611,3 +1613,46 @@ func _on_next_button_pressed():
 	update_all_status()
 	print_cages()
 	pass # Replace with function body.
+
+
+func _on_undo_button_pressed():
+	if paused: return		# ポーズ中
+	undo_ix -= 1
+	var item = undo_stack[undo_ix]
+	if item[UNDO_ITEM_TYPE] == UNDO_TYPE_CELL:
+		var txt = str(item[UNDO_ITEM_OLD]) if item[UNDO_ITEM_OLD] != 0 else ""
+		input_labels[item[UNDO_ITEM_IX]].text = txt
+		var lst = item[UNDO_ITEM_MEMOIX]
+		for i in range(lst.size()):
+			flip_memo_num(lst[i], item[UNDO_ITEM_NEW])
+		var mb = item[UNDO_ITEM_MEMO]
+		flip_memo_bits(item[UNDO_ITEM_IX], mb)
+	elif item[UNDO_ITEM_TYPE] == UNDO_TYPE_MEMO:
+		flip_memo_num(item[UNDO_ITEM_IX], item[UNDO_ITEM_NUM])
+	elif item[UNDO_ITEM_TYPE] == UNDO_TYPE_AUTO_MEMO:
+		var lst = item[UNDO_ITEM_MEMO_LST]
+		for ix in range(N_CELLS):
+			set_memo_bits(ix, lst[ix])
+	elif item[UNDO_ITEM_TYPE] == UNDO_TYPE_DEL_MEMO:
+		var lst = item[UNDO_ITEM_MEMO_LST]
+		for ix in range(N_CELLS):
+			set_memo_bits(ix, lst[ix])
+	update_all_status()
+func _on_redo_button_pressed():
+	if paused: return		# ポーズ中
+	var item = undo_stack[undo_ix]
+	if item[UNDO_ITEM_TYPE] == UNDO_TYPE_CELL:
+		var txt = str(item[UNDO_ITEM_NEW]) if item[UNDO_ITEM_NEW] != 0 else ""
+		input_labels[item[UNDO_ITEM_IX]].text = txt
+		var lst = item[UNDO_ITEM_MEMOIX]
+		for i in range(lst.size()):
+			flip_memo_num(lst[i], item[UNDO_ITEM_NEW])
+		if item[UNDO_ITEM_NEW] != 0: clear_all_memo(item[UNDO_ITEM_IX])
+	elif item[UNDO_ITEM_TYPE] == UNDO_TYPE_MEMO:
+		flip_memo_num(item[UNDO_ITEM_IX], item[UNDO_ITEM_NUM])
+	elif item[UNDO_ITEM_TYPE] == UNDO_TYPE_AUTO_MEMO:
+		do_auto_memo()
+	elif item[UNDO_ITEM_TYPE] == UNDO_TYPE_DEL_MEMO:
+		remove_all_memo()
+	undo_ix += 1
+	update_all_status()
