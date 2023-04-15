@@ -202,7 +202,7 @@ func gen_quest():
 	elif !g.todaysQuest:		# ランダム生成の場合
 		if g.qName == "":
 			##gen_qName()
-			g.qName = "0000"
+			g.qName = "000001"
 			$TitleBar/Label.text = titleText()
 	var stxt = g.qName+str(g.qLevel)
 	if g.qNumber != 0: stxt += "Q"
@@ -968,7 +968,7 @@ func on_solved():
 	confetti_count_down = 5.0
 	$CPUParticles2D.emitting = true
 	$CanvasLayer/ColorRect.show()
-	waiting = 60				# 0.5秒ウェイト
+	waiting = 10				# 10/60秒ウェイト
 	shock_wave_timer = 0.0      # start shock wave
 	#if sound:
 	#	$Audio/Solved.play()		# （キラーン）効果音再生
@@ -1508,11 +1508,15 @@ func find_pos_num():
 	if r[0] >= 0: return r
 	r = find_locked_double()
 	if r[0] >= 0: return r
+	init_candidates()			# 可能候補数字計算 → candidates_bit[]
 	r = find_hidden_single()
 	if r[0] >= 0: return r
 	r = find_naked_single()
 	if r[0] >= 0: return r
 	r = find_rule21()
+	if r[0] >= 0: return r
+	remove_candidates_in_cage()		# 各ケージに入らない候補数字削除
+	r = find_hidden_single()
 	if r[0] >= 0: return r
 	return [-1, -1]
 
@@ -1594,7 +1598,7 @@ func _on_del_memo_button_pressed():
 
 
 func _on_next_button_pressed():
-	g.qName = "%04d" % (int(g.qName) + 1)
+	g.qName = "%06d" % (int(g.qName) + 1)
 	$TitleBar/Label.text = titleText()
 	remove_all_memo()
 	#gen_quest_greedy()
