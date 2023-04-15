@@ -1167,7 +1167,7 @@ func add_falling_memo(num : int, ix : int):
 	pass
 func add_falling_coin():
 	var fc = Label.new()	# ほんとは TextureRect
-	fc.position = $CoinButton.rect_position + $CoinButton.rect_size / 2
+	fc.position = $CoinButton.position + $CoinButton.rect.size() / 2
 	var th = rng.randf_range(0, 3.1415926535*2)
 	fc.linear_velocity = Vector2(cos(th), sin(th))*100
 	fc.angular_velocity = rng.randf_range(0, 1)
@@ -1656,3 +1656,26 @@ func _on_redo_button_pressed():
 		remove_all_memo()
 	undo_ix += 1
 	update_all_status()
+
+
+func _on_check_button_pressed():
+	if paused: return		# ポーズ中
+	if qCreating: return	# 問題生成中
+	##if g.env[g.KEY_N_COINS] < 1: return
+	##add_falling_coin()
+	##g.env[g.KEY_N_COINS] -= 1
+	##$CoinButton/NCoinLabel.text = str(g.env[g.KEY_N_COINS])
+	##g.save_environment()
+	var err = false
+	for ix in range(N_CELLS):
+		if input_labels[ix].text != "" && int(input_labels[ix].text) != ans_num[ix]:
+			err = true
+			input_labels[ix].add_theme_color_override("font_color", COLOR_INCORRECT)
+	if err:
+		$MessLabel.text = "間違って入っている数字（赤色）があります。"
+		if sound:
+			$Audio/Incorrect.play()
+	else:
+		$MessLabel.text = "間違って入っている数字はありません。"
+		##if sound:
+		##	$Audio/Correct.play()

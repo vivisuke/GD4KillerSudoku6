@@ -400,6 +400,16 @@ alignment = 1
 layout_mode = 2
 texture_normal = ExtResource("23_n7jlg")
 
+[node name="NCoinLabel" type="Label" parent="HBC3/CoinButton"]
+layout_mode = 0
+offset_right = 46.0
+offset_bottom = 44.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+text = "10"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Label" type="Label" parent="HBC3/CoinButton"]
 layout_mode = 0
 offset_top = 44.0
@@ -566,6 +576,7 @@ color = Color(1, 1, 1, 0)
 [connection signal="pressed" from="HBC1/Button1" to="." method="_on_button_1_pressed"]
 [connection signal="pressed" from="HBC1/Button2" to="." method="_on_button_2_pressed"]
 [connection signal="pressed" from="HBC1/Button3" to="." method="_on_button_3_pressed"]
+[connection signal="pressed" from="HBC2/CheckButton" to="." method="_on_check_button_pressed"]
 [connection signal="pressed" from="HBC2/HintButton" to="." method="_on_hint_button_pressed"]
 [connection signal="pressed" from="HBC2/Button4" to="." method="_on_button_4_pressed"]
 [connection signal="pressed" from="HBC2/Button5" to="." method="_on_button_5_pressed"]
