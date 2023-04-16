@@ -1,0 +1,72 @@
+[gd_scene load_steps=3 format=3 uid="uid://dtta0o6xbn0ip"]
+
+[ext_resource type="FontFile" uid="uid://bxhleatspvdo3" path="res://fonts/Hokjesgeest-PDGB.ttf" id="1_4sssh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_urpfq"]
+bg_color = Color(0.180392, 0.309804, 0.309804, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.501961, 1, 0.501961, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_color = Color(0, 0, 0, 0.345098)
+shadow_size = 8
+shadow_offset = Vector2(4, 4)
+
+[node name="TopScene" type="Node2D"]
+
+[node name="BG" type="ColorRect" parent="."]
+offset_right = 500.0
+offset_bottom = 900.0
+color = Color(0.501961, 0.752941, 0.501961, 1)
+
+[node name="TitleLabel" type="Label" parent="."]
+offset_top = 31.0
+offset_right = 500.0
+offset_bottom = 123.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("1_4sssh")
+theme_override_font_sizes/font_size = 40
+text = "SakuSaku
+SumDoku 6"
+horizontal_alignment = 1
+
+[node name="VersionLabel" type="Label" parent="."]
+offset_top = 123.0
+offset_right = 500.0
+offset_bottom = 157.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+text = "ver 0.4.001"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Button0" type="Button" parent="."]
+offset_left = 23.0
+offset_top = 209.0
+offset_right = 479.0
+offset_bottom = 263.0
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_urpfq")
+text = "入門問題を生成"
+
+[node name="Label" type="Label" parent="."]
+offset_left = 23.0
+offset_top = 172.0
+offset_right = 167.0
+offset_bottom = 198.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+text = "問題名（空欄可）："
+
+[node name="LineEdit" type="LineEdit" parent="."]
+offset_left = 203.0
+offset_top = 172.0
+offset_right = 479.0
+offset_bottom = 203.0

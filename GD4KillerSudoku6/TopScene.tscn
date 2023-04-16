@@ -1,0 +1,155 @@
+[gd_scene load_steps=4 format=3 uid="uid://dmts1f43tht35"]
+
+[ext_resource type="Texture2D" uid="uid://dedvu8xj0ikfl" path="res://images/gold_medal.png" id="4"]
+[ext_resource type="Script" path="res://scripts/TopScene.gd" id="8"]
+
+[sub_resource type="Theme" id="10"]
+
+[node name="TopScene" type="Node2D"]
+script = ExtResource("8")
+
+[node name="BG" type="ColorRect" parent="."]
+color = Color(0.501961, 0.752941, 0.501961, 1)
+
+[node name="TitleLabel" type="Label" parent="."]
+text = "SakuSaku
+sumnumpla 6"
+
+[node name="VersionLabel" type="Label" parent="."]
+text = "version 0.001"
+
+[node name="SeedLabel" type="Label" parent="."]
+text = "問題名（空欄可）:"
+
+[node name="LineEdit" type="LineEdit" parent="."]
+theme = SubResource("10")
+
+[node name="Button0" type="Button" parent="."]
+text = "入門問題を生成　　　  　   "
+
+[node name="NSolvedLabel" type="Label" parent="Button0"]
+layout_mode = 0
+text = "クリア数: "
+
+[node name="AveTimeLabel" type="Label" parent="Button0"]
+layout_mode = 0
+text = "平均タイム: "
+
+[node name="BestTimeLabel" type="Label" parent="Button0"]
+layout_mode = 0
+text = "最短タイム: "
+
+[node name="Button1" type="Button" parent="."]
+text = "初級問題を生成　　     　　"
+
+[node name="NSolvedLabel" type="Label" parent="Button1"]
+layout_mode = 0
+text = "クリア数: "
+
+[node name="AveTimeLabel" type="Label" parent="Button1"]
+layout_mode = 0
+text = "平均タイム: "
+
+[node name="BestTimeLabel" type="Label" parent="Button1"]
+layout_mode = 0
+text = "最短タイム: "
+
+[node name="Button2" type="Button" parent="."]
+text = "初中級問題を生成　　  　   "
+
+[node name="NSolvedLabel" type="Label" parent="Button2"]
+layout_mode = 0
+text = "クリア数: "
+
+[node name="AveTimeLabel" type="Label" parent="Button2"]
+layout_mode = 0
+text = "平均タイム: "
+
+[node name="BestTimeLabel" type="Label" parent="Button2"]
+layout_mode = 0
+text = "最短タイム: "
+
+[node name="Button3" type="Button" parent="."]
+text = "入門問題集　　　  　   "
+
+[node name="NSolvedLabel" type="Label" parent="Button3"]
+layout_mode = 0
+text = "クリア数: "
+
+[node name="AveTimeLabel" type="Label" parent="Button3"]
+layout_mode = 0
+text = "平均タイム: "
+
+[node name="BestTimeLabel" type="Label" parent="Button3"]
+layout_mode = 0
+text = "最短タイム: "
+
+[node name="Button4" type="Button" parent="."]
+text = "初級問題集　　     　　"
+
+[node name="NSolvedLabel" type="Label" parent="Button4"]
+layout_mode = 0
+text = "クリア数: "
+
+[node name="AveTimeLabel" type="Label" parent="Button4"]
+layout_mode = 0
+text = "平均タイム: "
+
+[node name="BestTimeLabel" type="Label" parent="Button4"]
+layout_mode = 0
+text = "最短タイム: "
+
+[node name="Button5" type="Button" parent="."]
+text = "初中級問題集　　  　   "
+
+[node name="NSolvedLabel" type="Label" parent="Button5"]
+layout_mode = 0
+text = "クリア数: "
+
+[node name="AveTimeLabel" type="Label" parent="Button5"]
+layout_mode = 0
+text = "平均タイム: "
+
+[node name="BestTimeLabel" type="Label" parent="Button5"]
+layout_mode = 0
+text = "最短タイム: "
+
+[node name="Button6" type="Button" parent="."]
+text = "今日の問題　　　  　  "
+
+[node name="NSolvedLabel" type="Label" parent="Button6"]
+visible = false
+layout_mode = 0
+text = "クリア数: "
+
+[node name="AveTimeLabel" type="Label" parent="Button6"]
+visible = false
+layout_mode = 0
+text = "平均タイム: "
+
+[node name="BestTimeLabel" type="Label" parent="Button6"]
+visible = false
+layout_mode = 0
+text = "最短タイム: "
+
+[node name="CoinButton" type="TextureButton" parent="."]
+texture_normal = ExtResource("4")
+
+[node name="Label" type="Label" parent="CoinButton"]
+layout_mode = 0
+text = "コイン"
+
+[node name="NCoinLabel" type="Label" parent="CoinButton"]
+layout_mode = 0
+text = "10"
+
+[node name="CoinLabel" type="Label" parent="."]
+text = "※ 毎日アプリを開くと、コインが２個増えます。"
+
+[connection signal="pressed" from="Button0" to="." method="_on_Button0_pressed"]
+[connection signal="pressed" from="Button1" to="." method="_on_Button1_pressed"]
+[connection signal="pressed" from="Button2" to="." method="_on_Button2_pressed"]
+[connection signal="pressed" from="Button3" to="." method="_on_Button3_pressed"]
+[connection signal="pressed" from="Button4" to="." method="_on_Button4_pressed"]
+[connection signal="pressed" from="Button5" to="." method="_on_Button5_pressed"]
+[connection signal="pressed" from="Button6" to="." method="_on_Button6_pressed"]
