@@ -550,19 +550,6 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "next"
 horizontal_alignment = 1
 
-[node name="DeleteButton" type="TextureButton" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="CoinButton" type="TextureButton" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="NCoinLabel" type="Label" parent="CoinButton"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-
 [node name="CPUParticles2D" type="CPUParticles2D" parent="."]
 
 [node name="Audio" type="Node" parent="."]
