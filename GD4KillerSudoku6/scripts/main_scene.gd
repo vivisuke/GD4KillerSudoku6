@@ -99,6 +99,9 @@ var menuPopuped = false
 var hint_showed = false
 var memo_mode = false		# メモ（候補数字）エディットモード
 var in_button_pressed = false	# ボタン押下処理中
+var pressed_map				# 押下されたセル座標
+var pressed_ticks
+var released_ticks
 var hint_ix = -1			# ヒントを入れる箇所
 var hint_count_down = 0.0	# 0.0より大きい：ヒント表示カウントダウン中
 var confetti_count_down = 0.0	# 0.0より大きい：紙吹雪表示中
@@ -147,6 +150,7 @@ var undo_ix = 0
 var undo_stack = []			# 要素：[ix old new]、old, new は 0～9 の数値、0 for 空欄
 
 var rng = RandomNumberGenerator.new()
+#var tm = Time.get_ticks_msec()
 var FallingChar = load("res://falling_char.tscn")
 var FallingMemo = load("res://falling_memo.tscn")
 
@@ -1058,7 +1062,7 @@ func clear_all_memo(ix):
 func _input(event):
 	#print("_input()")
 	if menuPopuped: return
-	if event is InputEventMouseButton && event.is_pressed():
+	if event is InputEventMouseButton:	# && event.is_pressed():
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP || event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 				return
 		print("event.is_pressed()")
@@ -1066,13 +1070,11 @@ func _input(event):
 		print(mp)
 		if mp.x < 0 || mp.x >= N_HORZ || mp.y < 0 || mp.y >= N_VERT:
 			return		# 盤面セル以外の場合
-		input_num = -1
-		var ix = xyToIX(mp.x, mp.y)
-		if false: #clue_labels[ix].text != "":
-			# undone: 手がかり数字ボタン選択
-			#num_button_pressed(int(clue_labels[ix].text), true)
-			pass
-		else:
+		if event.is_pressed():
+			pressed_map = mp
+		elif pressed_map == mp:
+			input_num = -1
+			var ix = xyToIX(mp.x, mp.y)
 			if cur_num < 0:			# 数字ボタン非選択の場合
 				clear_cell_cursor()
 				if ix == cur_cell_ix:
@@ -1096,7 +1098,7 @@ func _input(event):
 							memo_labels[ix][i].text = ""	# メモ数字削除
 					pass
 			# 数字ボタン選択状態の場合 → セルにその数字を入れる or メモ数字反転
-			elif !memo_mode:
+			elif !memo_mode:	# 通常モード（非メモ）
 				if input_labels[ix].text != "":
 					add_falling_char(input_labels[ix].text, ix)
 				var num_str = str(cur_num)
@@ -1112,7 +1114,7 @@ func _input(event):
 					input_labels[ix].text = num_str
 					cell_bit[ix] = num_to_bit(cur_num)
 				for i in range(N_HORZ): memo_labels[ix][i].text = ""	# メモ数字削除
-			else:	# 候補数字モード
+			else:	# 候補数字（メモ）モード
 				if get_cell_numer(ix) != 0:
 					return		# 空欄でない場合
 				push_to_undo_stack([UNDO_TYPE_MEMO, ix, cur_num])
