@@ -169,7 +169,7 @@ func _ready():
 	#
 	clear_cell_cursor()
 	#
-	num_buttons.push_back($DeleteButton)
+	num_buttons.push_back($HBC3/BackspaceButton)
 	for i in range(N_HORZ):
 		num_buttons.push_back(get_node("HBC%d/Button%d" % [i/3+1, (i+1)]))
 	#
