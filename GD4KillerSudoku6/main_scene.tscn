@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=3 uid="uid://df63unibnxvr5"]
+[gd_scene load_steps=50 format=3 uid="uid://df63unibnxvr5"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_j8s1i"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ltfgv"]
@@ -23,16 +23,19 @@
 [ext_resource type="Texture2D" uid="uid://b2u05a47ei3hu" path="res://images/lightbulb_gold.png" id="17_l0r4j"]
 [ext_resource type="Texture2D" uid="uid://dqpj3aq71555v" path="res://images/delMemo.png" id="18_ot622"]
 [ext_resource type="Texture2D" uid="uid://cbw1phdyy6ej4" path="res://images/auto_candidates_gold.png" id="19_724fu"]
-[ext_resource type="Texture2D" uid="uid://brxf8led13w4p" path="res://images/lightbulb_black.png" id="20_phwyq"]
+[ext_resource type="Texture2D" uid="uid://b2ipdcefwsr4b" path="res://images/done_white.png" id="21_6yjff"]
 [ext_resource type="AudioStream" uid="uid://cgnli6tk6h1x6" path="res://sounds/button-3.mp3" id="22_e8kby"]
 [ext_resource type="AudioStream" uid="uid://c5dv6nwa70eyj" path="res://sounds/incorrect.mp3" id="23_6p0ak"]
+[ext_resource type="Texture2D" uid="uid://cndghvyklygrm" path="res://images/lightbulb_white.png" id="23_7vxki"]
 [ext_resource type="Texture2D" uid="uid://dedvu8xj0ikfl" path="res://images/gold_medal.png" id="23_n7jlg"]
 [ext_resource type="AudioStream" uid="uid://dsxpn8m8gnipb" path="res://sounds/don.mp3" id="24_p6251"]
 [ext_resource type="Texture2D" uid="uid://bnl6nf6aaqukh" path="res://images/space19.png" id="24_vkisw"]
 [ext_resource type="AudioStream" uid="uid://2mfnwo0of14r" path="res://sounds/kirakira-3.mp3" id="25_14ktp"]
 [ext_resource type="Texture2D" uid="uid://dobnyk302s430" path="res://images/volume_off_black.png" id="25_fqafo"]
+[ext_resource type="Texture2D" uid="uid://qtt1ksowvven" path="res://images/delMemo_white.png" id="25_i88q7"]
 [ext_resource type="Shader" path="res://scripts/main_scene.gdshader" id="26_3tet4"]
 [ext_resource type="Texture2D" uid="uid://fhxjibcpgpnx" path="res://images/loop_black.png" id="26_k4u2k"]
+[ext_resource type="Texture2D" uid="uid://dw34ds5hj5poc" path="res://images/auto_candidates_white.png" id="27_b1om7"]
 [ext_resource type="Texture2D" uid="uid://b7xqlm2l5tanw" path="res://images/deselect_black.png" id="27_qobb0"]
 [ext_resource type="Texture2D" uid="uid://h65sn7lbycy7" path="res://images/deselect_white.png" id="28_ncf1d"]
 [ext_resource type="Texture2D" uid="uid://dgcy303al5xia" path="res://images/backspace_black.png" id="29_xx2c0"]
@@ -290,6 +293,7 @@ alignment = 1
 [node name="CheckButton" type="TextureButton" parent="HBC2"]
 layout_mode = 2
 texture_normal = ExtResource("16_kqex0")
+texture_pressed = ExtResource("21_6yjff")
 
 [node name="Label" type="Label" parent="HBC2/CheckButton"]
 layout_mode = 0
@@ -307,7 +311,7 @@ texture = ExtResource("9_8mpbk")
 [node name="HintButton" type="TextureButton" parent="HBC2"]
 layout_mode = 2
 texture_normal = ExtResource("17_l0r4j")
-texture_pressed = ExtResource("20_phwyq")
+texture_pressed = ExtResource("23_7vxki")
 
 [node name="Label" type="Label" parent="HBC2/HintButton"]
 layout_mode = 0
@@ -372,6 +376,7 @@ texture = ExtResource("9_8mpbk")
 [node name="DelMemoButton" type="TextureButton" parent="HBC2"]
 layout_mode = 2
 texture_normal = ExtResource("18_ot622")
+texture_pressed = ExtResource("25_i88q7")
 
 [node name="Label" type="Label" parent="HBC2/DelMemoButton"]
 layout_mode = 0
@@ -389,6 +394,7 @@ texture = ExtResource("9_8mpbk")
 [node name="AutoMemoButton" type="TextureButton" parent="HBC2"]
 layout_mode = 2
 texture_normal = ExtResource("19_724fu")
+texture_pressed = ExtResource("27_b1om7")
 
 [node name="Label" type="Label" parent="HBC2/AutoMemoButton"]
 layout_mode = 0
