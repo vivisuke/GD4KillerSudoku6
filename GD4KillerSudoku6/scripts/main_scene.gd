@@ -100,8 +100,8 @@ var hint_showed = false
 var memo_mode = false		# メモ（候補数字）エディットモード
 var in_button_pressed = false	# ボタン押下処理中
 var pressed_map				# 押下されたセル座標
-var pressed_ticks
-var released_ticks
+var pressed_ticks = -1
+#var released_ticks
 var hint_ix = -1			# ヒントを入れる箇所
 var hint_count_down = 0.0	# 0.0より大きい：ヒント表示カウントダウン中
 var confetti_count_down = 0.0	# 0.0より大きい：紙吹雪表示中
@@ -156,7 +156,9 @@ var FallingMemo = load("res://falling_memo.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	g.qLevel = LVL_NORMAL
+	if g.qNumber != 0:
+		g.qName = "%06d" % g.qNumber
+	$TitleBar/Label.text = titleText()
 	init_labels()
 	g.load_stats()
 	#
@@ -191,22 +193,12 @@ func gen_qName():
 		if r < 10: g.qName += str(r+1)
 		else: g.qName += "%c" % (r - 10 + 0x61)		# 0x61 is 'a'
 func gen_quest():
-	# undone: 問題集以外の場合対応
-	#if g.todaysQuest:		# 今日の問題の場合
-	#	g.qLevel += 1
-	#	if g.qLevel > 2: g.qLevel = 0
-	#elif g.qNumber == 0:		# 問題自動生成の場合
-	#	g.qRandom = true		# 
-	#	gen_qName()
-	#else:					# 問題集の場合
-	#	g.qNumber += 1
-	#	g.qName = "%06d" % g.qNumber
 	if g.qNumber != 0:	# 問題集の場合
 		$NextButton.disabled = g.qNumber > g.nSolved[g.qLevel]
 	elif !g.todaysQuest:		# ランダム生成の場合
 		if g.qName == "":
-			##gen_qName()
-			g.qName = "000001"
+			gen_qName()
+			#g.qName = "000001"
 			$TitleBar/Label.text = titleText()
 	var stxt = g.qName+str(g.qLevel)
 	if g.qNumber != 0: stxt += "Q"
@@ -1072,7 +1064,9 @@ func _input(event):
 			return		# 盤面セル以外の場合
 		if event.is_pressed():
 			pressed_map = mp
+			pressed_ticks = Time.get_ticks_msec()
 		elif pressed_map == mp:
+			pressed_ticks = -1
 			input_num = -1
 			var ix = xyToIX(mp.x, mp.y)
 			if cur_num < 0:			# 数字ボタン非選択の場合
