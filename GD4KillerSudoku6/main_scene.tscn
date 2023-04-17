@@ -1,4 +1,4 @@
-[gd_scene load_steps=50 format=3 uid="uid://df63unibnxvr5"]
+[gd_scene load_steps=53 format=3 uid="uid://df63unibnxvr5"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_j8s1i"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ltfgv"]
@@ -41,8 +41,11 @@
 [ext_resource type="Texture2D" uid="uid://dgcy303al5xia" path="res://images/backspace_black.png" id="29_xx2c0"]
 [ext_resource type="Texture2D" uid="uid://bhjfklpvlht5x" path="res://images/first_page_black.png" id="30_2b01f"]
 [ext_resource type="Texture2D" uid="uid://basg0uvvwmpiq" path="res://images/first_page_white.png" id="31_3jio0"]
+[ext_resource type="Texture2D" uid="uid://pqdjfiobgakq" path="res://images/volume_up.png" id="31_wmhh0"]
 [ext_resource type="Texture2D" uid="uid://b41jpfr3dsmmk" path="res://images/skip_next_black.png" id="32_pa8pe"]
 [ext_resource type="Texture2D" uid="uid://dpsl53fjnrpyh" path="res://images/skip_next_white.png" id="33_l0fyx"]
+[ext_resource type="Texture2D" uid="uid://iuao1th8p52s" path="res://images/loop_white.png" id="33_oto57"]
+[ext_resource type="Texture2D" uid="uid://bedfilgy8gi46" path="res://images/backspace_BelizeHole.png" id="37_2tg2l"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_l5jc0"]
 texture = ExtResource("4_6xb5c")
@@ -443,6 +446,7 @@ texture = ExtResource("24_vkisw")
 [node name="SoundButton" type="TextureButton" parent="HBC3"]
 layout_mode = 2
 texture_normal = ExtResource("25_fqafo")
+texture_pressed = ExtResource("31_wmhh0")
 
 [node name="Label" type="Label" parent="HBC3/SoundButton"]
 layout_mode = 0
@@ -460,6 +464,7 @@ texture = ExtResource("24_vkisw")
 [node name="LoopButton" type="TextureButton" parent="HBC3"]
 layout_mode = 2
 texture_normal = ExtResource("26_k4u2k")
+texture_pressed = ExtResource("33_oto57")
 
 [node name="Label" type="Label" parent="HBC3/LoopButton"]
 layout_mode = 0
@@ -497,6 +502,7 @@ texture = ExtResource("24_vkisw")
 [node name="BackspaceButton" type="TextureButton" parent="HBC3"]
 layout_mode = 2
 texture_normal = ExtResource("29_xx2c0")
+texture_pressed = ExtResource("37_2tg2l")
 
 [node name="Label" type="Label" parent="HBC3/BackspaceButton"]
 layout_mode = 0
