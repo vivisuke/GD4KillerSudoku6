@@ -1640,6 +1640,7 @@ func _on_undo_button_pressed():
 	update_all_status()
 func _on_redo_button_pressed():
 	if paused: return		# ポーズ中
+	if undo_stack.size() <= undo_ix: return
 	var item = undo_stack[undo_ix]
 	if item[UNDO_ITEM_TYPE] == UNDO_TYPE_CELL:
 		var txt = str(item[UNDO_ITEM_NEW]) if item[UNDO_ITEM_NEW] != 0 else ""
@@ -1679,3 +1680,7 @@ func _on_check_button_pressed():
 		$MessLabel.text = "間違って入っている数字はありません。"
 		##if sound:
 		##	$Audio/Correct.play()
+
+
+func _on_back_button_pressed():
+	pass # Replace with function body.

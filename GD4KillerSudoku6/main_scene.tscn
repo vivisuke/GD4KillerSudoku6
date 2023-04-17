@@ -1,11 +1,13 @@
-[gd_scene load_steps=45 format=3 uid="uid://df63unibnxvr5"]
+[gd_scene load_steps=47 format=3 uid="uid://df63unibnxvr5"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_j8s1i"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ltfgv"]
 [ext_resource type="Script" path="res://scripts/Board.gd" id="2_n82ed"]
+[ext_resource type="Texture2D" uid="uid://dhb853ow1dtap" path="res://images/leftward_white.png" id="3_4y0j1"]
 [ext_resource type="Script" path="res://scripts/Grid.gd" id="3_kpcp0"]
 [ext_resource type="Script" path="res://scripts/CageGrid.gd" id="3_xly3w"]
 [ext_resource type="Texture2D" uid="uid://bbgobjrm6nkxf" path="res://images/lightpink_81x81.png" id="4_6xb5c"]
+[ext_resource type="Texture2D" uid="uid://yp1xll2krgca" path="res://images/leftward_black.png" id="4_gk0ok"]
 [ext_resource type="Texture2D" uid="uid://7ahs8j7adk62" path="res://images/lightyellow81x81.png" id="5_aa34c"]
 [ext_resource type="Texture2D" uid="uid://cqec3tqrevdpa" path="res://images/undo_black.png" id="6_al8fh"]
 [ext_resource type="Texture2D" uid="uid://csupj8245mj3o" path="res://images/undo_white.png" id="7_mp20d"]
@@ -87,9 +89,17 @@ offset_bottom = 50.0
 color = Color(0.180392, 0.309804, 0.309804, 1)
 script = ExtResource("1_ltfgv")
 
+[node name="BackButton" type="TextureButton" parent="TitleBar"]
+layout_mode = 0
+offset_right = 48.0
+offset_bottom = 50.0
+texture_normal = ExtResource("3_4y0j1")
+texture_pressed = ExtResource("4_gk0ok")
+
 [node name="Label" type="Label" parent="TitleBar"]
 layout_mode = 0
-offset_right = 500.0
+offset_left = 53.0
+offset_right = 447.0
 offset_bottom = 50.0
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -571,6 +581,7 @@ offset_bottom = 900.0
 mouse_filter = 2
 color = Color(1, 1, 1, 0)
 
+[connection signal="pressed" from="TitleBar/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="HBC1/UndoButton" to="." method="_on_undo_button_pressed"]
 [connection signal="pressed" from="HBC1/RedoButton" to="." method="_on_redo_button_pressed"]
 [connection signal="pressed" from="HBC1/Button1" to="." method="_on_button_1_pressed"]
