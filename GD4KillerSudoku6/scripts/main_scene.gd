@@ -1617,6 +1617,7 @@ func _on_next_button_pressed():
 
 func _on_undo_button_pressed():
 	if paused: return		# ポーズ中
+	if undo_ix == 0: return
 	undo_ix -= 1
 	var item = undo_stack[undo_ix]
 	if item[UNDO_ITEM_TYPE] == UNDO_TYPE_CELL:
