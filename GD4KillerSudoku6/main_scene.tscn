@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=3 uid="uid://df63unibnxvr5"]
+[gd_scene load_steps=54 format=3 uid="uid://df63unibnxvr5"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_j8s1i"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ltfgv"]
@@ -23,6 +23,7 @@
 [ext_resource type="Texture2D" uid="uid://b2u05a47ei3hu" path="res://images/lightbulb_gold.png" id="17_l0r4j"]
 [ext_resource type="Texture2D" uid="uid://dqpj3aq71555v" path="res://images/delMemo.png" id="18_ot622"]
 [ext_resource type="Texture2D" uid="uid://cbw1phdyy6ej4" path="res://images/auto_candidates_gold.png" id="19_724fu"]
+[ext_resource type="Texture2D" uid="uid://l25m4n053oss" path="res://images/pause_white.png" id="20_m132y"]
 [ext_resource type="Texture2D" uid="uid://b2ipdcefwsr4b" path="res://images/done_white.png" id="21_6yjff"]
 [ext_resource type="AudioStream" uid="uid://cgnli6tk6h1x6" path="res://sounds/button-3.mp3" id="22_e8kby"]
 [ext_resource type="AudioStream" uid="uid://c5dv6nwa70eyj" path="res://sounds/incorrect.mp3" id="23_6p0ak"]
@@ -276,6 +277,7 @@ texture = ExtResource("9_8mpbk")
 [node name="PauseButton" type="TextureButton" parent="HBC1"]
 layout_mode = 2
 texture_normal = ExtResource("15_o8hf8")
+texture_pressed = ExtResource("20_m132y")
 
 [node name="Label" type="Label" parent="HBC1/PauseButton"]
 layout_mode = 0
@@ -586,6 +588,7 @@ color = Color(1, 1, 1, 0)
 [connection signal="pressed" from="HBC1/Button1" to="." method="_on_button_1_pressed"]
 [connection signal="pressed" from="HBC1/Button2" to="." method="_on_button_2_pressed"]
 [connection signal="pressed" from="HBC1/Button3" to="." method="_on_button_3_pressed"]
+[connection signal="pressed" from="HBC1/PauseButton" to="." method="_on_pause_button_pressed"]
 [connection signal="pressed" from="HBC2/CheckButton" to="." method="_on_check_button_pressed"]
 [connection signal="pressed" from="HBC2/HintButton" to="." method="_on_hint_button_pressed"]
 [connection signal="pressed" from="HBC2/Button4" to="." method="_on_button_4_pressed"]

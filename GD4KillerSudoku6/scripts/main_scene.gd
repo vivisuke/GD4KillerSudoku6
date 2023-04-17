@@ -1685,4 +1685,34 @@ func _on_check_button_pressed():
 
 func _on_back_button_pressed():
 	get_tree().change_scene_to_file("res://top_scene.tscn")
-	pass # Replace with function body.
+func _on_pause_button_pressed():
+	paused = !paused
+	if paused:
+		for ix in range(N_CELLS):
+			#if clue_labels[ix].text != "":
+			#	cell_bit[ix] = num_to_bit(int(clue_labels[ix].text))
+			#	clue_labels[ix].text = "?"
+			#el
+			if input_labels[ix].text != "":
+				cell_bit[ix] = num_to_bit(int(input_labels[ix].text))
+				input_labels[ix].text = "?"
+			else:
+				cell_bit[ix] = 0
+			var lst = []
+			for i in range(N_HORZ):
+				lst.push_back(memo_labels[ix][i].text)
+				memo_labels[ix][i].text = ""
+			memo_text[ix] = lst
+			if cage_labels[ix].text != "":
+				cage_labels[ix].text = "?"
+	else:
+		for ix in range(N_CELLS):
+			#if clue_labels[ix].text != "":
+			#	clue_labels[ix].text = bit_to_numstr(cell_bit[ix])
+			#el
+			if input_labels[ix].text != "":
+				input_labels[ix].text = bit_to_numstr(cell_bit[ix])
+			for i in range(N_HORZ):
+				memo_labels[ix][i].text = memo_text[ix][i]
+		update_cages_sum_labels()
+	update_all_status()
