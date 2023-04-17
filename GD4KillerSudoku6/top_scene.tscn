@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://dtta0o6xbn0ip"]
+[gd_scene load_steps=4 format=3 uid="uid://dtta0o6xbn0ip"]
 
 [ext_resource type="FontFile" uid="uid://bxhleatspvdo3" path="res://fonts/Hokjesgeest-PDGB.ttf" id="1_4sssh"]
+[ext_resource type="Texture2D" uid="uid://b37qhkh6trjag" path="res://images/arrow_forward_white.png" id="2_3bs4s"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_urpfq"]
 bg_color = Color(0.180392, 0.309804, 0.309804, 1)
@@ -25,9 +26,9 @@ offset_bottom = 900.0
 color = Color(0.501961, 0.752941, 0.501961, 1)
 
 [node name="TitleLabel" type="Label" parent="."]
-offset_top = 31.0
+offset_top = 23.0
 offset_right = 500.0
-offset_bottom = 123.0
+offset_bottom = 115.0
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
@@ -38,35 +39,140 @@ SumDoku 6"
 horizontal_alignment = 1
 
 [node name="VersionLabel" type="Label" parent="."]
-offset_top = 123.0
+offset_top = 115.0
 offset_right = 500.0
-offset_bottom = 157.0
+offset_bottom = 149.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 20
 text = "ver 0.4.001"
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="Button0" type="Button" parent="."]
-offset_left = 23.0
-offset_top = 209.0
-offset_right = 479.0
-offset_bottom = 263.0
-theme_override_font_sizes/font_size = 28
-theme_override_styles/normal = SubResource("StyleBoxFlat_urpfq")
-text = "入門問題を生成"
-
 [node name="Label" type="Label" parent="."]
 offset_left = 23.0
-offset_top = 172.0
-offset_right = 167.0
-offset_bottom = 198.0
+offset_top = 166.0
+offset_right = 203.0
+offset_bottom = 197.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 20
 text = "問題名（空欄可）："
 
 [node name="LineEdit" type="LineEdit" parent="."]
 offset_left = 203.0
-offset_top = 172.0
+offset_top = 166.0
 offset_right = 479.0
-offset_bottom = 203.0
+offset_bottom = 197.0
+
+[node name="Button0" type="Button" parent="."]
+offset_left = 23.0
+offset_top = 210.0
+offset_right = 479.0
+offset_bottom = 264.0
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_urpfq")
+text = "　入門問題を生成"
+icon = ExtResource("2_3bs4s")
+alignment = 0
+
+[node name="NSolvedLabel" type="Label" parent="Button0"]
+layout_mode = 0
+offset_left = 333.0
+offset_top = 5.0
+offset_right = 388.0
+offset_bottom = 25.0
+theme_override_font_sizes/font_size = 12
+text = "クリア回数:"
+
+[node name="AveTimeLabel" type="Label" parent="Button0"]
+layout_mode = 0
+offset_left = 333.0
+offset_top = 20.0
+offset_right = 388.0
+offset_bottom = 40.0
+theme_override_font_sizes/font_size = 12
+text = "平均タイム:"
+
+[node name="BestTimeLabel" type="Label" parent="Button0"]
+layout_mode = 0
+offset_left = 333.0
+offset_top = 35.0
+offset_right = 388.0
+offset_bottom = 55.0
+theme_override_font_sizes/font_size = 12
+text = "最短タイム:"
+
+[node name="Button1" type="Button" parent="."]
+offset_left = 23.0
+offset_top = 290.0
+offset_right = 479.0
+offset_bottom = 344.0
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_urpfq")
+text = "　初級問題を生成"
+icon = ExtResource("2_3bs4s")
+alignment = 0
+
+[node name="NSolvedLabel" type="Label" parent="Button1"]
+layout_mode = 0
+offset_left = 333.0
+offset_top = 5.0
+offset_right = 388.0
+offset_bottom = 25.0
+theme_override_font_sizes/font_size = 12
+text = "クリア回数:"
+
+[node name="AveTimeLabel" type="Label" parent="Button1"]
+layout_mode = 0
+offset_left = 333.0
+offset_top = 20.0
+offset_right = 388.0
+offset_bottom = 40.0
+theme_override_font_sizes/font_size = 12
+text = "平均タイム:"
+
+[node name="BestTimeLabel" type="Label" parent="Button1"]
+layout_mode = 0
+offset_left = 333.0
+offset_top = 35.0
+offset_right = 388.0
+offset_bottom = 55.0
+theme_override_font_sizes/font_size = 12
+text = "最短タイム:"
+
+[node name="Button2" type="Button" parent="."]
+offset_left = 23.0
+offset_top = 370.0
+offset_right = 479.0
+offset_bottom = 424.0
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_urpfq")
+text = "　初級問題を生成"
+icon = ExtResource("2_3bs4s")
+alignment = 0
+
+[node name="NSolvedLabel" type="Label" parent="Button2"]
+layout_mode = 0
+offset_left = 333.0
+offset_top = 5.0
+offset_right = 388.0
+offset_bottom = 25.0
+theme_override_font_sizes/font_size = 12
+text = "クリア回数:"
+
+[node name="AveTimeLabel" type="Label" parent="Button2"]
+layout_mode = 0
+offset_left = 333.0
+offset_top = 20.0
+offset_right = 388.0
+offset_bottom = 40.0
+theme_override_font_sizes/font_size = 12
+text = "平均タイム:"
+
+[node name="BestTimeLabel" type="Label" parent="Button2"]
+layout_mode = 0
+offset_left = 333.0
+offset_top = 35.0
+offset_right = 388.0
+offset_bottom = 55.0
+theme_override_font_sizes/font_size = 12
+text = "最短タイム:"
