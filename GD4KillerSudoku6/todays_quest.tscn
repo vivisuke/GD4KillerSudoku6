@@ -1,10 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://b1uvg6fu8xkn5"]
+[gd_scene load_steps=5 format=3 uid="uid://b1uvg6fu8xkn5"]
 
+[ext_resource type="Script" path="res://scripts/todays_quest.gd" id="1_d6t06"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_m0cn3"]
 [ext_resource type="Texture2D" uid="uid://dhb853ow1dtap" path="res://images/leftward_white.png" id="2_6vdj0"]
 [ext_resource type="Texture2D" uid="uid://yp1xll2krgca" path="res://images/leftward_black.png" id="3_ng4f3"]
 
 [node name="TodaysQuest" type="Node2D"]
+script = ExtResource("1_d6t06")
 
 [node name="BG" type="ColorRect" parent="."]
 offset_right = 500.0
@@ -31,3 +33,5 @@ offset_right = 447.0
 offset_bottom = 50.0
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[connection signal="pressed" from="TitleBar/BackButton" to="." method="_on_back_button_pressed"]
