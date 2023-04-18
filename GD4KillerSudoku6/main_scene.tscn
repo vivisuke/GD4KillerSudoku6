@@ -108,6 +108,8 @@ layout_mode = 0
 offset_left = 53.0
 offset_right = 447.0
 offset_bottom = 50.0
+theme_override_font_sizes/font_size = 24
+text = "title"
 horizontal_alignment = 1
 vertical_alignment = 1
 
