@@ -99,24 +99,25 @@ func auto_load():
 ##	if !env.has(KEY_N_COINS): env[KEY_N_COINS] = INIT_N_COINS
 ##	if env[KEY_N_COINS] < 0: env[KEY_N_COINS] = 0
 ##	if env[KEY_N_COINS] == 0: env[KEY_N_COINS] = 50		# for Test
-##func save_environment():
+func save_environment():
 ##	var file = File.new()
 ##	file.open(EnvFileName, File.WRITE)
 ##	file.store_var(env)
 ##	file.close()
-###
-##func load_settings():
+	pass
+func load_settings():
 ##	var file = File.new()
 ##	if file.file_exists(SettingsFileName):		# 設定ファイル
 ##		file.open(SettingsFileName, File.READ)
 ##		settings = file.get_var()
 ##		file.close()
-##func save_settings():
+	pass
+func save_settings():
 ##	var file = File.new()
 ##	file.open(SettingsFileName, File.WRITE)
 ##	file.store_var(settings)
 ##	file.close()
-###
+	pass
 func save_stats():
 	var file = FileAccess.open(StatsFileName, FileAccess.WRITE)
 	file.store_var(stats)
@@ -132,12 +133,13 @@ func load_stats():
 		stats = [{}, {}, {}, {}, {}, {}, ]		# [0] for 入門問題生成
 	#print(stats)
 ###
-##func save_nSolved():
+func save_nSolved():
 ##	var file = File.new()
 ##	file.open(NSolvedFileName, File.WRITE)
 ##	file.store_var(nSolved)
 ##	file.close()
-##func load_nSolved():
+	pass
+func load_nSolved():
 ##	var file = File.new()
 ##	if file.file_exists(NSolvedFileName):		# 統計情報ファイル
 ##		file.open(NSolvedFileName, File.READ)
@@ -145,13 +147,14 @@ func load_stats():
 ##		file.close()
 ##	else:
 ##		nSolved = [0, 0, 0]		# [0] for 入門問題集
-###
-##func save_todaysQuest():
+	pass
+func save_todaysQuest():
 ##	var file = File.new()
 ##	file.open(TodaysQuestFileName, File.WRITE)
 ##	file.store_var([tqSolvedYMD, tqSolvedSec, tqConsSolvedDays, tqMaxConsSolvedDays])
 ##	file.close()
-##func load_todaysQuest():
+	pass
+func load_todaysQuest():
 ##	var file = File.new()
 ##	if file.file_exists(TodaysQuestFileName):		# 統計情報ファイル
 ##		file.open(TodaysQuestFileName, File.READ)
@@ -169,6 +172,7 @@ func load_stats():
 ##	else:
 ##		tqSolvedYMD = ""
 ##		tqSolvedSec = [-1, -1, -1]
+	pass
 func memo_label_pos(px, py, h, v):
 	return Vector2(px + CELL_WIDTH4*(h+1)-3, py + CELL_WIDTH3*(v+1))
 
