@@ -2,6 +2,8 @@ extends Node2D
 
 
 func _ready():
+	g.todaysQuest = true
+	#
 	$DateLabel.text = g.today_string()
 func _on_back_button_pressed():
 	get_tree().change_scene_to_file("res://top_scene.tscn")

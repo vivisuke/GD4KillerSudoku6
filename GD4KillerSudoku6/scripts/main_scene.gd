@@ -156,6 +156,7 @@ var FallingMemo = load("res://falling_memo.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	print("todaysQuest = ", g.todaysQuest)
 	if g.qNumber != 0:
 		g.qName = "%06d" % g.qNumber
 	$TitleBar/Label.text = titleText()
@@ -1682,7 +1683,13 @@ func _on_check_button_pressed():
 
 
 func _on_back_button_pressed():
-	get_tree().change_scene_to_file("res://top_scene.tscn")
+	if paused: return		# ポーズ中
+	if g.todaysQuest:
+		get_tree().change_scene_to_file("res://todays_quest.tscn")
+	elif g.qNumber == 0:
+		get_tree().change_scene_to_file("res://top_scene.tscn")
+	##else:
+	##get_tree().change_scene_to_file("res://level_scene.tscn")
 func _on_pause_button_pressed():
 	paused = !paused
 	if paused:
