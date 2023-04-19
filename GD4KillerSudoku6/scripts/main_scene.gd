@@ -1599,10 +1599,23 @@ func _on_del_memo_button_pressed():
 
 
 func _on_next_button_pressed():
-	g.qName = "%06d" % (int(g.qName) + 1)
+	if paused: return		# ポーズ中
+	##$FakeConfettiParticles.emitting = false
+	#g.auto_save(false, [])
+	saved_cell_data = []
+	##$SolvedLayer.hide()
+	if g.todaysQuest:		# 今日の問題の場合
+		g.qLevel += 1
+		if g.qLevel > 2: g.qLevel = 0
+	elif g.qNumber == 0:		# 問題自動生成の場合
+		g.qRandom = true		# 
+		gen_qName()
+	else:					# 問題集の場合
+		g.qNumber += 1
+		g.qName = "%06d" % g.qNumber
+	#seed((g.qName+String(g.qLevel)).hash())
 	$TitleBar/Label.text = titleText()
 	remove_all_memo()
-	#gen_quest_greedy()
 	gen_quest()
 	cur_cell_ix = -1
 	cur_num = -1
