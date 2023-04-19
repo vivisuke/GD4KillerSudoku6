@@ -63,33 +63,29 @@ func yesterday_string():
 	##return "%04d/%02d/%02d" % [y["year"], y["month"], y["day"]]
 #
 func auto_load():
-	##var file = File.new()
-	##if !file.file_exists(AutoSaveFileName):
-	##	saved_data = {}
-	##else:
-	##	file.open(AutoSaveFileName, File.READ)
-	##	saved_data = file.get_var()
-	##	file.close()
+	if FileAccess.file_exists(AutoSaveFileName):
+		saved_data = {}
+	else:
+		var file = FileAccess.open(AutoSaveFileName, FileAccess.READ)
+		saved_data = file.get_var()
+		file.close()
 	return saved_data
-##func auto_save(solving : bool, board : Array):
-##	if !solving:
-##		saved_data = {}
-##	else:
-##		#var data = {}
-##		saved_data["solving"] = solving
-##		saved_data["board"] = board
-##		saved_data["today"] = today_string()
-##		saved_data["qLevel"] = qLevel
-##		saved_data["qNumber"] = qNumber
-##		saved_data["qName"] = qName
-##		saved_data["qRandom"] = qRandom
-##		saved_data["elapsedTime"] = elapsedTime
-##		saved_data["todaysQuest"] = todaysQuest
-##	##var file = File.new()
-##	##file.open(AutoSaveFileName, File.WRITE)
-##	##file.store_var(saved_data)
-##	##file.close()
-###
+func auto_save(solving : bool, board : Array):
+	if !solving:
+		saved_data = {}
+	else:
+		saved_data["solving"] = solving
+		saved_data["board"] = board
+		saved_data["today"] = today_string()
+		saved_data["qLevel"] = qLevel
+		saved_data["qNumber"] = qNumber
+		saved_data["qName"] = qName
+		saved_data["qRandom"] = qRandom
+		saved_data["elapsedTime"] = elapsedTime
+		saved_data["todaysQuest"] = todaysQuest
+	var file = FileAccess.open(AutoSaveFileName, FileAccess.WRITE)
+	file.store_var(saved_data)
+	file.close()
 ##func load_environment():
 ##	var file = File.new()
 ##	if file.file_exists(EnvFileName):		# 設定ファイル
