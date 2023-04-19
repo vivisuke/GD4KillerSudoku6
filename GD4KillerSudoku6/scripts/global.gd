@@ -51,7 +51,8 @@ func sec_to_MSStr(t):
 #
 func today_string():
 	##var d = OS.get_da()
-	##return "%04d/%02d/%02d" % [d["year"], d["month"], d["day"]]
+	var d = Time.get_date_dict_from_system()
+	return "%04d/%02d/%02d" % [d["year"], d["month"], d["day"]]
 	return ""
 func yesterday_string():
 	##var u = OS.get_unix_time_from_datetime(OS.get_datetime())
