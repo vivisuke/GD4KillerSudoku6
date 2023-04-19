@@ -7,6 +7,7 @@ var buttons = []
 #onready var g = get_node("/root/Global")
 
 func _ready():
+	print(g.yesterday_string())
 	pass # Replace with function body.
 
 

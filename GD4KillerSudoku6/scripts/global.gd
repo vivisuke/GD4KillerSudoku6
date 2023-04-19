@@ -53,12 +53,14 @@ func today_string():
 	##var d = OS.get_da()
 	var d = Time.get_date_dict_from_system()
 	return "%04d/%02d/%02d" % [d["year"], d["month"], d["day"]]
-	return ""
 func yesterday_string():
+	var d = Time.get_datetime_dict_from_system()
+	var u = Time.get_unix_time_from_datetime_dict(d)
+	var y = Time.get_datetime_dict_from_unix_time (u - 60*60*24)	# 24時間前
+	return "%04d/%02d/%02d" % [y["year"], y["month"], y["day"]]
 	##var u = OS.get_unix_time_from_datetime(OS.get_datetime())
 	##var y = OS.get_datetime_from_unix_time(u - 60*60*24)	# 24時間前
 	##return "%04d/%02d/%02d" % [y["year"], y["month"], y["day"]]
-	return ""
 #
 func auto_load():
 	##var file = File.new()
