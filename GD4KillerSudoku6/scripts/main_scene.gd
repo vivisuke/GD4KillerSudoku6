@@ -1065,6 +1065,8 @@ func _input(event):
 		if event.is_pressed():
 			pressed_map = mp
 			pressed_ticks = Time.get_ticks_msec()
+			update_all_status()
+			return
 		elif pressed_map == mp:
 			pressed_ticks = -1
 			input_num = -1
