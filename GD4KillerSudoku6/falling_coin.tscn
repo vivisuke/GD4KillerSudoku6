@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://cxo55yjpvmiol"]
+
+[ext_resource type="Texture2D" uid="uid://dedvu8xj0ikfl" path="res://images/gold_medal.png" id="1_vfc6x"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0hra1"]
+size = Vector2(49, 47)
+
+[node name="FallingCoin" type="RigidBody2D"]
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("1_vfc6x")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(24.5, 24.5)
+shape = SubResource("RectangleShape2D_0hra1")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(17, 44)
