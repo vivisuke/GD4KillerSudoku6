@@ -392,7 +392,7 @@ func init_labels():
 			input_labels.push_back(label)
 			label.add_theme_color_override("font_color", Color.BLACK)
 			label.add_theme_font_size_override("font_size", 60)
-			label.position = Vector2(px+32, py + 4)
+			label.position = Vector2(px+36, py + 4)
 			label.text = str((x+y)%6 + 1)
 			$Board.add_child(label)
 			# 候補数字用ラベル
