@@ -7,7 +7,16 @@ var buttons = []
 #onready var g = get_node("/root/Global")
 
 func _ready():
-	print(g.yesterday_string())
+	#print(g.yesterday_string())
+	g.todaysQuest = false
+	g.load_environment()
+	if !g.env.has(g.KEY_LOGIN_DATE) || g.env[g.KEY_LOGIN_DATE] != g.today_string():
+		g.env[g.KEY_LOGIN_DATE] = g.today_string()
+		g.env[g.KEY_N_COINS] += g.DAYLY_N_COINS
+		g.save_environment()
+	$CoinButton/NCoinLabel.text = str(g.env[g.KEY_N_COINS])
+	g.load_stats()
+	#
 	pass # Replace with function body.
 
 
