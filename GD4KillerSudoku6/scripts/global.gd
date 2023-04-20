@@ -100,17 +100,15 @@ func save_environment():
 	file.close()
 	pass
 func load_settings():
-##	var file = File.new()
-##	if file.file_exists(SettingsFileName):		# 設定ファイル
-##		file.open(SettingsFileName, File.READ)
-##		settings = file.get_var()
-##		file.close()
+	if FileAccess.file_exists(SettingsFileName):		# 設定ファイル
+		var file = FileAccess.open(SettingsFileName, FileAccess.READ)
+		settings = file.get_var()
+		file.close()
 	pass
 func save_settings():
-##	var file = File.new()
-##	file.open(SettingsFileName, File.WRITE)
-##	file.store_var(settings)
-##	file.close()
+	var file = FileAccess.open(SettingsFileName, FileAccess.WRITE)
+	file.store_var(settings)
+	file.close()
 	pass
 func save_stats():
 	var file = FileAccess.open(StatsFileName, FileAccess.WRITE)
