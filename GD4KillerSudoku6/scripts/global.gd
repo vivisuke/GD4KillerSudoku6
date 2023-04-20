@@ -128,46 +128,38 @@ func load_stats():
 	else:
 		stats = [{}, {}, {}, {}, {}, {}, ]		# [0] for 入門問題生成
 	#print(stats)
-###
 func save_nSolved():
-##	var file = File.new()
-##	file.open(NSolvedFileName, File.WRITE)
-##	file.store_var(nSolved)
-##	file.close()
-	pass
+	var file = FileAccess.open(NSolvedFileName, FileAccess.WRITE)
+	file.store_var(nSolved)
+	file.close()
 func load_nSolved():
-##	var file = File.new()
-##	if file.file_exists(NSolvedFileName):		# 統計情報ファイル
-##		file.open(NSolvedFileName, File.READ)
-##		nSolved = file.get_var()
-##		file.close()
-##	else:
-##		nSolved = [0, 0, 0]		# [0] for 入門問題集
-	pass
+	if FileAccess.file_exists(NSolvedFileName):		# 統計情報ファイル
+		var file = FileAccess.open(NSolvedFileName, FileAccess.READ)
+		nSolved = file.get_var()
+		file.close()
+	else:
+		nSolved = [0, 0, 0]		# [0] for 入門問題集
 func save_todaysQuest():
-##	var file = File.new()
-##	file.open(TodaysQuestFileName, File.WRITE)
-##	file.store_var([tqSolvedYMD, tqSolvedSec, tqConsSolvedDays, tqMaxConsSolvedDays])
-##	file.close()
-	pass
+	var file = FileAccess.open(TodaysQuestFileName, FileAccess.WRITE)
+	file.store_var([tqSolvedYMD, tqSolvedSec, tqConsSolvedDays, tqMaxConsSolvedDays])
+	file.close()
 func load_todaysQuest():
-##	var file = File.new()
-##	if file.file_exists(TodaysQuestFileName):		# 統計情報ファイル
-##		file.open(TodaysQuestFileName, File.READ)
-##		var data = file.get_var()
-##		print("today's data = ", data)
-##		tqSolvedYMD = data[0]
-##		tqSolvedSec = data[1]
-##		if data.size() >= 4:
-##			tqConsSolvedDays = data[2]
-##			tqMaxConsSolvedDays = data[3]
-##		else:
-##			tqConsSolvedDays = 0
-##			tqMaxConsSolvedDays = 0
-##		file.close()
-##	else:
-##		tqSolvedYMD = ""
-##		tqSolvedSec = [-1, -1, -1]
+	if FileAccess.file_exists(TodaysQuestFileName):		# 統計情報ファイル
+		var file = FileAccess.open(TodaysQuestFileName, FileAccess.READ)
+		var data = file.get_var()
+		print("today's data = ", data)
+		tqSolvedYMD = data[0]
+		tqSolvedSec = data[1]
+		if data.size() >= 4:
+			tqConsSolvedDays = data[2]
+			tqMaxConsSolvedDays = data[3]
+		else:
+			tqConsSolvedDays = 0
+			tqMaxConsSolvedDays = 0
+		file.close()
+	else:
+		tqSolvedYMD = ""
+		tqSolvedSec = [-1, -1, -1]
 	pass
 func memo_label_pos(px, py, h, v):
 	return Vector2(px + CELL_WIDTH4*(h+1)-3, py + CELL_WIDTH3*(v+1))
