@@ -366,7 +366,7 @@ func update_all_status():
 		$MessLabel.text = "セルに入れる数字ボタンをクリックしてください。"
 	else:
 		$MessLabel.text = "数字ボタンまたは空セルをクリックしてください。"
-	##$CoinButton/NCoinLabel.text = str(g.env[g.KEY_N_COINS])
+	$HBC3/CoinButton/NCoinLabel.text = str(g.env[g.KEY_N_COINS])
 func update_nEmpty():
 	nEmpty = 0
 	for ix in range(N_CELLS):
@@ -980,7 +980,7 @@ func on_solved():
 			if g.tqConsSolvedDays > g.tqMaxConsSolvedDays:
 				g.tqMaxConsSolvedDays = g.tqConsSolvedDays		# 最大連続クリア日数
 			g.env[g.KEY_N_COINS] += g.TODAYS_QUEST_N_COINS
-			$CoinButton/NCoinLabel.text = str(g.env[g.KEY_N_COINS])
+			$HBC3/CoinButton/NCoinLabel.text = str(g.env[g.KEY_N_COINS])
 			g.save_environment()
 		g.tqSolvedYMD = g.today_string()
 		g.save_todaysQuest()
@@ -1678,9 +1678,9 @@ func _on_check_button_pressed():
 	if qCreating: return	# 問題生成中
 	##if g.env[g.KEY_N_COINS] < 1: return
 	##add_falling_coin()
-	##g.env[g.KEY_N_COINS] -= 1
-	##$CoinButton/NCoinLabel.text = str(g.env[g.KEY_N_COINS])
-	##g.save_environment()
+	g.env[g.KEY_N_COINS] -= 1
+	$HBC3/CoinButton/NCoinLabel.text = str(g.env[g.KEY_N_COINS])
+	g.save_environment()
 	var err = false
 	for ix in range(N_CELLS):
 		if input_labels[ix].text != "" && int(input_labels[ix].text) != ans_num[ix]:
