@@ -134,7 +134,7 @@
 0132 ● C 04/20            │ToDo│トップシーン：生成問題の統計情報表示
 0133 ● C 04/21            │ToDo│数字ボタン選択状態：ボタン背景が青系にならない
 0134 ◎ C 04/21 04/21 0.001│ToDo│load_nSolved(), save_nSolved() 実装
-0135 ● C 04/21            │ToDo│
+0135 ◎ C 04/21 04/21 0.001│ToDo│load_environment(), save_environment()
 0136 ● C 04/21            │ToDo│
 0137 ● C 04/21            │ToDo│
 0138 ● C 04/21            │ToDo│

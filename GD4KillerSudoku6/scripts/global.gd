@@ -86,20 +86,18 @@ func auto_save(solving : bool, board : Array):
 	var file = FileAccess.open(AutoSaveFileName, FileAccess.WRITE)
 	file.store_var(saved_data)
 	file.close()
-##func load_environment():
-##	var file = File.new()
-##	if file.file_exists(EnvFileName):		# 設定ファイル
-##		file.open(EnvFileName, File.READ)
-##		env = file.get_var()
-##		file.close()
-##	if !env.has(KEY_N_COINS): env[KEY_N_COINS] = INIT_N_COINS
-##	if env[KEY_N_COINS] < 0: env[KEY_N_COINS] = 0
-##	if env[KEY_N_COINS] == 0: env[KEY_N_COINS] = 50		# for Test
+func load_environment():
+	if FileAccess.file_exists(EnvFileName):		# 設定ファイル
+		var file = FileAccess.open(EnvFileName, FileAccess.READ)
+		env = file.get_var()
+		file.close()
+	if !env.has(KEY_N_COINS): env[KEY_N_COINS] = INIT_N_COINS
+	if env[KEY_N_COINS] < 0: env[KEY_N_COINS] = 0
+	if env[KEY_N_COINS] == 0: env[KEY_N_COINS] = 50		# for Test
 func save_environment():
-##	var file = File.new()
-##	file.open(EnvFileName, File.WRITE)
-##	file.store_var(env)
-##	file.close()
+	var file = FileAccess.open(EnvFileName, FileAccess.WRITE)
+	file.store_var(env)
+	file.close()
 	pass
 func load_settings():
 ##	var file = File.new()
