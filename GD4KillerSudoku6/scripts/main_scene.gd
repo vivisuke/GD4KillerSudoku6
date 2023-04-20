@@ -180,6 +180,7 @@ func _ready():
 	for i in range(N_HORZ):
 		num_buttons.push_back(get_node("HBC%d/Button%d" % [i/3+1, (i+1)]))
 	#
+	$HBC3/CoinButton/NCoinLabel.text = str(g.env[g.KEY_N_COINS])
 	gen_ans()
 	#gen_cages()
 	gen_quest()
