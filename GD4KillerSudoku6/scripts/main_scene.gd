@@ -153,6 +153,7 @@ var rng = RandomNumberGenerator.new()
 #var tm = Time.get_ticks_msec()
 var FallingChar = load("res://falling_char.tscn")
 var FallingMemo = load("res://falling_memo.tscn")
+var FallingCoin = load("res://falling_coin.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -1166,8 +1167,8 @@ func add_falling_memo(num : int, ix : int):
 	add_child(fc)
 	pass
 func add_falling_coin():
-	var fc = Label.new()	# ほんとは TextureRect
-	fc.position = $CoinButton.position + $CoinButton.rect.size() / 2
+	var fc = FallingCoin.instantiate()
+	fc.position = $HBC3/CoinButton.to_global($HBC3/CoinButton.position) + $HBC3/CoinButton.size / 2
 	var th = rng.randf_range(0, 3.1415926535*2)
 	fc.linear_velocity = Vector2(cos(th), sin(th))*100
 	fc.angular_velocity = rng.randf_range(0, 1)
@@ -1676,8 +1677,8 @@ func _on_redo_button_pressed():
 func _on_check_button_pressed():
 	if paused: return		# ポーズ中
 	if qCreating: return	# 問題生成中
-	##if g.env[g.KEY_N_COINS] < 1: return
-	##add_falling_coin()
+	if g.env[g.KEY_N_COINS] < 1: return
+	add_falling_coin()
 	g.env[g.KEY_N_COINS] -= 1
 	$HBC3/CoinButton/NCoinLabel.text = str(g.env[g.KEY_N_COINS])
 	g.save_environment()
