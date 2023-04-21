@@ -1168,7 +1168,7 @@ func add_falling_memo(num : int, ix : int):
 	pass
 func add_falling_coin():
 	var fc = FallingCoin.instantiate()
-	fc.position = $HBC3/CoinButton.to_global($HBC3/CoinButton.position) + $HBC3/CoinButton.size / 2
+	fc.position = $HBC3.position + $HBC3/CoinButton.position + $HBC3/CoinButton.size / 2
 	var th = rng.randf_range(0, 3.1415926535*2)
 	fc.linear_velocity = Vector2(cos(th), sin(th))*100
 	fc.angular_velocity = rng.randf_range(0, 1)
