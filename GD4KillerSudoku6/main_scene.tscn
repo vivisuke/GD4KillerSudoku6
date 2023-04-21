@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=3 uid="uid://df63unibnxvr5"]
+[gd_scene load_steps=55 format=3 uid="uid://df63unibnxvr5"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_j8s1i"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ltfgv"]
@@ -47,6 +47,7 @@
 [ext_resource type="Texture2D" uid="uid://dpsl53fjnrpyh" path="res://images/skip_next_white.png" id="33_l0fyx"]
 [ext_resource type="Texture2D" uid="uid://iuao1th8p52s" path="res://images/loop_white.png" id="33_oto57"]
 [ext_resource type="Texture2D" uid="uid://bedfilgy8gi46" path="res://images/backspace_BelizeHole.png" id="37_2tg2l"]
+[ext_resource type="AudioStream" uid="uid://bbbn2ht8knmri" path="res://sounds/correct.mp3" id="45_axvrh"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_l5jc0"]
 texture = ExtResource("4_6xb5c")
@@ -565,6 +566,10 @@ stream = ExtResource("22_e8kby")
 [node name="Incorrect" type="AudioStreamPlayer2D" parent="Audio"]
 position = Vector2(250, 450)
 stream = ExtResource("23_6p0ak")
+
+[node name="Correct" type="AudioStreamPlayer2D" parent="Audio"]
+position = Vector2(250, 450)
+stream = ExtResource("45_axvrh")
 
 [node name="NumCompleted" type="AudioStreamPlayer2D" parent="Audio"]
 position = Vector2(250, 450)

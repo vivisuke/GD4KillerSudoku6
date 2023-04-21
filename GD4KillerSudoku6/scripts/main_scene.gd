@@ -1693,8 +1693,8 @@ func _on_check_button_pressed():
 			$Audio/Incorrect.play()
 	else:
 		$MessLabel.text = "間違って入っている数字はありません。"
-		##if sound:
-		##	$Audio/Correct.play()
+		if sound:
+			$Audio/Correct.play()
 
 
 func _on_back_button_pressed():
