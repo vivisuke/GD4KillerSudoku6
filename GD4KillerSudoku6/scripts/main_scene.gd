@@ -428,10 +428,10 @@ func _process(delta):
 		var m = sec / 60
 		sec -= m * 60
 		$TimeLabel.text = "%02d:%02d:%02d" % [h, m, sec]
-	##if confetti_count_down > 0.0:
-	##	confetti_count_down -= delta
-	##	if confetti_count_down <= 0.0:
-	##		$FakeConfettiParticles.emitting = false
+	if confetti_count_down > 0.0:
+		confetti_count_down -= delta
+		if confetti_count_down <= 0.0:
+			$CPUParticles2D.emitting = false
 	##if hint_count_down > 0.0:
 	##	hint_count_down -= delta
 	##	if hint_count_down <= 0.0:
@@ -1602,7 +1602,7 @@ func _on_del_memo_button_pressed():
 
 func _on_next_button_pressed():
 	if paused: return		# ポーズ中
-	##$FakeConfettiParticles.emitting = false
+	$CPUParticles2D.emitting = false
 	#g.auto_save(false, [])
 	saved_cell_data = []
 	##$SolvedLayer.hide()

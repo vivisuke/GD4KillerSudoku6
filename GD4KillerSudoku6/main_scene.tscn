@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=3 uid="uid://df63unibnxvr5"]
+[gd_scene load_steps=56 format=3 uid="uid://df63unibnxvr5"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_j8s1i"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ltfgv"]
@@ -41,6 +41,7 @@
 [ext_resource type="Texture2D" uid="uid://h65sn7lbycy7" path="res://images/deselect_white.png" id="28_ncf1d"]
 [ext_resource type="Texture2D" uid="uid://dgcy303al5xia" path="res://images/backspace_black.png" id="29_xx2c0"]
 [ext_resource type="Texture2D" uid="uid://bhjfklpvlht5x" path="res://images/first_page_black.png" id="30_2b01f"]
+[ext_resource type="Texture2D" uid="uid://bcejmbdam38c2" path="res://images/space17.png" id="30_i70rx"]
 [ext_resource type="Texture2D" uid="uid://basg0uvvwmpiq" path="res://images/first_page_white.png" id="31_3jio0"]
 [ext_resource type="Texture2D" uid="uid://pqdjfiobgakq" path="res://images/volume_up.png" id="31_wmhh0"]
 [ext_resource type="Texture2D" uid="uid://b41jpfr3dsmmk" path="res://images/skip_next_black.png" id="32_pa8pe"]
@@ -446,7 +447,7 @@ horizontal_alignment = 1
 
 [node name="Space1" type="TextureRect" parent="HBC3"]
 layout_mode = 2
-texture = ExtResource("24_vkisw")
+texture = ExtResource("30_i70rx")
 
 [node name="SoundButton" type="TextureButton" parent="HBC3"]
 layout_mode = 2
@@ -539,7 +540,7 @@ horizontal_alignment = 1
 
 [node name="Space6" type="TextureRect" parent="HBC3"]
 layout_mode = 2
-texture = ExtResource("24_vkisw")
+texture = ExtResource("30_i70rx")
 
 [node name="NextButton" type="TextureButton" parent="HBC3"]
 layout_mode = 2
