@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://ce2a1nba7qoat"]
+
+[ext_resource type="Texture2D" uid="uid://g6v6gjtxxmo1" path="res://images/task_alt_white.png" id="1_s5sfq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cp3fg"]
+bg_color = Color(0.180392, 0.309804, 0.309804, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 1, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_size = 8
+shadow_offset = Vector2(4, 4)
+
+[node name="QuestPanel" type="ReferenceRect"]
+offset_right = 450.0
+offset_bottom = 80.0
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_right = 440.0
+offset_bottom = 70.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_cp3fg")
+icon = ExtResource("1_s5sfq")

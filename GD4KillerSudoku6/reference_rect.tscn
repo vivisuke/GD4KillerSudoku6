@@ -1,5 +1,0 @@
-[gd_scene format=3 uid="uid://ce2a1nba7qoat"]
-
-[node name="ReferenceRect" type="ReferenceRect"]
-offset_right = 450.0
-offset_bottom = 80.0

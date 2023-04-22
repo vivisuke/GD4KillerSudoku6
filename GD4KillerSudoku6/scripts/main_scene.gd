@@ -478,6 +478,25 @@ func remove_candidates_in_cage():	# 各ケージで不可能な候補数字を�
 		var b = cage_bits(cage)
 		for i in range(cage[CAGE_IX_LIST].size()):
 			candidates_bit[cage[CAGE_IX_LIST][i]] &= b
+func remove_lonely_candidates():	# 2セルケージで、相手がいない候補数字を消す
+	for cx in range(cage_list.size()):
+		var cage = cage_list[cx]
+		if cage[CAGE_IX_LIST].size() == 2:	# 2セルケージ
+			var cb0 = candidates_bit[cage[CAGE_IX_LIST][0]]
+			var cb1 = candidates_bit[cage[CAGE_IX_LIST][1]]
+			var mask = 1
+			for n in range(1, N_HORZ+1):
+				if (cb0 & mask) != 0:
+					var b = num_to_bit(cage[CAGE_SUM] - bit_to_num(mask))
+					if (cb1 & b) == 0:	# 相手がいない場合
+						cb0 ^= mask
+				if (cb1 & mask) != 0:
+					var b = num_to_bit(cage[CAGE_SUM] - bit_to_num(mask))
+					if (cb0 & b) == 0:	# 相手がいない場合
+						cb1 ^= mask
+				mask <<= 1
+			candidates_bit[cage[CAGE_IX_LIST][0]] = cb0
+			candidates_bit[cage[CAGE_IX_LIST][1]] = cb1
 func gen_ans_sub(ix : int, line_used):
 	#print_cells()
 	#print_box_used()
@@ -1538,6 +1557,11 @@ func _on_hint_button_pressed():
 	bix = find_hidden_single()
 	print("hidden single basic: ", bix)
 	remove_candidates_in_cage()		# 各ケージに入らない候補数字削除
+	bix = find_hidden_single()
+	print("hidden single cand: ", bix)
+	bix = find_naked_single()
+	print("naked single: ", bix)
+	remove_lonely_candidates()		# 相手がいない候補数字を削除
 	bix = find_hidden_single()
 	print("hidden single cand: ", bix)
 	bix = find_naked_single()
