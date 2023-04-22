@@ -1525,7 +1525,9 @@ func find_hidden_single_sub(x0:int, y0:int, wd:int, ht:int):
 			#b0 ^= c
 			#print("c, b1, b2 = 0x%x, 0x%x, 0x%x" % [c, b1, b2])
 	b1 &= ~b2
-	if b1 == 0 || ((b1-1)&b1) != 0: return [-1, -1]
+	#if b1 == 0 || ((b1-1)&b1) != 0: return [-1, -1]
+	if b1 == 0: return [-1, -1]
+	b1 &= -b1		# 最下位のビットのみ取り出す
 	for v in range(ht):
 		for h in range(wd):
 			var ix = xyToIX(x0+h, y0+v)
