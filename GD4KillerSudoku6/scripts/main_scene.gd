@@ -158,6 +158,7 @@ var FallingCoin = load("res://falling_coin.tscn")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	print("todaysQuest = ", g.todaysQuest)
+	find_hidden_single_test([0b101000, 0b100001, 0b100001, 0b100010, 0b000000, 0b000000])
 	if g.qNumber != 0:
 		g.qName = "%06d" % g.qNumber
 	$TitleBar/Label.text = titleText()
@@ -559,6 +560,24 @@ func print_cells():
 		for x in range(N_HORZ):
 			var n = bit_to_num(cell_bit[ix])
 			#input_labels[ix].text = str(n)
+			lst.push_back(n)
+			ix += 1
+		print(lst)
+	print("")
+func to_binstr(n, nbits) -> String:
+	var t = ""
+	var mask = 1 << (nbits-1)
+	while mask != 0:
+		t += "1" if (n&mask) != 0 else "0"
+		mask >>= 1
+	return t
+func print_candidates():
+	var ix = 0
+	for y in range(N_VERT):
+		var lst = []
+		for x in range(N_HORZ):
+			#var n = "0b%06b" % candidates_bit[ix]
+			var n = to_binstr(candidates_bit[ix], 6)
 			lst.push_back(n)
 			ix += 1
 		print(lst)
@@ -1484,6 +1503,14 @@ func find_naked_single():
 		if c != 0 && ((c-1)&c) == 0:
 			return [ix, bit_to_num(c)]
 	return [-1, -1]
+func find_hidden_single_test(c: Array):
+	var b1 = 0			# ビットの数が1
+	var b2 = 0			# ビットの数が2以上
+	for i in range(c.size()):
+		b2 |= c[i] & b1
+		b1 ^= c[i]
+	b1 &= ~b2
+	print("b1 = ", to_binstr(b1, 6))
 # 指定エリア内で候補数字数を数え、一箇所だけの位置・数字を返す
 func find_hidden_single_sub(x0:int, y0:int, wd:int, ht:int):
 	#var b0 = 0b111111	# ビットの数が0
@@ -1538,6 +1565,14 @@ func find_pos_num():
 	remove_candidates_in_cage()		# 各ケージに入らない候補数字削除
 	r = find_hidden_single()
 	if r[0] >= 0: return r
+	r = find_naked_single()
+	if r[0] >= 0: return r
+	remove_lonely_candidates()		# 相手がいない候補数字を削除
+	r = find_hidden_single()
+	if r[0] >= 0: return r
+	r = find_naked_single()
+	if r[0] >= 0: return r
+	print_candidates()
 	return [-1, -1]
 
 func _on_hint_button_pressed():
