@@ -481,7 +481,10 @@ func remove_candidates_in_cage():	# 各ケージで不可能な候補数字を�
 		var b = cage_bits(cage)
 		for i in range(cage[CAGE_IX_LIST].size()):
 			candidates_bit[cage[CAGE_IX_LIST][i]] &= b
-func remove_locked_candidates_by_2cc():	# 2セルケージによりロックされた候補数字を消す
+# 2セルケージによりロックされた候補数字を消す
+# return: 候補数字を消したか？
+func remove_locked_candidates_by_2cc() -> bool:
+	var rmvd = false
 	for cx in range(cage_list.size()):
 		var cage = cage_list[cx]
 		if cage[CAGE_IX_LIST].size() == 2:	# 2セルケージ
@@ -497,14 +500,16 @@ func remove_locked_candidates_by_2cc():	# 2セルケージによりロックさ�
 			if maxix - minix == 1:		# 水平方向
 				var ix = minix - minix % N_HORZ		# 左端位置
 				for x in range(N_HORZ):
-					if ix < minix || ix > maxix:
+					if (ix < minix || ix > maxix) && (candidates_bit[ix] & mask) != 0:
 						candidates_bit[ix] &= ~mask
+						rmvd = true
 					ix += 1
 			else:	# 垂直方向
 				var ix = minix % N_HORZ		# 上端位置
 				for y in range(N_VERT):
-					if ix < minix || ix > maxix:
+					if (ix < minix || ix > maxix) && (candidates_bit[ix] & mask) != 0:
 						candidates_bit[ix] &= ~mask
+						rmvd = true
 					ix += N_HORZ
 			var x1 = minix % N_HORZ
 			var y1 = minix / N_HORZ
@@ -516,10 +521,14 @@ func remove_locked_candidates_by_2cc():	# 2セルケージによりロックさ�
 				for v in range(2):
 					for h in range(3):
 						var ix = xyToIX(x0+h, y0+v)
-						if ix != minix && ix != maxix:
+						if ix != minix && ix != maxix && (candidates_bit[ix] & mask) != 0:
 							candidates_bit[ix] &= ~mask
-	pass
-func remove_lonely_candidates():	# 2セルケージで、相手がいない候補数字を消す
+							rmvd = true
+	return rmvd
+# 2セルケージで、相手がいない候補数字を消す
+# return: 候補数字を消したか？
+func remove_lonely_candidates() -> bool:
+	var rmvd = false
 	for cx in range(cage_list.size()):
 		var cage = cage_list[cx]
 		if cage[CAGE_IX_LIST].size() == 2:	# 2セルケージ
@@ -531,13 +540,16 @@ func remove_lonely_candidates():	# 2セルケージで、相手がいない候�
 					var b = num_to_bit(cage[CAGE_SUM] - bit_to_num(mask))
 					if (cb1 & b) == 0:	# 相手がいない場合
 						cb0 ^= mask
+						rmvd = true
 				if (cb1 & mask) != 0:
 					var b = num_to_bit(cage[CAGE_SUM] - bit_to_num(mask))
 					if (cb0 & b) == 0:	# 相手がいない場合
 						cb1 ^= mask
+						rmvd = true
 				mask <<= 1
 			candidates_bit[cage[CAGE_IX_LIST][0]] = cb0
 			candidates_bit[cage[CAGE_IX_LIST][1]] = cb1
+	return rmvd
 func gen_ans_sub(ix : int, line_used):
 	#print_cells()
 	#print_box_used()
@@ -1089,7 +1101,7 @@ func remove_memo_num(ix : int, num : int):		# ix に num を入れたときに�
 	var lst = []
 	var x = ix % N_HORZ
 	var y = ix / N_HORZ
-	for h in range(N_HORZ):
+	for h in range(N_HORZ):		# 水平垂直方向チェック
 		var ix2 = xyToIX(h, y)
 		if memo_labels[ix2][num-1].text != "":
 			add_falling_memo(num, ix2)
@@ -1102,7 +1114,7 @@ func remove_memo_num(ix : int, num : int):		# ix に num を入れたときに�
 			lst.push_back(ix2)
 	var x0 = x - x % 3
 	var y0 = y - y % 2
-	for v in range(N_BOX_VERT):
+	for v in range(N_BOX_VERT):		# ブロック内チェック
 		for h in range(N_BOX_HORZ):
 			var ix2 = xyToIX(x0 + h, y0 + v)
 			if memo_labels[ix2][num-1].text != "":
@@ -1674,15 +1686,21 @@ func do_auto_memo():
 	if auto_memo_level == 0:
 		init_candidates()		# 可能候補数字計算 → candidates_bit[]
 		remove_candidates_in_cage()	# 各ケージで不可能な候補数字を消す
-	elif auto_memo_level == 1:
-		print("remove_locked_candidates_by_2cc()")
-		remove_locked_candidates_by_2cc()	# 2セルケージによりロックされた候補数字を消す
-	elif auto_memo_level == 2:
-		print("remove_lonely_candidates()")
-		remove_lonely_candidates()	# 2セルケージで、相手がいない候補数字を消す
+		auto_memo_level = 1
 	else:
-		return
-	auto_memo_level += 1
+		print_candidates()
+		if !remove_locked_candidates_by_2cc():	# 2セルケージによりロックされた候補数字を消す
+			if !remove_lonely_candidates():	# 2セルケージで、相手がいない候補数字を消す
+				return		# 候補数字を消せなかった
+	#elif auto_memo_level == 1:
+	#	print("remove_locked_candidates_by_2cc()")
+	#	remove_locked_candidates_by_2cc()	# 2セルケージによりロックされた候補数字を消す
+	#elif auto_memo_level == 2:
+	#	print("remove_lonely_candidates()")
+	#	remove_lonely_candidates()	# 2セルケージで、相手がいない候補数字を消す
+	#else:
+	#	return
+	#auto_memo_level += 1
 	for ix in range(N_CELLS):
 		#var bits = 0		# 以前の状態
 		if get_cell_numer(ix) != 0:		# 数字が入っている場合
