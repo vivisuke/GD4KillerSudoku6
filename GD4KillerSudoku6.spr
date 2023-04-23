@@ -159,9 +159,9 @@
 0157 ◎ C 04/23 04/23 0.001│ToDo│数字を入れずに auto 押下：候補数字を消していく
 0158 ◎ C 04/23 04/23 0.001│ToDo│remove_lonely_candidates() より remove_candidates_in_cage() を後にする
 0159 ◎ C 04/23 04/23 0.001│ToDo│remove_locked_candidates() 実装
-0160 ● C 04/23            │ToDo│
-0161 ● C 04/23            │ToDo│
-0162 ● C 04/23            │ToDo│
+0160 ● C 04/23            │ToDo│３セル以上ケージに数字が入っている場合は、その数字を除いて可能な候補数字を計算
+0161 ◎ C 04/23 04/23 0.001│ToDo│locked candidates：同じブロックであれば、そのブロックの候補も削除
+0162 ● C 04/23            │ToDo│数字を入れた場合：当該ケージ候補数字を再計算？
 0163 ● C 04/23            │ToDo│
 0164 ● C 04/23            │ToDo│
 0165 ● C 04/23            │ToDo│

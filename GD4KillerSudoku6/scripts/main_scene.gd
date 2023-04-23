@@ -481,7 +481,7 @@ func remove_candidates_in_cage():	# 各ケージで不可能な候補数字を�
 		var b = cage_bits(cage)
 		for i in range(cage[CAGE_IX_LIST].size()):
 			candidates_bit[cage[CAGE_IX_LIST][i]] &= b
-func remove_locked_candidates():	# 2セルケージによりロックされた候補数字を消す
+func remove_locked_candidates_by_2cc():	# 2セルケージによりロックされた候補数字を消す
 	for cx in range(cage_list.size()):
 		var cage = cage_list[cx]
 		if cage[CAGE_IX_LIST].size() == 2:	# 2セルケージ
@@ -506,6 +506,18 @@ func remove_locked_candidates():	# 2セルケージによりロックされた�
 					if ix < minix || ix > maxix:
 						candidates_bit[ix] &= ~mask
 					ix += N_HORZ
+			var x1 = minix % N_HORZ
+			var y1 = minix / N_HORZ
+			var x2 = maxix % N_HORZ
+			var y2 = maxix / N_HORZ
+			if x1 / 3 == x2 / 3 && y1 / 2 == y2 / 2:	# 同じブロックにいる場合
+				var x0 = x1 - x1 % 3		# ブロック左上座標
+				var y0 = y1 - y1 % 2
+				for v in range(2):
+					for h in range(3):
+						var ix = xyToIX(x0+h, y0+v)
+						if ix != minix && ix != maxix:
+							candidates_bit[ix] &= ~mask
 	pass
 func remove_lonely_candidates():	# 2セルケージで、相手がいない候補数字を消す
 	for cx in range(cage_list.size()):
@@ -1663,8 +1675,8 @@ func do_auto_memo():
 		init_candidates()		# 可能候補数字計算 → candidates_bit[]
 		remove_candidates_in_cage()	# 各ケージで不可能な候補数字を消す
 	elif auto_memo_level == 1:
-		print("remove_locked_candidates()")
-		remove_locked_candidates()	# 2セルケージによりロックされた候補数字を消す
+		print("remove_locked_candidates_by_2cc()")
+		remove_locked_candidates_by_2cc()	# 2セルケージによりロックされた候補数字を消す
 	elif auto_memo_level == 2:
 		print("remove_lonely_candidates()")
 		remove_lonely_candidates()	# 2セルケージで、相手がいない候補数字を消す
