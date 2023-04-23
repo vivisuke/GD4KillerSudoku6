@@ -110,6 +110,7 @@ var hint_next_pos0			# 次ボタン初期位置
 var hint_next_vy			# 次ボタン速度
 var saved_cell_data = []
 
+var auto_memo_level = 0		# 自動候補数字レベル
 #var hint_next_scale = 1.0	# ヒント次ボタン表示スケール
 #var hint_num				# ヒントで確定する数字、[1, 9]
 var hint_numstr				# ヒントで確定する数字、[1, 9]
@@ -158,7 +159,7 @@ var FallingCoin = load("res://falling_coin.tscn")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	print("todaysQuest = ", g.todaysQuest)
-	find_hidden_single_test([0b101000, 0b100001, 0b100001, 0b100010, 0b000000, 0b000000])
+	#find_hidden_single_test([0b101000, 0b100001, 0b100001, 0b100010, 0b000000, 0b000000])
 	if g.qNumber != 0:
 		g.qName = "%06d" % g.qNumber
 	$TitleBar/Label.text = titleText()
@@ -169,6 +170,7 @@ func _ready():
 	ans_num.resize(N_CELLS)
 	#ans_bit.resize(N_CELLS)
 	candidates_bit.resize(N_CELLS)
+	#candidates_bit.fill(0)
 	cage_ix.resize(N_CELLS)
 	line_used.resize(N_HORZ)
 	column_used.resize(N_HORZ)
@@ -479,6 +481,32 @@ func remove_candidates_in_cage():	# 各ケージで不可能な候補数字を�
 		var b = cage_bits(cage)
 		for i in range(cage[CAGE_IX_LIST].size()):
 			candidates_bit[cage[CAGE_IX_LIST][i]] &= b
+func remove_locked_candidates():	# 2セルケージによりロックされた候補数字を消す
+	for cx in range(cage_list.size()):
+		var cage = cage_list[cx]
+		if cage[CAGE_IX_LIST].size() == 2:	# 2セルケージ
+			var mask
+			if cage[CAGE_SUM] == 3: mask = BIT_1 | BIT_2
+			elif cage[CAGE_SUM] == 4: mask = BIT_1 | BIT_3
+			elif cage[CAGE_SUM] == 10: mask = BIT_4 | BIT_6
+			elif cage[CAGE_SUM] == 11: mask = BIT_5 | BIT_6
+			else: continue
+			#var d = abs(cage[CAGE_IX_LIST][0] - cage[CAGE_IX_LIST][1])
+			var minix = min(cage[CAGE_IX_LIST][0], cage[CAGE_IX_LIST][1])
+			var maxix = max(cage[CAGE_IX_LIST][0], cage[CAGE_IX_LIST][1])
+			if maxix - minix == 1:		# 水平方向
+				var ix = minix - minix % N_HORZ		# 左端位置
+				for x in range(N_HORZ):
+					if ix < minix || ix > maxix:
+						candidates_bit[ix] &= ~mask
+					ix += 1
+			else:	# 垂直方向
+				var ix = minix % N_HORZ		# 上端位置
+				for y in range(N_VERT):
+					if ix < minix || ix > maxix:
+						candidates_bit[ix] &= ~mask
+					ix += N_HORZ
+	pass
 func remove_lonely_candidates():	# 2セルケージで、相手がいない候補数字を消す
 	for cx in range(cage_list.size()):
 		var cage = cage_list[cx]
@@ -1570,6 +1598,7 @@ func find_pos_num():
 	r = find_naked_single()
 	if r[0] >= 0: return r
 	remove_lonely_candidates()		# 相手がいない候補数字を削除
+	print_candidates()
 	r = find_hidden_single()
 	if r[0] >= 0: return r
 	r = find_naked_single()
@@ -1612,7 +1641,13 @@ func _on_hint_button_pressed():
 		$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_CURSOR, Vector2i(0, 0))
 	pass # Replace with function body.
 
-
+func check_candidates() -> bool:		# 候補数字に間違いがないか？ true for OK
+	if !(candidates_bit[0] is int): return false
+	for ix in range(N_CELLS):
+		if get_cell_numer(ix) == 0:		# 数字が入っていない場合
+			if (candidates_bit[ix] & num_to_bit(ans_num[ix])) == 0:
+				return false
+	return true
 func cage_bits(cage):
 	var sum = cage[CAGE_SUM]
 	var nc = cage[CAGE_IX_LIST].size()		# セル数
@@ -1621,9 +1656,21 @@ func cage_bits(cage):
 	else:
 		return CAGE_TABLE[nc-2][sum-3]
 func do_auto_memo():
+	if !check_candidates():
+		auto_memo_level = 0
 	#init_cell_bit()
-	init_candidates()		# 可能候補数字計算 → candidates_bit[]
-	remove_candidates_in_cage()
+	if auto_memo_level == 0:
+		init_candidates()		# 可能候補数字計算 → candidates_bit[]
+		remove_candidates_in_cage()	# 各ケージで不可能な候補数字を消す
+	elif auto_memo_level == 1:
+		print("remove_locked_candidates()")
+		remove_locked_candidates()	# 2セルケージによりロックされた候補数字を消す
+	elif auto_memo_level == 2:
+		print("remove_lonely_candidates()")
+		remove_lonely_candidates()	# 2セルケージで、相手がいない候補数字を消す
+	else:
+		return
+	auto_memo_level += 1
 	for ix in range(N_CELLS):
 		#var bits = 0		# 以前の状態
 		if get_cell_numer(ix) != 0:		# 数字が入っている場合
@@ -1647,6 +1694,7 @@ func remove_all_memo_at(ix):
 			add_falling_memo(int(memo_labels[ix][i].text), ix)
 			memo_labels[ix][i].text = ""
 func remove_all_memo():
+	auto_memo_level = 0
 	for ix in range(N_CELLS):
 		for i in range(N_HORZ):
 			if memo_labels[ix][i].text != "":
