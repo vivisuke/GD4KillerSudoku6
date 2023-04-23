@@ -165,7 +165,7 @@
 0163 ● C 04/23            │ToDo│3, 4, 10, 11 以外の２セルケージでも、候補が２種類になった場合は locked cand. 処理を行う
 0164 ● B 04/23            │ToDo│locked_cand. と lonely_cand. を可能な限り繰り返す
 0165 ◎ C 04/23 04/24 0.001│ToDo│remove_lonely_candidates() 等は、候補数字を消したかどうかの情報を返す
-0166 ● C 04/24            │問題│片方に数字が入っている２セルケージ：remove_lonely_candidates() で候補数字が全て消えてしまう
+0166 ◎ C 04/24 04/24 0.001│問題│片方に数字が入っている２セルケージ：remove_lonely_candidates() で候補数字が全て消えてしまう
 0167 ● C 04/24            │ToDo│
 0168 ● C 04/24            │ToDo│
 0169 ● C 04/24            │ToDo│

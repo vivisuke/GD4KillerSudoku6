@@ -532,23 +532,24 @@ func remove_lonely_candidates() -> bool:
 	for cx in range(cage_list.size()):
 		var cage = cage_list[cx]
 		if cage[CAGE_IX_LIST].size() == 2:	# 2セルケージ
-			var cb0 = candidates_bit[cage[CAGE_IX_LIST][0]]
-			var cb1 = candidates_bit[cage[CAGE_IX_LIST][1]]
-			var mask = 1
-			for n in range(1, N_HORZ+1):
-				if (cb0 & mask) != 0:
-					var b = num_to_bit(cage[CAGE_SUM] - bit_to_num(mask))
-					if (cb1 & b) == 0:	# 相手がいない場合
-						cb0 ^= mask
-						rmvd = true
-				if (cb1 & mask) != 0:
-					var b = num_to_bit(cage[CAGE_SUM] - bit_to_num(mask))
-					if (cb0 & b) == 0:	# 相手がいない場合
-						cb1 ^= mask
-						rmvd = true
-				mask <<= 1
-			candidates_bit[cage[CAGE_IX_LIST][0]] = cb0
-			candidates_bit[cage[CAGE_IX_LIST][1]] = cb1
+			if get_cell_numer(cage[CAGE_IX_LIST][0]) == 0 && get_cell_numer(cage[CAGE_IX_LIST][1]) == 0:
+				var cb0 = candidates_bit[cage[CAGE_IX_LIST][0]]
+				var cb1 = candidates_bit[cage[CAGE_IX_LIST][1]]
+				var mask = 1
+				for n in range(1, N_HORZ+1):
+					if (cb0 & mask) != 0:
+						var b = num_to_bit(cage[CAGE_SUM] - bit_to_num(mask))
+						if (cb1 & b) == 0:	# 相手がいない場合
+							cb0 ^= mask
+							rmvd = true
+					if (cb1 & mask) != 0:
+						var b = num_to_bit(cage[CAGE_SUM] - bit_to_num(mask))
+						if (cb0 & b) == 0:	# 相手がいない場合
+							cb1 ^= mask
+							rmvd = true
+					mask <<= 1
+				candidates_bit[cage[CAGE_IX_LIST][0]] = cb0
+				candidates_bit[cage[CAGE_IX_LIST][1]] = cb1
 	return rmvd
 func gen_ans_sub(ix : int, line_used):
 	#print_cells()
