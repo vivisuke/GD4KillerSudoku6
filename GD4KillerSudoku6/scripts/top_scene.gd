@@ -6,11 +6,13 @@ const LVL_BEGINNER = 0
 const LVL_EASY = 1
 const LVL_NORMAL = 2
 
+var Board6x6 = preload("res://scripts/Board6x6.gd")
+
 var buttons = []
 #onready var g = get_node("/root/Global")
 
 func _ready():
-	var bd = g.Board6x6.new()
+	var bd = Board6x6.new()
 	bd.gen_ans()
 	bd.print_ans_num()
 	bd.print_cells()
