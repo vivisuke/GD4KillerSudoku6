@@ -2,11 +2,23 @@ extends Node2D
 
 
 const N_BUTTONS = 6
+const LVL_BEGINNER = 0
+const LVL_EASY = 1
+const LVL_NORMAL = 2
 
 var buttons = []
 #onready var g = get_node("/root/Global")
 
 func _ready():
+	var bd = g.Board6x6.new()
+	bd.gen_ans()
+	bd.print_ans_num()
+	bd.print_cells()
+	bd.gen_quest(LVL_BEGINNER, "q")
+	bd.print_ans_num()
+	bd.print_cells()
+	bd.print_cages()
+	#
 	#print(g.yesterday_string())
 	g.todaysQuest = false
 	g.load_environment()
