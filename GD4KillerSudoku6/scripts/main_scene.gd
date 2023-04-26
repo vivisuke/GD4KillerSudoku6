@@ -85,6 +85,7 @@ const CAGE_TABLE = [
 	],
 ]
 
+var bd						# 盤面オブジェクト
 var qix                 	# 問題番号 [0, N]
 var qID                 	# 問題ID
 var qSolved = false     	# 現問題をクリア済みか？
@@ -155,9 +156,11 @@ var rng = RandomNumberGenerator.new()
 var FallingChar = load("res://falling_char.tscn")
 var FallingMemo = load("res://falling_memo.tscn")
 var FallingCoin = load("res://falling_coin.tscn")
+var Board6x6 = preload("res://scripts/Board6x6.gd")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	bd = Board6x6.new()
 	print("todaysQuest = ", g.todaysQuest)
 	#find_hidden_single_test([0b101000, 0b100001, 0b100001, 0b100010, 0b000000, 0b000000])
 	if g.qNumber != 0:
@@ -185,8 +188,9 @@ func _ready():
 		num_buttons.push_back(get_node("HBC%d/Button%d" % [i/3+1, (i+1)]))
 	#
 	$HBC3/CoinButton/NCoinLabel.text = str(g.env[g.KEY_N_COINS])
-	gen_ans()
+	#gen_ans()
 	#gen_cages()
+	for i in range(N_CELLS): input_labels[i].text = ""
 	gen_quest()
 	$CanvasLayer/ColorRect.material.set("shader_param/size", 0)
 	pass # Replace with function body.
@@ -208,30 +212,38 @@ func gen_quest():
 			$TitleBar/Label.text = titleText()
 	var stxt = g.qName+str(g.qLevel)
 	if g.qNumber != 0: stxt += "Q"
-	seed(stxt.hash())
-	rng.set_seed(stxt.hash())
-	while true:
-		gen_ans()
-		gen_cages()
-		if g.qLevel == LVL_BEGINNER:
-			if count_n_cell_cage(1) < 8:
-				continue			# 再生成
-		#	#split_2cell_cage()		# 1セルケージ数が４未満なら２セルケージを分割
-		#el
-		if g.qLevel == LVL_NORMAL:
-			merge_2cell_cage()
-			#if count_n_cell_cage(3) <= 3:
-			#merge_2cell_cage()
-		#print_cages()
-		#gen_cages_3x2()		# 3x2 単位で分割
-		#break
-		#ans_bit = cell_bit.duplicate()
-		#break
-		if is_proper_quest():
-			break
+	bd.gen_quest(g.qLevel, stxt)
+	cell_bit = bd.cell_bit
+	candidates_bit = bd.candidates_bit
+	cage_list = bd.cage_list
+	cage_ix = bd.cage_ix
+	ans_num = bd.ans_num
+	#seed(stxt.hash())
+	#rng.set_seed(stxt.hash())
+	#while true:
+	#	gen_ans()
+	#	gen_cages()
+	#	if g.qLevel == LVL_BEGINNER:
+	#		if count_n_cell_cage(1) < 8:
+	#			continue			# 再生成
+	#	#	#split_2cell_cage()		# 1セルケージ数が４未満なら２セルケージを分割
+	#	#el
+	#	if g.qLevel == LVL_NORMAL:
+	#		merge_2cell_cage()
+	#		#if count_n_cell_cage(3) <= 3:
+	#		#merge_2cell_cage()
+	#	#print_cages()
+	#	#gen_cages_3x2()		# 3x2 単位で分割
+	#	#break
+	#	#ans_bit = cell_bit.duplicate()
+	#	#break
+	#	if is_proper_quest():
+	#		break
 	#print_ans()
 	fill_1cell_cages()
 	update_cages_sum_labels()
+	$Board/CageGrid.cage_ix = cage_ix
+	$Board/CageGrid.queue_redraw()
 	solvedStat = false
 	g.elapsedTime = 0.0
 	#ans_bit = cell_bit.duplicate()

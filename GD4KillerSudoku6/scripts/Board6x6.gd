@@ -60,6 +60,9 @@ func bit_to_num(b):
 func bit_to_numstr(b):
 	if b == 0: return ""
 	return str(bit_to_num(b))
+func is_empty_cell(ix) -> bool:
+	return cell_bit[ix] == 0
+	#return input_labels[ix].text == ""
 func get_cell_numer(ix) -> int:		# ix 位置に入っている数字の値を返す、0 for 空欄
 	#if clue_labels[ix].text != "":
 	#	return int(clue_labels[ix].text)
@@ -141,6 +144,7 @@ func gen_quest(qLvl: int, stxt:String):	# qLevel: 難易度、stxt: シード文
 	#g.elapsedTime = 0.0
 	#ans_bit = cell_bit.duplicate()
 	#print_ans()
+	for ix in range(N_CELLS): cell_bit[ix] = 0		# 全セルを空欄に
 	print_ans_num()
 func print_cells():
 	var ix = 0
@@ -478,3 +482,266 @@ func split_2cell_cage():		# 1セルケージ数が４未満なら２セルケー
 	#update_cages_sum_labels()
 	#cage_labels[ix1].text = str(get_cell_numer(ix1))
 	#cage_labels[ix2].text = str(get_cell_numer(ix2))
+func find_last_blank_cell_in_cage(posnum) -> bool:		# ケージ内の最後の空白セルを探す
+	for ci in range(cage_list.size()):
+		var cage = cage_list[ci]
+		var sum = cage[CAGE_SUM]
+		var lst = cage[CAGE_IX_LIST]
+		var nspc = lst.size()		# 当該ケージ内の空白セル数
+		var bix					# 空欄セル位置
+		for i in range(lst.size()):
+			var cn = get_cell_numer(lst[i])
+			if get_cell_numer(lst[i]) != 0:
+				nspc -= 1
+				sum -= cn
+			else:
+				bix = lst[i]
+		if nspc == 1:
+			posnum = [bix, sum]
+			return true
+	return false
+func check_fullhouse(x0:int, y0:int, wd:int, ht:int):
+	var bits = 0
+	var bix = -1		# 空欄位置
+	for v in range(ht):
+		for h in range(wd):
+			var ix = xyToIX(x0+h, y0+v)
+			if cell_bit[ix] == 0:
+				if bix >= 0: return [-1, -1]		# ２箇所以上空欄あり
+				bix = ix
+			else:
+				bits |= cell_bit[ix]
+	if bix < 0: return [-1, -1]		# 空欄無し
+	var n = bit_to_num(~bits & ALL_BITS)
+	return [bix, n]
+func find_fullhouse(posnum) -> bool:		# 縦・横・ブロック内の最後の空白セルを探す
+	for y in range(N_VERT):
+		posnum = check_fullhouse(0, y, N_HORZ, 1)
+		if posnum[0] >= 0: return true
+	for x in range(N_HORZ):
+		posnum = check_fullhouse(x, 0, 1, N_HORZ)
+		if posnum[0] >= 0: return true
+	for v in range(3):
+		for h in range(2):
+			posnum = check_fullhouse(h*3, v*2, 3, 2)
+			if posnum[0] >= 0: return true
+	return false
+# (x0, y0)-(x0+wd, y0+ht) 範囲にルール21を適用できるかどうかチェック
+# return: [数字が決まる位置, 入る数字]
+func check_rule21(x0:int, y0:int, wd:int, ht:int):
+	var cage_processed = []				# ケージ処理済みフラグ
+	cage_processed.resize(cage_list.size())
+	cage_processed.fill(false)
+	var cage_sum_in = []				# 各ケージのエリア内数字合計
+	cage_sum_in.resize(cage_list.size())
+	cage_sum_in.fill(0)
+	var cage_sum_out = cage_sum_in.duplicate()	# 各ケージのエリア外数字合計
+	#var not_empty_cage = []				# ケージが非空欄セルを含むか？
+	#not_empty_cage.resize(cage_list.size())
+	#not_empty_cage.fill(false)
+	var cxio = -1		# ケージ内セルのエリア内外数が1のケージIX
+	var ix0				# 確定する箇所
+	var nis				# ケージ内セルのエリア内数
+	for v in range(ht):
+		for h in range(wd):
+			var cx = cage_ix[xyToIX(x0+h, y0+v)]
+			if !cage_processed[cx]:		# ケージが未処理の場合
+				cage_processed[cx] = true	# 処理済みフラグON
+				var cage = cage_list[cx]
+				var ni = 0		# 当該ケージのエリア内セル数
+				var no = 0		# 当該ケージのエリア外セル数
+				var ixin		# エリア内セル位置
+				var ixout		# エリア外セル位置
+				for i in range(cage[CAGE_IX_LIST].size()):
+					var ix = cage[CAGE_IX_LIST][i]
+					var x = ix % N_HORZ
+					var y = ix / N_HORZ
+					if x >= x0 && x < x0 + wd && y >= y0 && y < y0 + ht:	# エリア内
+						if is_empty_cell(ix):		# セルが空欄
+							ni += 1
+							ixin = ix
+						else:
+							cage_sum_in[cx] += get_cell_numer(ix)
+					else:	# エリア外
+						if is_empty_cell(ix):		# セルが空欄
+							no += 1
+							ixout = cage[CAGE_IX_LIST][i]
+						else:
+							cage_sum_out[cx] += get_cell_numer(ix)
+				#var no = cage[CAGE_IX_LIST].size() - ni		# エリア外セル数
+				if ni == 1 || no == 1:
+					if cxio >= 0: return [-1, -1]
+					cxio = cx
+					nis = ni
+					if ni == 1: ix0 = ixin
+					else: ix0 = ixout
+				elif ni > 1 && no > 1: return [-1, -1]
+				else:
+					if ni != 0: cage_sum_in[cx] = 0		# 空欄がエリア内にある場合
+	if cxio < 0: return [-1, -1]
+	var r = 21 * wd * ht / 6
+	for c in range(cage_list.size()):
+		if cage_processed[c] && c != cxio:
+			#if !not_empty_cage[c]:
+			if cage_sum_in[c] == 0:
+				r -= cage_list[c][CAGE_SUM] - cage_sum_out[c]
+			else:
+				r -= cage_sum_in[c]
+	print("(%d %d %d %d)" % [x0, y0, wd, ht])
+	if nis == 1:	# エリア内に1箇所だけ不定セルがある場合
+		return [ix0, r - cage_sum_in[cxio]]
+	else:			# エリア内に複数箇所の不定セルがある場合
+		return [ix0, cage_list[cxio][CAGE_SUM] - cage_sum_out[cxio] - r]
+
+func find_rule21(posnum) -> bool:			# ルール21で決まるセルを探す
+	for y in range(N_VERT):		# y 行をチェック
+		posnum = check_rule21(0, y, N_HORZ, 1)
+		if posnum[0] >= 0: return true
+	for x in range(N_HORZ):		# x 列をチェック
+		posnum = check_rule21(x, 0, 1, N_VERT)
+		if posnum[0] >= 0: return true
+	for y in range(3):
+		for x in range(2):
+			posnum = check_rule21(x*3, y*2, 3, 2)
+			if posnum[0] >= 0: return true
+	posnum = check_rule21(0, 0, N_HORZ, 2)
+	if posnum[0] >= 0: return true
+	posnum = check_rule21(0, 0, N_HORZ, 3)
+	if posnum[0] >= 0: return true
+	posnum = check_rule21(0, 4, N_HORZ, 2)
+	if posnum[0] >= 0: return true
+	posnum = check_rule21(0, 0, 2, N_VERT)
+	if posnum[0] >= 0: return true
+	posnum = check_rule21(0, 0, 3, N_VERT)
+	if posnum[0] >= 0: return true
+	posnum = check_rule21(4, 0, 2, N_VERT)
+	if posnum[0] >= 0: return true
+	return false
+# 候補が２つしかないセルの組の片方の数字がロックされている箇所を探す
+func find_locked_double(posnum) -> bool:
+	for ci in range(cage_list.size()):
+		var cage = cage_list[ci]
+		if cage[CAGE_SUM] == 0: continue
+		if cage[CAGE_SUM] <= 4 || cage[CAGE_SUM] >= 10 && cage[CAGE_IX_LIST].size() == 2:
+			if is_empty_cell(cage[CAGE_IX_LIST][0]) && is_empty_cell(cage[CAGE_IX_LIST][1]):
+				var horz = abs(cage[CAGE_IX_LIST][0] - cage[CAGE_IX_LIST][1]) == 1
+				var bits0 = 0
+				var bits1 = 0
+				if horz:	# ２セルケージが横
+					var x0 = cage[CAGE_IX_LIST][0] % N_HORZ
+					var x1 = cage[CAGE_IX_LIST][1] % N_HORZ
+					for y in range(N_VERT):
+						bits0 |= cell_bit[xyToIX(x0, y)]
+						bits1 |= cell_bit[xyToIX(x1, y)]
+					for y in range(N_VERT-1):
+						if cage_ix[xyToIX(x0, y)] == cage_ix[xyToIX(x0, y+1)]:
+							var cg = cage_list[cage_ix[xyToIX(x0, y)]]
+							if cg[CAGE_IX_LIST].size() == 2:
+								if cg[CAGE_SUM] == 3: bits0 |= BIT_1 | BIT_2
+								elif cg[CAGE_SUM] == 4: bits0 |= BIT_1 | BIT_3
+								elif cg[CAGE_SUM] == 10: bits0 |= BIT_4 | BIT_6
+								elif cg[CAGE_SUM] == 11: bits0 |= BIT_5 | BIT_6
+						if cage_ix[xyToIX(x1, y)] == cage_ix[xyToIX(x1, y+1)]:
+							var cg = cage_list[cage_ix[xyToIX(x1, y)]]
+							if cg[CAGE_IX_LIST].size() == 2:
+								if cg[CAGE_SUM] == 3: bits1 |= BIT_1 | BIT_2
+								elif cg[CAGE_SUM] == 4: bits1 |= BIT_1 | BIT_3
+								elif cg[CAGE_SUM] == 10: bits1 |= BIT_4 | BIT_6
+								elif cg[CAGE_SUM] == 11: bits1 |= BIT_5 | BIT_6
+				else:	# ２セルケージが縦
+					var y0 = cage[CAGE_IX_LIST][0] / N_HORZ
+					var y1 = cage[CAGE_IX_LIST][1] / N_HORZ
+					for x in range(N_VERT):
+						bits0 |= cell_bit[xyToIX(x, y0)]
+						bits1 |= cell_bit[xyToIX(x, y1)]
+					for x in range(N_HORZ-1):
+						if cage_ix[xyToIX(x, y0)] == cage_ix[xyToIX(x+1, y0)]:
+							var cg = cage_list[cage_ix[xyToIX(x, y0)]]
+							if cg[CAGE_IX_LIST].size() == 2:
+								if cg[CAGE_SUM] == 3: bits0 |= BIT_1 | BIT_2
+								elif cg[CAGE_SUM] == 4: bits0 |= BIT_1 | BIT_3
+								elif cg[CAGE_SUM] == 10: bits0 |= BIT_4 | BIT_6
+								elif cg[CAGE_SUM] == 11: bits0 |= BIT_5 | BIT_6
+						if cage_ix[xyToIX(x, y1)] == cage_ix[xyToIX(x+1, y1)]:
+							var cg = cage_list[cage_ix[xyToIX(x, y1)]]
+							if cg[CAGE_IX_LIST].size() == 2:
+								if cg[CAGE_SUM] == 3: bits1 |= BIT_1 | BIT_2
+								elif cg[CAGE_SUM] == 4: bits1 |= BIT_1 | BIT_3
+								elif cg[CAGE_SUM] == 10: bits1 |= BIT_4 | BIT_6
+								elif cg[CAGE_SUM] == 11: bits1 |= BIT_5 | BIT_6
+				if cage[CAGE_SUM] == 3:
+					if (bits0 & BIT_1) != 0: posnum = [cage[CAGE_IX_LIST][0], 2]; return true
+					if (bits0 & BIT_2) != 0: posnum = [cage[CAGE_IX_LIST][0], 1]; return true
+					if (bits1 & BIT_1) != 0: posnum = [cage[CAGE_IX_LIST][1], 2]; return true
+					if (bits1 & BIT_2) != 0: posnum = [cage[CAGE_IX_LIST][1], 1]; return true
+				elif cage[CAGE_SUM] == 4:
+					if (bits0 & BIT_1) != 0: posnum = [cage[CAGE_IX_LIST][0], 3]; return true
+					if (bits0 & BIT_3) != 0: posnum = [cage[CAGE_IX_LIST][0], 1]; return true
+					if (bits1 & BIT_1) != 0: posnum = [cage[CAGE_IX_LIST][1], 3]; return true
+					if (bits1 & BIT_3) != 0: posnum = [cage[CAGE_IX_LIST][1], 1]; return true
+				elif cage[CAGE_SUM] == 10:
+					if (bits0 & BIT_6) != 0: posnum = [cage[CAGE_IX_LIST][0], 4]; return true
+					if (bits0 & BIT_4) != 0: posnum = [cage[CAGE_IX_LIST][0], 6]; return true
+					if (bits1 & BIT_6) != 0: posnum = [cage[CAGE_IX_LIST][1], 4]; return true
+					if (bits1 & BIT_4) != 0: posnum = [cage[CAGE_IX_LIST][1], 6]; return true
+				elif cage[CAGE_SUM] == 11:
+					if (bits0 & BIT_6) != 0: posnum = [cage[CAGE_IX_LIST][0], 5]; return true
+					if (bits0 & BIT_5) != 0: posnum = [cage[CAGE_IX_LIST][0], 6]; return true
+					if (bits1 & BIT_6) != 0: posnum = [cage[CAGE_IX_LIST][1], 5]; return true
+					if (bits1 & BIT_5) != 0: posnum = [cage[CAGE_IX_LIST][1], 6]; return true
+	return false
+# 裸のシングルを探す
+# ただし、候補数字がすでに計算されているものとする
+func find_naked_single(posnum) -> bool:
+	for ix in range(N_CELLS):
+		var c = candidates_bit[ix]
+		if c != 0 && ((c-1)&c) == 0:
+			posnum = [ix, bit_to_num(c)]
+			return true
+	return false
+#func find_hidden_single_test(c: Array):
+#	var b1 = 0			# ビットの数が1
+#	var b2 = 0			# ビットの数が2以上
+#	for i in range(c.size()):
+#		b2 |= c[i] & b1
+#		b1 ^= c[i]
+#	b1 &= ~b2
+#	print("b1 = ", to_binstr(b1, 6))
+# 指定エリア内で候補数字数を数え、一箇所だけの位置・数字を返す
+func find_hidden_single_sub(x0:int, y0:int, wd:int, ht:int):
+	#var b0 = 0b111111	# ビットの数が0
+	var b1 = 0			# ビットの数が1
+	var b2 = 0			# ビットの数が2以上
+	#print("b1, b2 = 0x%x, 0x%x" % [b1, b2])
+	for v in range(ht):
+		for h in range(wd):
+			var c = candidates_bit[xyToIX(x0+h, y0+v)]
+			b2 |= c & b1
+			b1 ^= c
+			#b0 ^= c
+			#print("c, b1, b2 = 0x%x, 0x%x, 0x%x" % [c, b1, b2])
+	b1 &= ~b2
+	#if b1 == 0 || ((b1-1)&b1) != 0: return [-1, -1]
+	if b1 == 0: return [-1, -1]
+	b1 &= -b1		# 最下位のビットのみ取り出す
+	for v in range(ht):
+		for h in range(wd):
+			var ix = xyToIX(x0+h, y0+v)
+			var c = candidates_bit[ix]
+			if (c & b1) != 0:
+				return [ix, bit_to_num(b1)]
+	return [-1, -1]		# ここには来ないはずだが、念のため
+# 隠れたシングルを探す
+# ただし、候補数字がすでに計算されているものとする
+func find_hidden_single(posnum) -> bool:
+	for y in range(N_VERT):
+		posnum = find_hidden_single_sub(0, y, N_HORZ, 1)
+		if posnum[0] >= 0: return true
+	for x in range(N_HORZ):
+		posnum = find_hidden_single_sub(x, 0, 1, N_VERT)
+		if posnum[0] >= 0: return true
+	for y in range(3):
+		for x in range(2):
+			posnum = find_hidden_single_sub(x*3, y*2, 3, 2)
+			if posnum[0] >= 0: return true
+	return false
