@@ -116,7 +116,8 @@ func gen_ans():		# 解答生成
 	pass
 func gen_quest(qLvl: int, stxt:String):	# qLevel: 難易度、stxt: シード文字列
 	qLevel = qLvl
-	seed(stxt.hash())
+	print("seed = ", stxt)
+	#seed(stxt.hash())
 	rng.set_seed(stxt.hash())
 	while true:
 		gen_ans()
@@ -144,7 +145,7 @@ func gen_quest(qLvl: int, stxt:String):	# qLevel: 難易度、stxt: シード文
 	#g.elapsedTime = 0.0
 	#ans_bit = cell_bit.duplicate()
 	#print_ans()
-	for ix in range(N_CELLS): cell_bit[ix] = 0		# 全セルを空欄に
+	#for ix in range(N_CELLS): cell_bit[ix] = 0		# 全セルを空欄に
 	print_ans_num()
 func print_cells():
 	var ix = 0
@@ -197,6 +198,22 @@ func print_cages():
 			ix += 1
 		print(lst)
 	print("")
+func print_cages_ex():		# 罫線でケージ形状表示
+	for y in range(N_VERT):
+		var txt = ""
+		for x in range(N_HORZ):
+			var ix = xyToIX(x, y)
+			txt += "+" + ("-" if y == 0 || cage_ix[ix-N_HORZ] != cage_ix[ix] else " ")
+		print(txt+"+")
+		txt = ""
+		for x in range(N_HORZ):
+			var ix = xyToIX(x, y)
+			txt += "|" if x == 0 || cage_ix[ix-1] != cage_ix[ix] else " "
+			txt += " "
+		print(txt+"|")
+	var txt = ""
+	for x in range(N_HORZ): txt += "+-"
+	print(txt+"+")
 func merge_2cell_cage():	# 2セルケージ２つをマージし4セルに
 	#print_cages()
 	while true:
@@ -395,7 +412,7 @@ func ipq_sub(cix, lix, ub, sum) -> bool:	# false for 解の個数が２以上
 			ans_num[i] = bit_to_num(cell_bit[i])
 			#ans_bit[i] = cell_bit[i]
 		#print_ans()
-		print_ans_num()
+		#print_ans_num()
 	else:
 		var cage = cage_list[cix]
 		if cage[CAGE_SUM] == 0:

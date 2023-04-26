@@ -13,13 +13,14 @@ var buttons = []
 
 func _ready():
 	var bd = Board6x6.new()
-	bd.gen_ans()
-	bd.print_ans_num()
-	bd.print_cells()
-	bd.gen_quest(LVL_BEGINNER, "q")
-	bd.print_ans_num()
-	bd.print_cells()
+	#bd.gen_ans()
+	#bd.print_ans_num()
+	#bd.print_cells()
+	bd.gen_quest(LVL_BEGINNER, "a0")
 	bd.print_cages()
+	bd.print_cages_ex()
+	bd.print_cells()
+	bd.print_ans_num()
 	#
 	#print(g.yesterday_string())
 	g.todaysQuest = false

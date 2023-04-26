@@ -248,7 +248,7 @@ func gen_quest():
 	g.elapsedTime = 0.0
 	#ans_bit = cell_bit.duplicate()
 	#print_ans()
-	print_ans_num()
+	#print_ans_num()
 func fill_1cell_cages():
 	for ci in range(cage_list.size()):
 		var cage = cage_list[ci]
@@ -878,7 +878,7 @@ func ipq_sub(cix, lix, ub, sum) -> bool:	# false for 解の個数が２以上
 			ans_num[i] = bit_to_num(cell_bit[i])
 			#ans_bit[i] = cell_bit[i]
 		#print_ans()
-		print_ans_num()
+		#print_ans_num()
 	else:
 		var cage = cage_list[cix]
 		if cage[CAGE_SUM] == 0:
