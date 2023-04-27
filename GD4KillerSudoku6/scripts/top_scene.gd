@@ -20,7 +20,12 @@ func _ready():
 	bd.print_cages()
 	bd.print_cages_ex()
 	bd.print_cells()
+	print("nSpaces = ", bd.nSpaces)
 	bd.print_ans_num()
+	var diff = bd.calc_difficulty()
+	print("diff = ", diff)
+	#var bd2 = Board6x6.new()
+	#bd2.dupcopy(bd)
 	#
 	#print(g.yesterday_string())
 	g.todaysQuest = false
