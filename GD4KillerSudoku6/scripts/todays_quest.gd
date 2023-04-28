@@ -15,6 +15,7 @@ func _ready():
 func _on_back_button_pressed():
 	get_tree().change_scene_to_file("res://top_scene.tscn")
 func to_MainScene(qLevel):
+	g.todaysQuest = true
 	g.qLevel = qLevel
 	g.qRandom = false
 	g.qNumber = 0
