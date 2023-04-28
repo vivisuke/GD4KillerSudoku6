@@ -223,30 +223,11 @@ func gen_quest():
 	cage_list = bd.cage_list
 	cage_ix = bd.cage_ix
 	ans_num = bd.ans_num
-	#seed(stxt.hash())
-	#rng.set_seed(stxt.hash())
-	#while true:
-	#	gen_ans()
-	#	gen_cages()
-	#	if g.qLevel == LVL_BEGINNER:
-	#		if count_n_cell_cage(1) < 8:
-	#			continue			# 再生成
-	#	#	#split_2cell_cage()		# 1セルケージ数が４未満なら２セルケージを分割
-	#	#el
-	#	if g.qLevel == LVL_NORMAL:
-	#		merge_2cell_cage()
-	#		#if count_n_cell_cage(3) <= 3:
-	#		#merge_2cell_cage()
-	#	#print_cages()
-	#	#gen_cages_3x2()		# 3x2 単位で分割
-	#	#break
-	#	#ans_bit = cell_bit.duplicate()
-	#	#break
-	#	if is_proper_quest():
-	#		break
-	#print_ans()
-	for ix in range(N_CELLS): input_labels[ix].text = ""
+	for ix in range(N_CELLS):
+		input_labels[ix].text = ""
+		bd.cell_bit[ix] = 0
 	fill_1cell_cages()
+	bd.print_cells()
 	update_cages_sum_labels()
 	$Board/CageGrid.cage_ix = cage_ix
 	$Board/CageGrid.queue_redraw()
@@ -1660,39 +1641,46 @@ func find_pos_num():
 	return [-1, -1]
 
 func _on_hint_button_pressed():
-	var bix = find_last_blank_cell_in_cage()
-	print("last_blank_cell_in_cage: ", bix)
-	bix = find_fullhouse()
-	print("fullhouse: ", bix)
-	#bix = check_rule21(0, 0, 6, 1)
-	#bix = check_rule21(0, 0, 1, 6)
-	#bix = check_rule21(0, 0, 1, 6)
-	bix = find_rule21()
-	print("rule21: ", bix)
-	bix = find_locked_double()
-	print("locked double: ", bix)
-	#
-	init_candidates()		# 可能候補数字計算 → candidates_bit[]
-	bix = find_hidden_single()
-	print("hidden single basic: ", bix)
-	remove_candidates_in_cage()		# 各ケージに入らない候補数字削除
-	bix = find_hidden_single()
-	print("hidden single cand: ", bix)
-	bix = find_naked_single()
-	print("naked single: ", bix)
-	remove_lonely_candidates()		# 相手がいない候補数字を削除
-	bix = find_hidden_single()
-	print("hidden single cand: ", bix)
-	bix = find_naked_single()
-	print("naked single: ", bix)
-	#
-	var r = find_pos_num()
-	if r[0] >= 0:
-		var x = r[0] % N_HORZ
-		var y = r[0] / N_HORZ
-		print("pos = (", x, ", ", y, "), num = ", r[1])
+	bd.print_cells()
+	bd.print_cages()
+	if bd.find_certain_posnum() > 0:	# 確定箇所がある
+		var x = bd.cert_posnum[0] % N_HORZ
+		var y = bd.cert_posnum[0] / N_HORZ
+		print("pos = (", x, ", ", y, "), num = ", bd.cert_posnum[1])
 		$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_CURSOR, Vector2i(0, 0))
-	pass # Replace with function body.
+	#var bix = find_last_blank_cell_in_cage()
+	#print("last_blank_cell_in_cage: ", bix)
+	#bix = find_fullhouse()
+	#print("fullhouse: ", bix)
+	##bix = check_rule21(0, 0, 6, 1)
+	##bix = check_rule21(0, 0, 1, 6)
+	##bix = check_rule21(0, 0, 1, 6)
+	#bix = find_rule21()
+	#print("rule21: ", bix)
+	#bix = find_locked_double()
+	#print("locked double: ", bix)
+	##
+	#init_candidates()		# 可能候補数字計算 → candidates_bit[]
+	#bix = find_hidden_single()
+	#print("hidden single basic: ", bix)
+	#remove_candidates_in_cage()		# 各ケージに入らない候補数字削除
+	#bix = find_hidden_single()
+	#print("hidden single cand: ", bix)
+	#bix = find_naked_single()
+	#print("naked single: ", bix)
+	#remove_lonely_candidates()		# 相手がいない候補数字を削除
+	#bix = find_hidden_single()
+	#print("hidden single cand: ", bix)
+	#bix = find_naked_single()
+	#print("naked single: ", bix)
+	##
+	#var r = find_pos_num()
+	#if r[0] >= 0:
+	#	var x = r[0] % N_HORZ
+	#	var y = r[0] / N_HORZ
+	#	print("pos = (", x, ", ", y, "), num = ", r[1])
+	#	$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_CURSOR, Vector2i(0, 0))
+	#pass # Replace with function body.
 
 func check_candidates() -> bool:		# 候補数字に間違いがないか？ true for OK
 	if !(candidates_bit[0] is int): return false

@@ -169,6 +169,7 @@ func gen_quest(qLvl: int, stxt:String):	# qLevel: 難易度、stxt: シード文
 		if is_proper_quest():
 			break
 	#print_ans()
+	for ix in range(N_CELLS): cell_bit[ix] = 0
 	fill_1cell_cages()
 	#update_cages_sum_labels()
 	#solvedStat = false
@@ -178,6 +179,7 @@ func gen_quest(qLvl: int, stxt:String):	# qLevel: 難易度、stxt: シード文
 	#for ix in range(N_CELLS): cell_bit[ix] = 0		# 全セルを空欄に
 	print_ans_num()
 func print_cells():
+	print("cell_bit[]:")
 	var ix = 0
 	for y in range(N_VERT):
 		var lst = []
