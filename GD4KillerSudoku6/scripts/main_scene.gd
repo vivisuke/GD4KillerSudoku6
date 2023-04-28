@@ -215,6 +215,7 @@ func gen_quest():
 	bd.gen_quest(g.qLevel, stxt)
 	var diff = bd.calc_difficulty()
 	print("diff = ", diff)
+	$DiffLabel.text = "Diff: %d" % diff
 	cell_bit = bd.cell_bit
 	candidates_bit = bd.candidates_bit
 	cage_list = bd.cage_list
