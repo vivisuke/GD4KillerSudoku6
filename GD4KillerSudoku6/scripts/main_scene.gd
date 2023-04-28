@@ -109,6 +109,7 @@ var confetti_count_down = 0.0	# 0.0より大きい：紙吹雪表示中
 var hint_next_pos			# 次ボタン位置
 var hint_next_pos0			# 次ボタン初期位置
 var hint_next_vy			# 次ボタン速度
+var messLabelPos
 var saved_cell_data = []
 
 var auto_memo_level = 0		# 自動候補数字レベル
@@ -193,6 +194,7 @@ func _ready():
 	for i in range(N_CELLS): input_labels[i].text = ""
 	gen_quest()
 	$CanvasLayer/ColorRect.material.set("shader_param/size", 0)
+	messLabelPos = $MessLabel.position
 	pass # Replace with function body.
 func gen_qName():
 	g.qRandom = true
@@ -358,6 +360,11 @@ func update_NEmptyLabel():
 	for ix in range(N_CELLS):
 		if get_cell_numer(ix) == 0: nEmpty += 1
 	$NEmptyLabel.text = "空欄数: %d" % nEmpty
+func set_message(txt: String):
+	$MessLabel.text = txt
+	$MessLabel.position = messLabelPos + Vector2(500, 0)
+	var tw = create_tween()
+	tw.tween_property($MessLabel, "position", messLabelPos, 0.5)	#.set_trans(Tween.TRANS_BOUNCE)
 func update_all_status():
 	update_undo_redo()
 	update_cell_cursor(cur_num)
@@ -375,17 +382,22 @@ func update_all_status():
 			var avg : int = int(g.stats[six]["TotalSec"] / n)
 			var txt = g.sec_to_MSStr(avg)
 			var bst = g.sec_to_MSStr(g.stats[six]["BestTime"])
-			$MessLabel.text = "グッジョブ！ クリア回数: %d、平均: %s、最短: %s" % [n, txt, bst]
+			#$MessLabel.text = "グッジョブ！ クリア回数: %d、平均: %s、最短: %s" % [n, txt, bst]
+			set_message("グッジョブ！ クリア回数: %d、平均: %s、最短: %s" % [n, txt, bst])
 		else:
-			$MessLabel.text = "グッジョブ！"
+			#$MessLabel.text = "グッジョブ！"
+			set_message("グッジョブ！")
 	elif paused:
 		$MessLabel.text = "ポーズ中です。解除にはポーズボタンを押してください。"
 	elif cur_num > 0:
 		$MessLabel.text = "現数字（%d）を入れるセルをクリックしてください。" % cur_num
+		#set_message("現数字（%d）を入れるセルをクリックしてください。" % cur_num)
 	elif cur_cell_ix >= 0:
 		$MessLabel.text = "セルに入れる数字ボタンをクリックしてください。"
+		#set_message("セルに入れる数字ボタンをクリックしてください。")
 	else:
 		$MessLabel.text = "数字ボタンまたは空セルをクリックしてください。"
+		#set_message("数字ボタンまたは空セルをクリックしてください。")
 	$HBC3/CoinButton/NCoinLabel.text = str(g.env[g.KEY_N_COINS])
 func update_nEmpty():
 	nEmpty = 0
