@@ -4,6 +4,24 @@ enum {
 	CAGE_SUM = 0,			# ケージ内数字合計
 	CAGE_IX_LIST,			# ケージ内セル位置配列
 }
+const CAGE_TABLE = [
+	[	# for 2セルケージ
+		0b000011, 0b000101, 0b001111,						# for 3, 4, 5
+		0b011011, 0b111111, 0b110110, 0b111100, 0b101000, 	# for 6, 7, ... 10
+		0b110000, 											# for 11
+	],
+	[	# for 3セルケージ
+		0b000000, 0b000000, 0b000000,						# for 3, 4, 5
+		0b000111, 0b001011, 0b011111, 0b111111, 0b111111,	# for 6, 7, ... 10
+		0b111111, 0b111111, 0b111110, 0b110100, 0b111000,	# for 11, 12, ... 15
+	],
+	[	# for 4セルケージ
+		0b000000, 0b000000, 0b000000,						# for 3, 4, 5
+		0b000000, 0b000000, 0b000000, 0b000000, 0b001111,	# for 6, 7, ... 10
+		0b010111, 0b111111, 0b111111, 0b111111, 0b111111,	# for 11, 12, ... 15
+		0b111111, 0b111111, 0b111111, 0b111010, 0b111100,	# for 16, 17, 18
+	],
+]
 
 const N_VERT = 6
 const N_HORZ = 6
@@ -796,6 +814,19 @@ func init_candidates():		# cell_bit から各セルの候補数字計算
 					for h in range(N_BOX_HORZ):
 						candidates_bit[xyToIX(x0 + h, y0 + v)] &= ~b
 	pass
+func cage_bits(cage):
+	var sum = cage[CAGE_SUM]
+	var nc = cage[CAGE_IX_LIST].size()		# セル数
+	if nc == 1:
+		return num_to_bit(sum)
+	else:
+		return CAGE_TABLE[nc-2][sum-3]
+func remove_candidates_in_cage():	# 各ケージで不可能な候補数字を消す
+	for cx in range(cage_list.size()):
+		var cage = cage_list[cx]
+		var b = cage_bits(cage)
+		for i in range(cage[CAGE_IX_LIST].size()):
+			candidates_bit[cage[CAGE_IX_LIST][i]] &= b
 # 2セルケージで、相手がいない候補数字を消す
 # return: 候補数字を消したか？
 func remove_lonely_candidates() -> bool:
@@ -828,7 +859,8 @@ func find_certain_posnum() -> int:
 	if find_last_blank_cell_in_cage(): return 1
 	if find_fullhouse(): return 1
 	if find_locked_double(): return 2
-	init_candidates()			# 可能候補数字計算 → candidates_bit[]
+	init_candidates()				# 可能候補数字計算 → candidates_bit[]
+	remove_candidates_in_cage()		# 各ケージで不可能な候補数字を消す
 	if find_hidden_single(): return 3
 	if find_naked_single(): return 3
 	if find_rule21(): return 5
