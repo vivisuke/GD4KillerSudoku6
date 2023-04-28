@@ -242,6 +242,7 @@ func gen_quest():
 	#	if is_proper_quest():
 	#		break
 	#print_ans()
+	for ix in range(N_CELLS): input_labels[ix].text = ""
 	fill_1cell_cages()
 	update_cages_sum_labels()
 	$Board/CageGrid.cage_ix = cage_ix
