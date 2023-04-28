@@ -1793,6 +1793,7 @@ func _on_undo_button_pressed():
 	if item[UNDO_ITEM_TYPE] == UNDO_TYPE_CELL:
 		var txt = str(item[UNDO_ITEM_OLD]) if item[UNDO_ITEM_OLD] != 0 else ""
 		input_labels[item[UNDO_ITEM_IX]].text = txt
+		bd.cell_bit[item[UNDO_ITEM_IX]] = num_to_bit(item[UNDO_ITEM_OLD])
 		var lst = item[UNDO_ITEM_MEMOIX]
 		for i in range(lst.size()):
 			flip_memo_num(lst[i], item[UNDO_ITEM_NEW])
@@ -1816,6 +1817,7 @@ func _on_redo_button_pressed():
 	if item[UNDO_ITEM_TYPE] == UNDO_TYPE_CELL:
 		var txt = str(item[UNDO_ITEM_NEW]) if item[UNDO_ITEM_NEW] != 0 else ""
 		input_labels[item[UNDO_ITEM_IX]].text = txt
+		bd.cell_bit[item[UNDO_ITEM_IX]] = num_to_bit(item[UNDO_ITEM_NEW])
 		var lst = item[UNDO_ITEM_MEMOIX]
 		for i in range(lst.size()):
 			flip_memo_num(lst[i], item[UNDO_ITEM_NEW])

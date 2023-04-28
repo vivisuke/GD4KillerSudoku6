@@ -184,7 +184,7 @@
 0180 ◎ C 04/28 04/28 0.001│ToDo│Board6x6::remove_candidates_in_cage():	# 各ケージで不可能な候補数字を消す
 0181 ◎ C 04/29 04/29 0.001│ToDo│ヒント機能：Board6x6 を利用するように修正
 0182 ◎ C 04/29 04/29 0.001│問題│_on_hint_button_pressed() が呼ばれた時点で bd.cell_bit[] の内容が不正
-0183 ● C 04/29            │ToDo│
+0183 ◎ C 04/29 04/29 0.001│問題│Undo/Redo で bd.cell_bit[] が更新されていない
 0184 ● C 04/29            │ToDo│
 0185 ● C 04/29            │ToDo│
 0186 ● C 04/29            │ToDo│
