@@ -1906,7 +1906,7 @@ func _on_pause_button_pressed():
 	update_all_status()
 
 
-func _on_DeselectButton_pressed():
+func _on_deselect_button_pressed():
 	if paused: return		# ポーズ中
 	do_deselect()
 func do_deselect():
