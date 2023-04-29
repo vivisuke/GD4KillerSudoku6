@@ -1639,10 +1639,20 @@ func find_pos_num():
 	if r[0] >= 0: return r
 	print_candidates()
 	return [-1, -1]
-
+func check_cell() -> bool:		# 間違っている入力が無いかどうかチェック
+	for ix in range(N_CELLS):
+		var n = get_cell_numer(ix)
+		if n != 0 && n != ans_num[ix]:
+			return false
+	return true
 func _on_hint_button_pressed():
 	bd.print_cells()
 	bd.print_cages()
+	if !check_cell():
+		#$MessLabel.text = "間違っている数字があるので、ヒントを実行できません。"
+		set_message("間違っている数字があるので、ヒントを実行できません。")
+		$Audio/Incorrect.play()
+		return
 	if bd.find_certain_posnum() > 0:	# 確定箇所がある
 		var x = bd.cert_posnum[0] % N_HORZ
 		var y = bd.cert_posnum[0] / N_HORZ
