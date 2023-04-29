@@ -1904,3 +1904,32 @@ func _on_pause_button_pressed():
 				memo_labels[ix][i].text = memo_text[ix][i]
 		update_cages_sum_labels()
 	update_all_status()
+
+
+func _on_DeselectButton_pressed():
+	if paused: return		# ポーズ中
+	do_deselect()
+func do_deselect():
+	cur_cell_ix = -1
+	update_cell_cursor(0)
+	#cur_num = -1
+	set_num_cursor(-1)
+	update_all_status()
+func is_1cell_cage(ix):
+	return cage_list[cage_ix[ix]][CAGE_IX_LIST].size() == 1
+func _on_loop_button_pressed():
+	if paused: return		# ポーズ中
+	do_deselect()	# 選択解除
+	for ix in range(N_CELLS):
+		if input_labels[ix].text != "" && !is_1cell_cage(ix):
+			add_falling_char(input_labels[ix].text, ix)
+			input_labels[ix].text = ""
+		for i in range(N_HORZ):
+			memo_labels[ix][i].text = ""
+	undo_stack = []
+	undo_ix = 0
+	#cur_num = -1		# do_deselect() でリセットされるので不要
+	#cur_cell_ix = -1
+	update_all_status()
+	num_button_pressed(cur_num, true)
+	pass # Replace with function body.
