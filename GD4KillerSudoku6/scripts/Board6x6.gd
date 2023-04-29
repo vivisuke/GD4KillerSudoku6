@@ -147,7 +147,7 @@ func gen_ans():		# 解答生成
 func gen_quest(qLvl: int, stxt:String):	# qLevel: 難易度、stxt: シード文字列
 	qLevel = qLvl
 	print("seed = ", stxt)
-	#seed(stxt.hash())
+	seed(stxt.hash())			# for shuffle
 	rng.set_seed(stxt.hash())
 	while true:
 		gen_ans()
@@ -159,7 +159,7 @@ func gen_quest(qLvl: int, stxt:String):	# qLevel: 難易度、stxt: シード文
 		#el
 		if qLevel == LVL_NORMAL:
 			merge_2cell_cage()
-			#merge_2cell_cage()		# for 中級
+			merge_2cell_cage()		# for 中級
 			#if count_n_cell_cage(3) <= 3:
 			#merge_2cell_cage()
 		#print_cages()
