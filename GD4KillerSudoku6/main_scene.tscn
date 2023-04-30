@@ -1,4 +1,4 @@
-[gd_scene load_steps=56 format=3 uid="uid://df63unibnxvr5"]
+[gd_scene load_steps=57 format=3 uid="uid://df63unibnxvr5"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_j8s1i"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ltfgv"]
@@ -22,6 +22,7 @@
 [ext_resource type="Texture2D" uid="uid://0fbmfla731tm" path="res://images/done_gold.png" id="16_kqex0"]
 [ext_resource type="Texture2D" uid="uid://b2u05a47ei3hu" path="res://images/lightbulb_gold.png" id="17_l0r4j"]
 [ext_resource type="Texture2D" uid="uid://dqpj3aq71555v" path="res://images/delMemo.png" id="18_ot622"]
+[ext_resource type="Texture2D" uid="uid://p1diorkt11xa" path="res://images/edit_cand_black.png" id="19_0ibdm"]
 [ext_resource type="Texture2D" uid="uid://cbw1phdyy6ej4" path="res://images/auto_candidates_gold.png" id="19_724fu"]
 [ext_resource type="Texture2D" uid="uid://l25m4n053oss" path="res://images/pause_white.png" id="20_m132y"]
 [ext_resource type="Texture2D" uid="uid://b2ipdcefwsr4b" path="res://images/done_white.png" id="21_6yjff"]
@@ -279,7 +280,9 @@ texture = ExtResource("9_8mpbk")
 
 [node name="MemoButton" type="TextureButton" parent="HBC1"]
 layout_mode = 2
+toggle_mode = true
 texture_normal = ExtResource("14_vf4va")
+texture_pressed = ExtResource("19_0ibdm")
 
 [node name="Label" type="Label" parent="HBC1/MemoButton"]
 layout_mode = 0
