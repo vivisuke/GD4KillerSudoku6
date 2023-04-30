@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://cw7xip36o3kxr"]
+[gd_scene load_steps=7 format=3 uid="uid://cw7xip36o3kxr"]
 
 [ext_resource type="Script" path="res://scripts/level_scene.gd" id="1_ogde4"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ub3iy"]
 [ext_resource type="Texture2D" uid="uid://dhb853ow1dtap" path="res://images/leftward_white.png" id="2_s854e"]
 [ext_resource type="Texture2D" uid="uid://yp1xll2krgca" path="res://images/leftward_black.png" id="3_7v5md"]
+[ext_resource type="Texture2D" uid="uid://cy51tq1y76wb3" path="res://images/lock_open_white.png" id="5_aau0d"]
+[ext_resource type="Texture2D" uid="uid://c25tsnvbh6vud" path="res://images/lock_white.png" id="6_ta2u7"]
 
 [node name="LevelScene" type="Node2D"]
 script = ExtResource("1_ogde4")
@@ -44,5 +46,19 @@ offset_bottom = 800.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
 layout_mode = 2
+
+[node name="LockOpen" type="TextureRect" parent="."]
+offset_left = -157.0
+offset_top = 100.0
+offset_right = -109.0
+offset_bottom = 148.0
+texture = ExtResource("5_aau0d")
+
+[node name="Locked" type="TextureRect" parent="."]
+offset_left = -157.0
+offset_top = 28.0
+offset_right = -109.0
+offset_bottom = 76.0
+texture = ExtResource("6_ta2u7")
 
 [connection signal="pressed" from="TitleBar/BackButton" to="." method="_on_back_button_pressed"]

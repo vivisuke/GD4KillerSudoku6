@@ -1,4 +1,4 @@
-extends Object
+﻿extends Object
 
 enum {
 	CAGE_SUM = 0,			# ケージ内数字合計
