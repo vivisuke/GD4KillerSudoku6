@@ -76,6 +76,10 @@ shadow_offset = Vector2(2, 2)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1av8t"]
 bg_color = Color(0.160784, 0.501961, 0.72549, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_j8egs"]
 shader = ExtResource("26_3tet4")
