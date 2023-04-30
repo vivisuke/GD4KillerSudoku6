@@ -1,4 +1,4 @@
-[gd_scene load_steps=57 format=3 uid="uid://df63unibnxvr5"]
+[gd_scene load_steps=60 format=3 uid="uid://df63unibnxvr5"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_j8s1i"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ltfgv"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://cqec3tqrevdpa" path="res://images/undo_black.png" id="6_al8fh"]
 [ext_resource type="Texture2D" uid="uid://csupj8245mj3o" path="res://images/undo_white.png" id="7_mp20d"]
 [ext_resource type="Texture2D" uid="uid://b1vvkieh6sjf3" path="res://images/undo_gray.png" id="8_83f3t"]
+[ext_resource type="Texture2D" uid="uid://cetdhkbdck7xo" path="res://images/lightorange18x18.png" id="8_qsssc"]
 [ext_resource type="Texture2D" uid="uid://cvj6brboxtj1q" path="res://images/space10.png" id="9_8mpbk"]
 [ext_resource type="Texture2D" uid="uid://b151q57nusn3s" path="res://images/redo_black.png" id="10_rhvmb"]
 [ext_resource type="Texture2D" uid="uid://cmqujhuw7k6rj" path="res://images/redo_white.png" id="11_pfk2j"]
@@ -65,6 +66,15 @@ texture_region_size = Vector2i(81, 81)
 tile_size = Vector2i(81, 81)
 sources/0 = SubResource("TileSetAtlasSource_l5jc0")
 sources/1 = SubResource("TileSetAtlasSource_v1gic")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2muv8"]
+texture = ExtResource("8_qsssc")
+texture_region_size = Vector2i(18, 18)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_frw2l"]
+tile_size = Vector2i(18, 18)
+sources/0 = SubResource("TileSetAtlasSource_2muv8")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rp0c4"]
 bg_color = Color(1, 1, 1, 1)
@@ -161,6 +171,11 @@ script = ExtResource("2_n82ed")
 tile_set = SubResource("TileSet_sghhw")
 format = 2
 layer_0/tile_data = PackedInt32Array(0, 0, 0, 262147, 1, 0)
+
+[node name="MemoTileMap" type="TileMap" parent="Board"]
+tile_set = SubResource("TileSet_frw2l")
+format = 2
+layer_0/tile_data = PackedInt32Array(0, 0, 0, 262147, 1, 0, 65538, 0, 0)
 
 [node name="CageGrid" type="ColorRect" parent="Board"]
 layout_mode = 0
@@ -619,6 +634,7 @@ color = Color(1, 1, 1, 0)
 [connection signal="pressed" from="HBC1/Button1" to="." method="_on_button_1_pressed"]
 [connection signal="pressed" from="HBC1/Button2" to="." method="_on_button_2_pressed"]
 [connection signal="pressed" from="HBC1/Button3" to="." method="_on_button_3_pressed"]
+[connection signal="toggled" from="HBC1/MemoButton" to="." method="_on_memo_button_toggled"]
 [connection signal="pressed" from="HBC1/PauseButton" to="." method="_on_pause_button_pressed"]
 [connection signal="pressed" from="HBC2/CheckButton" to="." method="_on_check_button_pressed"]
 [connection signal="pressed" from="HBC2/HintButton" to="." method="_on_hint_button_pressed"]

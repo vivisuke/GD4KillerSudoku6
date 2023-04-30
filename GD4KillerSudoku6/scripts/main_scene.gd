@@ -1,4 +1,4 @@
-﻿extends Node2D
+extends Node2D
 
 enum {
 	HORZ = 1,
@@ -1932,4 +1932,18 @@ func _on_loop_button_pressed():
 	#cur_cell_ix = -1
 	update_all_status()
 	num_button_pressed(cur_num, true)
+	pass # Replace with function body.
+
+
+func _on_memo_button_toggled(button_pressed):
+	#if paused: return		# ポーズ中
+	memo_mode = button_pressed
+	print(memo_mode)
+	var sz = MEMO_FONT_SIZE if memo_mode else NUM_FONT_SIZE
+	#var font = DynamicFont.new()
+	#font.font_data = load("res://fonts/arialbd.ttf")
+	#font.size = sz
+	#print(font)
+	for i in range(N_HORZ):
+		num_buttons[i+1].add_theme_font_size_override("font_size", sz)
 	pass # Replace with function body.
