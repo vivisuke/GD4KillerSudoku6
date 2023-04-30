@@ -1,4 +1,4 @@
-﻿extends ReferenceRect
+extends ReferenceRect
 
 
 signal pressed(num)
@@ -25,6 +25,7 @@ func solved_set_visible(b):
 		$Solved.show()
 	else:
 		$Solved.hide()
-func _on_Button_pressed():
+func _on_button_pressed():
+	print("emit_signal('previous', %d)" % number)
 	emit_signal("pressed", number)
 	pass # Replace with function body.

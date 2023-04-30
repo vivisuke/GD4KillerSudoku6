@@ -29,3 +29,5 @@ offset_right = 440.0
 offset_bottom = 70.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_cp3fg")
 icon = ExtResource("1_s5sfq")
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

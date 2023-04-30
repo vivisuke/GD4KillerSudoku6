@@ -206,7 +206,7 @@ func gen_qName():
 		else: g.qName += "%c" % (r - 10 + 0x61)		# 0x61 is 'a'
 func gen_quest():
 	if g.qNumber != 0:	# 問題集の場合
-		$NextButton.disabled = g.qNumber > g.nSolved[g.qLevel]
+		$HBC3/NextButton.disabled = g.qNumber > g.nSolved[g.qLevel]
 	elif !g.todaysQuest:		# ランダム生成の場合
 		if g.qName == "":
 			gen_qName()
@@ -1090,7 +1090,7 @@ func on_solved():
 			if g.nSolved[g.qLevel] == g.qNumber - 1:	
 				g.nSolved[g.qLevel] += 1
 				g.save_nSolved()
-				$NextButton.disabled = false
+				$HBC3/NextButton.disabled = false
 			six += 3		# for 統計情報
 		if g.stats[six].has("NSolved"):
 			g.stats[six]["NSolved"] += 1

@@ -42,8 +42,9 @@ func _process(delta):
 	pass
 
 func _on_QuestButton_pressed(num):
+	print("_on_QuestButton_pressed()")
 	g.qNumber = num
-	get_tree().change_scene_to_file("res://mains_cene.tscn")
+	get_tree().change_scene_to_file("res://main_scene.tscn")
 	pass
 
 func _on_back_button_pressed():
