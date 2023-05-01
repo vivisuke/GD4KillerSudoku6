@@ -148,6 +148,7 @@ var column_used = []		# 各カラムの使用済みビット
 var box_used = []			# 各3x3ブロックの使用済みビット
 var memo_labels = []		# メモ（候補数字）用ラベル配列（２次元）
 var memo_text = []			# ポーズ復活時用ラベルテキスト配列（２次元）
+var memo_bg = []			# メモ（候補数字）背景 ColorRect
 var shock_wave_timer = -1
 var undo_ix = 0
 var undo_stack = []			# 要素：[ix old new]、old, new は 0～9 の数値、0 for 空欄
@@ -322,13 +323,24 @@ func update_cell_cursor(num):		# 選択数字ボタンと同じ数字セルを�
 					$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_EMPHASIZE, Vector2i(0, 0))
 				else:
 					$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_NONE)
+				#for v in range(N_BOX_VERT):
+				#	for h in range(N_BOX_HORZ):
+				#		var n = v * 3 + h + 1
+				#		if n == num:
+				#			$Board/MemoTileMap.set_cell(0, Vector2i(x*3+h, y*3+v), 0, Vector2i(0, 0))
+				#		else:
+				#			$Board/MemoTileMap.set_cell(0, Vector2i(x*3+h, y*3+v), TILE_NONE)
 	else:
 		for y in range(N_VERT):
 			for x in range(N_HORZ):
 				$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_NONE)
-				for v in range(N_BOX_VERT):
-					for h in range(N_BOX_HORZ):
-						$Board/MemoTileMap.set_cell(0, Vector2i(x*3+h, y*3+v), TILE_NONE)
+				#for v in range(N_BOX_VERT):
+				#	for h in range(N_BOX_HORZ):
+				#		var n = v * 3 + h + 1
+				#		#if n == num:
+				#		#	$Board/MemoTileMap.set_cell(0, Vector2i(x*3+h, y*3+v), 0, Vector2i(0, 0))
+				#		#else:
+				#		$Board/MemoTileMap.set_cell(0, Vector2i(x*3+h, y*3+v), TILE_NONE)
 		if cur_cell_ix >= 0:
 			do_emphasize_cell(cur_cell_ix)
 	pass
@@ -387,6 +399,8 @@ func update_nEmpty():
 func is_solved():
 	update_nEmpty()
 	return nEmpty == 0 && nDuplicated == 0
+func memo_label_pos(px, py, h, v):
+	return Vector2(px + CELL_WIDTH4*(h+1)-3, py + CELL_WIDTH3*(v+1))
 func init_labels():
 	# 手がかり数字、入力数字用 Label 生成
 	for y in range(N_VERT):
@@ -415,13 +429,23 @@ func init_labels():
 				for h in range(N_BOX_HORZ):
 					label = Label.new()
 					lst.push_back(label)
+					label.add_theme_color_override("custom_bg_color", Color.YELLOW)
 					label.add_theme_color_override("font_color", Color.BLACK)
 					label.add_theme_font_size_override("font_size", 18)
-					label.position = g.memo_label_pos(px, py, h, v)
+					label.position = memo_label_pos(px, py, h, v)
 					label.text = ""
 					#label.text = str(v*3+h+1)
 					$Board.add_child(label)
 			memo_labels.push_back(lst)
+			# 候補数字背景 ColorRect
+			for v in range(N_BOX_VERT):
+				for h in range(N_BOX_HORZ):
+					var cr = ColorRect.new()
+					cr.color = Color.YELLOW
+					cr.position = memo_label_pos(px, py, 0, 0) + Vector2(-3, 3)
+					cr.size = Vector2i(18, 18)
+					$Board/TileMap.add_child(cr)
+					memo_bg.push_back(cr)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -1258,7 +1282,7 @@ func add_falling_memo(num : int, ix : int):
 	var py = (ix / N_HORZ) * CELL_WIDTH
 	var h = (num-1) % 3
 	var v = (num-1) / 3
-	fc.position = $Board.position + g.memo_label_pos(px, py, h, v)
+	fc.position = $Board.position + memo_label_pos(px, py, h, v)
 	fc.get_node("Label").text = str(num)
 	var th = rng.randf_range(0, 3.1415926535*2)
 	fc.linear_velocity = Vector2(cos(th), sin(th))*100
@@ -1757,9 +1781,9 @@ func remove_all_memo():
 			if memo_labels[ix][i].text != "":
 				add_falling_memo(int(memo_labels[ix][i].text), ix)
 				memo_labels[ix][i].text = ""
-	for v in range(N_VERT*3):
-		for h in range(N_HORZ*3):
-			$Board/MemoTileMap.set_cell(0, Vector2i(h, v), TILE_NONE)
+	#for v in range(N_VERT*3):
+	#	for h in range(N_HORZ*3):
+	#		$Board/MemoTileMap.set_cell(0, Vector2i(h, v), TILE_NONE)
 
 func _on_del_memo_button_pressed():
 	remove_all_memo()

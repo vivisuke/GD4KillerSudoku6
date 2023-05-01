@@ -173,6 +173,7 @@ format = 2
 layer_0/tile_data = PackedInt32Array(0, 0, 0, 262147, 1, 0)
 
 [node name="MemoTileMap" type="TileMap" parent="Board"]
+visible = false
 tile_set = SubResource("TileSet_frw2l")
 format = 2
 layer_0/tile_data = PackedInt32Array(0, 0, 0, 262147, 1, 0, 65538, 0, 0)
