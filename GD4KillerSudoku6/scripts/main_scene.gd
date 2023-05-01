@@ -326,9 +326,9 @@ func update_cell_cursor(num):		# 選択数字ボタンと同じ数字セルを�
 		for y in range(N_VERT):
 			for x in range(N_HORZ):
 				$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_NONE)
-				##for v in range(N_BOX_VERT):
-				##	for h in range(N_BOX_HORZ):
-				##		$Board/MemoTileMap.set_cell(x*3+h, y*3+v), TILE_NONE)
+				for v in range(N_BOX_VERT):
+					for h in range(N_BOX_HORZ):
+						$Board/MemoTileMap.set_cell(0, Vector2i(x*3+h, y*3+v), TILE_NONE)
 		if cur_cell_ix >= 0:
 			do_emphasize_cell(cur_cell_ix)
 	pass
@@ -1757,9 +1757,9 @@ func remove_all_memo():
 			if memo_labels[ix][i].text != "":
 				add_falling_memo(int(memo_labels[ix][i].text), ix)
 				memo_labels[ix][i].text = ""
-	##for v in range(N_VERT*3):
-	##	for h in range(N_HORZ*3):
-	##		$Board/MemoTileMap.set_cell(h, v, TILE_NONE)
+	for v in range(N_VERT*3):
+		for h in range(N_HORZ*3):
+			$Board/MemoTileMap.set_cell(0, Vector2i(h, v), TILE_NONE)
 
 func _on_del_memo_button_pressed():
 	remove_all_memo()
@@ -1946,4 +1946,9 @@ func _on_memo_button_toggled(button_pressed):
 	#print(font)
 	for i in range(N_HORZ):
 		num_buttons[i+1].add_theme_font_size_override("font_size", sz)
+	pass # Replace with function body.
+
+
+func _on_top_page_button_pressed():
+	get_tree().change_scene_to_file("res://top_scene.tscn")
 	pass # Replace with function body.

@@ -562,18 +562,18 @@ horizontal_alignment = 1
 layout_mode = 2
 texture = ExtResource("24_vkisw")
 
-[node name="FirstPageButton" type="TextureButton" parent="HBC3"]
+[node name="TopPageButton" type="TextureButton" parent="HBC3"]
 layout_mode = 2
 texture_normal = ExtResource("30_2b01f")
 texture_pressed = ExtResource("31_3jio0")
 
-[node name="Label" type="Label" parent="HBC3/FirstPageButton"]
+[node name="Label" type="Label" parent="HBC3/TopPageButton"]
 layout_mode = 0
 offset_top = 44.0
 offset_right = 48.0
 offset_bottom = 71.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-text = "first"
+text = "top"
 horizontal_alignment = 1
 
 [node name="Space6" type="TextureRect" parent="HBC3"]
@@ -645,4 +645,5 @@ color = Color(1, 1, 1, 0)
 [connection signal="pressed" from="HBC2/AutoMemoButton" to="." method="_on_auto_memo_button_pressed"]
 [connection signal="pressed" from="HBC3/LoopButton" to="." method="_on_loop_button_pressed"]
 [connection signal="pressed" from="HBC3/DeselectButton" to="." method="_on_deselect_button_pressed"]
+[connection signal="pressed" from="HBC3/TopPageButton" to="." method="_on_top_page_button_pressed"]
 [connection signal="pressed" from="HBC3/NextButton" to="." method="_on_next_button_pressed"]
