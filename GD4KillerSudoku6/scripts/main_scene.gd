@@ -401,6 +401,10 @@ func is_solved():
 	return nEmpty == 0 && nDuplicated == 0
 func memo_label_pos(px, py, h, v):
 	return Vector2(px + CELL_WIDTH4*(h+1)-3, py + CELL_WIDTH3*(v+1))
+func memo_bg_pos(px, py, n):
+	var h = (n-1) % 3
+	var v = (n-1) / 3
+	return memo_label_pos(px, py, h, v) + Vector2(-3, 3)
 func init_labels():
 	# 手がかり数字、入力数字用 Label 生成
 	for y in range(N_VERT):
@@ -442,7 +446,7 @@ func init_labels():
 				for h in range(N_BOX_HORZ):
 					var cr = ColorRect.new()
 					cr.color = Color.YELLOW
-					cr.position = memo_label_pos(px, py, 0, 0) + Vector2(-3, 3)
+					cr.position = memo_bg_pos(px, py, 1)
 					cr.size = Vector2i(18, 18)
 					$Board/TileMap.add_child(cr)
 					memo_bg.push_back(cr)
