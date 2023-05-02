@@ -1,4 +1,4 @@
-[gd_scene load_steps=60 format=3 uid="uid://df63unibnxvr5"]
+[gd_scene load_steps=61 format=3 uid="uid://df63unibnxvr5"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_j8s1i"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ltfgv"]
@@ -51,6 +51,7 @@
 [ext_resource type="Texture2D" uid="uid://iuao1th8p52s" path="res://images/loop_white.png" id="33_oto57"]
 [ext_resource type="Texture2D" uid="uid://bedfilgy8gi46" path="res://images/backspace_BelizeHole.png" id="37_2tg2l"]
 [ext_resource type="AudioStream" uid="uid://bbbn2ht8knmri" path="res://sounds/correct.mp3" id="45_axvrh"]
+[ext_resource type="Script" path="res://scripts/fake_confetti_particles.gd" id="52_b8vqy"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_l5jc0"]
 texture = ExtResource("4_6xb5c")
@@ -596,6 +597,7 @@ text = "next"
 horizontal_alignment = 1
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+visible = false
 
 [node name="Audio" type="Node" parent="."]
 
@@ -628,6 +630,9 @@ offset_right = 500.0
 offset_bottom = 900.0
 mouse_filter = 2
 color = Color(1, 1, 1, 0)
+
+[node name="FakeConfettiParticles" type="Node2D" parent="."]
+script = ExtResource("52_b8vqy")
 
 [connection signal="pressed" from="TitleBar/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="HBC1/UndoButton" to="." method="_on_undo_button_pressed"]

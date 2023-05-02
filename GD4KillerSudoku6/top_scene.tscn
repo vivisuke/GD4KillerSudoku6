@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dtta0o6xbn0ip"]
+[gd_scene load_steps=9 format=3 uid="uid://dtta0o6xbn0ip"]
 
 [ext_resource type="FontFile" uid="uid://bxhleatspvdo3" path="res://fonts/Hokjesgeest-PDGB.ttf" id="1_4sssh"]
 [ext_resource type="Script" path="res://scripts/top_scene.gd" id="1_n6ubd"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://qe4m363fwc1x" path="res://images/folder_white.png" id="3_xsmku"]
 [ext_resource type="Texture2D" uid="uid://bgwbg4ia462qw" path="res://images/event_available_white.png" id="4_0iaki"]
 [ext_resource type="Texture2D" uid="uid://dedvu8xj0ikfl" path="res://images/gold_medal.png" id="5_up4i5"]
+[ext_resource type="Script" path="res://scripts/TestNode2D.gd" id="7_fexrp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_urpfq"]
 bg_color = Color(0.180392, 0.309804, 0.309804, 1)
@@ -344,6 +345,9 @@ theme_override_font_sizes/font_size = 20
 text = "※ 毎日アプリを開くと、コインが２個づつ増えます。"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="TestNode2D" type="Node2D" parent="."]
+script = ExtResource("7_fexrp")
 
 [connection signal="pressed" from="Button0" to="." method="_on_button_0_pressed"]
 [connection signal="pressed" from="Button1" to="." method="_on_button_1_pressed"]

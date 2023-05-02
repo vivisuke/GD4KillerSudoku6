@@ -162,6 +162,8 @@ var Board6x6 = preload("res://scripts/Board6x6.gd")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	var em = $FakeConfettiParticles.emitting
+	#print($FakeConfettiParticles.emitting)
 	bd = Board6x6.new()
 	print("todaysQuest = ", g.todaysQuest)
 	#find_hidden_single_test([0b101000, 0b100001, 0b100001, 0b100010, 0b000000, 0b000000])
@@ -196,6 +198,7 @@ func _ready():
 	gen_quest()
 	$CanvasLayer/ColorRect.material.set("shader_param/size", 0)
 	messLabelPos = $MessLabel.position
+	update_all_status()
 	pass # Replace with function body.
 func gen_qName():
 	g.qRandom = true
@@ -323,6 +326,13 @@ func update_cell_cursor(num):		# 選択数字ボタンと同じ数字セルを�
 					$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_EMPHASIZE, Vector2i(0, 0))
 				else:
 					$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_NONE)
+				if memo_labels[ix][num-1].text != "":
+					memo_bg[ix].show()
+					var px = x * CELL_WIDTH
+					var py = y * CELL_WIDTH
+					memo_bg[ix].position = memo_bg_pos(px, py, num)
+				else:
+					memo_bg[ix].hide()
 				#for v in range(N_BOX_VERT):
 				#	for h in range(N_BOX_HORZ):
 				#		var n = v * 3 + h + 1
@@ -341,6 +351,7 @@ func update_cell_cursor(num):		# 選択数字ボタンと同じ数字セルを�
 				#		#	$Board/MemoTileMap.set_cell(0, Vector2i(x*3+h, y*3+v), 0, Vector2i(0, 0))
 				#		#else:
 				#		$Board/MemoTileMap.set_cell(0, Vector2i(x*3+h, y*3+v), TILE_NONE)
+		for ix in range(N_CELLS): memo_bg[ix].hide()
 		if cur_cell_ix >= 0:
 			do_emphasize_cell(cur_cell_ix)
 	pass
@@ -442,14 +453,14 @@ func init_labels():
 					$Board.add_child(label)
 			memo_labels.push_back(lst)
 			# 候補数字背景 ColorRect
-			for v in range(N_BOX_VERT):
-				for h in range(N_BOX_HORZ):
-					var cr = ColorRect.new()
-					cr.color = Color.YELLOW
-					cr.position = memo_bg_pos(px, py, 1)
-					cr.size = Vector2i(18, 18)
-					$Board/TileMap.add_child(cr)
-					memo_bg.push_back(cr)
+			var cr = ColorRect.new()
+			cr.color = Color.YELLOW
+			cr.position = memo_bg_pos(px, py, 1)
+			cr.size = Vector2i(18, 18)
+			$Board/TileMap.add_child(cr)
+			memo_bg.push_back(cr)
+			#for v in range(N_BOX_VERT):
+			#	for h in range(N_BOX_HORZ):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -471,7 +482,7 @@ func _process(delta):
 	if confetti_count_down > 0.0:
 		confetti_count_down -= delta
 		if confetti_count_down <= 0.0:
-			$CPUParticles2D.emitting = false
+			$FakeConfettiParticles._set_emitting(false)
 	##if hint_count_down > 0.0:
 	##	hint_count_down -= delta
 	##	if hint_count_down <= 0.0:
@@ -1093,7 +1104,7 @@ func is_all_solved_todaysQuest():
 func on_solved():
 	solvedStat = true
 	confetti_count_down = 5.0
-	$CPUParticles2D.emitting = true
+	$FakeConfettiParticles._set_emitting(true)
 	$CanvasLayer/ColorRect.show()
 	waiting = 10				# 10/60秒ウェイト
 	shock_wave_timer = 0.0      # start shock wave
@@ -1785,6 +1796,7 @@ func remove_all_memo():
 			if memo_labels[ix][i].text != "":
 				add_falling_memo(int(memo_labels[ix][i].text), ix)
 				memo_labels[ix][i].text = ""
+		memo_bg[ix].hide()
 	#for v in range(N_VERT*3):
 	#	for h in range(N_HORZ*3):
 	#		$Board/MemoTileMap.set_cell(0, Vector2i(h, v), TILE_NONE)
@@ -1796,7 +1808,7 @@ func _on_del_memo_button_pressed():
 
 func _on_next_button_pressed():
 	if paused: return		# ポーズ中
-	$CPUParticles2D.emitting = false
+	$FakeConfettiParticles._set_emitting(false)
 	#g.auto_save(false, [])
 	saved_cell_data = []
 	##$SolvedLayer.hide()

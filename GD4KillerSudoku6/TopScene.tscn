@@ -1,5 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://idy8da7o5rkp"]
+[gd_scene load_steps=5 format=3 uid="uid://idy8da7o5rkp"]
 
+[ext_resource type="Script" path="res://scripts/TestNode2D.gd" id="3_lbks4"]
 [ext_resource type="Texture2D" uid="uid://dedvu8xj0ikfl" path="res://images/gold_medal.png" id="4"]
 [ext_resource type="Script" path="res://scripts/TopScene.gd" id="8"]
 
@@ -145,6 +146,9 @@ text = "10"
 
 [node name="CoinLabel" type="Label" parent="."]
 text = "※ 毎日アプリを開くと、コインが２個増えます。"
+
+[node name="TestNode2D" type="Node2D" parent="."]
+script = ExtResource("3_lbks4")
 
 [connection signal="pressed" from="Button0" to="." method="_on_Button0_pressed"]
 [connection signal="pressed" from="Button1" to="." method="_on_Button1_pressed"]

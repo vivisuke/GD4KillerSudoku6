@@ -12,6 +12,8 @@ var buttons = []
 #onready var g = get_node("/root/Global")
 
 func _ready():
+	var node = $TestNode2D
+	print($TestNode2D.foo)
 	#var bd = Board6x6.new()
 	##bd.gen_ans()
 	##bd.print_ans_num()
