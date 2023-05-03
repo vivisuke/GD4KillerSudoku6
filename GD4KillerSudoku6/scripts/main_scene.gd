@@ -43,6 +43,7 @@ const BIT_MEMO = 1<<10
 const TILE_NONE = -1
 const TILE_CURSOR = 0					# カーソル（薄ピンク）
 const TILE_EMPHASIZE = 1				# 強調カーソル（薄黄色）
+const TILE_CIRCLE = 2					# 円形
 const COLOR_INCORRECT = Color.RED
 const COLOR_DUP = Color.RED
 const COLOR_CLUE = Color.BLACK
@@ -1692,7 +1693,8 @@ func _on_hint_button_pressed():
 		var x = bd.cert_posnum[0] % N_HORZ
 		var y = bd.cert_posnum[0] / N_HORZ
 		print("pos = (", x, ", ", y, "), num = ", bd.cert_posnum[1])
-		$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_CURSOR, Vector2i(0, 0))
+		$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_CIRCLE, Vector2i(0, 0))
+		$MessLabel.text = "○ 部分の数字が確定です。"
 	#var bix = find_last_blank_cell_in_cage()
 	#print("last_blank_cell_in_cage: ", bix)
 	#bix = find_fullhouse()

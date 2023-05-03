@@ -1,4 +1,4 @@
-[gd_scene load_steps=61 format=3 uid="uid://df63unibnxvr5"]
+[gd_scene load_steps=63 format=3 uid="uid://df63unibnxvr5"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_j8s1i"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_ltfgv"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://cqec3tqrevdpa" path="res://images/undo_black.png" id="6_al8fh"]
 [ext_resource type="Texture2D" uid="uid://csupj8245mj3o" path="res://images/undo_white.png" id="7_mp20d"]
 [ext_resource type="Texture2D" uid="uid://b1vvkieh6sjf3" path="res://images/undo_gray.png" id="8_83f3t"]
+[ext_resource type="Texture2D" uid="uid://l71u3i33vw0u" path="res://images/circle_pink.png" id="8_htgrs"]
 [ext_resource type="Texture2D" uid="uid://cetdhkbdck7xo" path="res://images/lightorange18x18.png" id="8_qsssc"]
 [ext_resource type="Texture2D" uid="uid://cvj6brboxtj1q" path="res://images/space10.png" id="9_8mpbk"]
 [ext_resource type="Texture2D" uid="uid://b151q57nusn3s" path="res://images/redo_black.png" id="10_rhvmb"]
@@ -63,10 +64,16 @@ texture = ExtResource("5_aa34c")
 texture_region_size = Vector2i(81, 81)
 0:0/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rd7e6"]
+texture = ExtResource("8_htgrs")
+texture_region_size = Vector2i(81, 81)
+0:0/0 = 0
+
 [sub_resource type="TileSet" id="TileSet_sghhw"]
 tile_size = Vector2i(81, 81)
 sources/0 = SubResource("TileSetAtlasSource_l5jc0")
 sources/1 = SubResource("TileSetAtlasSource_v1gic")
+sources/2 = SubResource("TileSetAtlasSource_rd7e6")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2muv8"]
 texture = ExtResource("8_qsssc")
@@ -171,7 +178,7 @@ script = ExtResource("2_n82ed")
 [node name="TileMap" type="TileMap" parent="Board"]
 tile_set = SubResource("TileSet_sghhw")
 format = 2
-layer_0/tile_data = PackedInt32Array(0, 0, 0, 262147, 1, 0)
+layer_0/tile_data = PackedInt32Array(0, 0, 0, 262147, 1, 0, 327685, 2, 0)
 
 [node name="MemoTileMap" type="TileMap" parent="Board"]
 visible = false
