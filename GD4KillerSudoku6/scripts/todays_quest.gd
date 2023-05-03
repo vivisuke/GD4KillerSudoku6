@@ -2,7 +2,7 @@ extends Node2D
 
 
 func _ready():
-	g.todaysQuest = false
+	g.todaysQuest = true
 	g.load_environment()
 	if !g.env.has(g.KEY_LOGIN_DATE) || g.env[g.KEY_LOGIN_DATE] != g.today_string():
 		g.env[g.KEY_LOGIN_DATE] = g.today_string()
@@ -10,6 +10,17 @@ func _ready():
 		g.save_environment()
 	$CoinButton/NCoinLabel.text = str(g.env[g.KEY_N_COINS])
 	g.load_stats()
+	#
+	g.load_todaysQuest()
+	var today_string = g.today_string()
+	if g.tqSolvedYMD != today_string:		# 日付が変わっている場合
+		if g.tqSolvedYMD == g.yesterday_string():	# 昨日までの記録がある場合
+			g.tqConsYesterdayDays = g.tqConsSolvedDays
+		else:
+			g.tqConsYesterdayDays = 0
+		g.tqConsSolvedDays = 0				# 連続クリア日数
+		g.tqSolvedYMD = today_string
+		g.tqSolvedSec = [-1, -1, -1]
 	#
 	$ConsDaysLabel.text = "連続クリア日数：%d" % g.tqConsSolvedDays
 	$ConsYesterdaysLabel.text = "昨日の連続クリア日数：%d" % g.tqConsYesterdayDays

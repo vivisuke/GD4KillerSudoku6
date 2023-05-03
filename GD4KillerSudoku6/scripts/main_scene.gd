@@ -1372,23 +1372,19 @@ func num_button_pressed(num : int, button_pressed):
 	update_all_status()
 	pass
 
+
 func _on_button_1_pressed():
 	num_button_pressed(1, true)
 func _on_button_2_pressed():
 	num_button_pressed(2, true)
-	pass # Replace with function body.
 func _on_button_3_pressed():
 	num_button_pressed(3, true)
-	pass # Replace with function body.
 func _on_button_4_pressed():
-	pass # Replace with function body.
 	num_button_pressed(4, true)
 func _on_button_5_pressed():
 	num_button_pressed(5, true)
-	pass # Replace with function body.
 func _on_button_6_pressed():
 	num_button_pressed(6, true)
-	pass # Replace with function body.
 func find_last_blank_cell_in_cage():		# ケージ内の最後の空白セルを探す
 	for ci in range(cage_list.size()):
 		var cage = cage_list[ci]
@@ -1993,3 +1989,17 @@ func _on_memo_button_toggled(button_pressed):
 func _on_top_page_button_pressed():
 	get_tree().change_scene_to_file("res://top_scene.tscn")
 	pass # Replace with function body.
+func _on_backspace_button_toggled(button_pressed):
+	num_button_pressed(0, button_pressed)
+func _on_button_1_toggled(button_pressed):
+	num_button_pressed(1, button_pressed)
+func _on_button_2_toggled(button_pressed):
+	num_button_pressed(2, button_pressed)
+func _on_button_3_toggled(button_pressed):
+	num_button_pressed(3, button_pressed)
+func _on_button_4_toggled(button_pressed):
+	num_button_pressed(4, button_pressed)
+func _on_button_5_toggled(button_pressed):
+	num_button_pressed(5, button_pressed)
+func _on_button_6_toggled(button_pressed):
+	num_button_pressed(6, button_pressed)
