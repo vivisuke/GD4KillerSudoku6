@@ -193,3 +193,4 @@ func _set_emitting(new_value):
 			timer = 0.0
 			queue_redraw()
 			##property_list_changed_notify()
+			#emit property_list_changed()

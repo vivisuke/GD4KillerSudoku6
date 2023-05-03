@@ -11,6 +11,15 @@ func _ready():
 	$CoinButton/NCoinLabel.text = str(g.env[g.KEY_N_COINS])
 	g.load_stats()
 	#
+	$ConsDaysLabel.text = "連続クリア日数：%d" % g.tqConsSolvedDays
+	$ConsYesterdaysLabel.text = "昨日の連続クリア日数：%d" % g.tqConsYesterdayDays
+	$MaxConsDaysLabel.text = "最大連続クリア日数：%d" % g.tqMaxConsSolvedDays
+	for i in range(3):
+		if g.tqSolvedSec[i] >= 0:
+			var btn = get_node("Button%d" % i)
+			btn.set_button_icon($SolvedTexture.texture)
+			var tm = "N/A" if g.tqSolvedSec[i] < 0 else g.sec_to_MSStr(g.tqSolvedSec[i])
+			get_node("Button%d/TimeLabel" % i).text = tm
 	$DateLabel.text = g.today_string()
 func _on_back_button_pressed():
 	get_tree().change_scene_to_file("res://top_scene.tscn")

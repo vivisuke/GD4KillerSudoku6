@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://b1uvg6fu8xkn5"]
+[gd_scene load_steps=9 format=3 uid="uid://b1uvg6fu8xkn5"]
 
 [ext_resource type="Script" path="res://scripts/todays_quest.gd" id="1_d6t06"]
 [ext_resource type="Script" path="res://scripts/TitleBar.gd" id="1_m0cn3"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://yp1xll2krgca" path="res://images/leftward_black.png" id="3_ng4f3"]
 [ext_resource type="Texture2D" uid="uid://b37qhkh6trjag" path="res://images/arrow_forward_white.png" id="5_vf86l"]
 [ext_resource type="Texture2D" uid="uid://dedvu8xj0ikfl" path="res://images/gold_medal.png" id="6_d4cjb"]
+[ext_resource type="Texture2D" uid="uid://g6v6gjtxxmo1" path="res://images/task_alt_white.png" id="7_u8cus"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dlyjc"]
 bg_color = Color(0.180392, 0.309804, 0.309804, 1)
@@ -187,6 +188,13 @@ theme_override_font_sizes/font_size = 20
 text = "※ 今日の問題を全クリアすると、コインが3個づつ増えます。"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="SolvedTexture" type="TextureRect" parent="."]
+offset_left = -151.0
+offset_top = 340.0
+offset_right = -111.0
+offset_bottom = 380.0
+texture = ExtResource("7_u8cus")
 
 [connection signal="pressed" from="TitleBar/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="Button0" to="." method="_on_button_0_pressed"]

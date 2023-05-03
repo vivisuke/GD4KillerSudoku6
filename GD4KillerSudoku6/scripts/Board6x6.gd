@@ -1,4 +1,4 @@
-﻿extends Object
+extends Object
 
 enum {
 	CAGE_SUM = 0,			# ケージ内数字合計
@@ -331,23 +331,33 @@ func sel_from_lst(ix, lst):		# lst からひとつを選ぶ
 func gen_cages():
 	#for i in range(N_CELLS): cage_labels[i].text = ""
 	cage_list = []
-	# 4隅を風車風に２セルケージに分ける
-	if rng.randf_range(0.0, 1.0) < 0.5:
-		cage_list.push_back([0, [0, 1]])
+	if qLevel == LVL_NORMAL:
+		# 4隅を３セルケージに分ける
+		cage_list.push_back([0, [0, 1, N_HORZ]])
 		var ix0 = N_HORZ-1
-		cage_list.push_back([0, [ix0, ix0+N_HORZ]])
-		ix0 = N_HORZ * (N_VERT - 1)
-		cage_list.push_back([0, [ix0, ix0-N_HORZ]])
-		ix0 = N_CELLS - 1
-		cage_list.push_back([0, [ix0, ix0-1]])
+		cage_list.push_back([0, [ix0, ix0-1, ix0+N_HORZ]])
+		ix0 = N_HORZ * (N_VERT - 1)		# 左下
+		cage_list.push_back([0, [ix0, ix0+1, ix0-N_HORZ]])
+		ix0 = N_CELLS - 1	# 右下
+		cage_list.push_back([0, [ix0, ix0-1, ix0-N_HORZ]])
 	else:
-		cage_list.push_back([0, [0, N_HORZ]])
-		var ix0 = N_HORZ-1
-		cage_list.push_back([0, [ix0, ix0-1]])
-		ix0 = N_HORZ * (N_VERT - 1)
-		cage_list.push_back([0, [ix0, ix0+1]])
-		ix0 = N_CELLS - 1
-		cage_list.push_back([0, [ix0, ix0-N_HORZ]])
+		# 4隅を風車風に２セルケージに分ける
+		if rng.randf_range(0.0, 1.0) < 0.5:
+			cage_list.push_back([0, [0, 1]])
+			var ix0 = N_HORZ-1
+			cage_list.push_back([0, [ix0, ix0+N_HORZ]])
+			ix0 = N_HORZ * (N_VERT - 1)
+			cage_list.push_back([0, [ix0, ix0-N_HORZ]])
+			ix0 = N_CELLS - 1
+			cage_list.push_back([0, [ix0, ix0-1]])
+		else:
+			cage_list.push_back([0, [0, N_HORZ]])
+			var ix0 = N_HORZ-1
+			cage_list.push_back([0, [ix0, ix0-1]])
+			ix0 = N_HORZ * (N_VERT - 1)
+			cage_list.push_back([0, [ix0, ix0+1]])
+			ix0 = N_CELLS - 1
+			cage_list.push_back([0, [ix0, ix0-N_HORZ]])
 	for i in range(cage_ix.size()): cage_ix[i] = -1
 	for ix in range(cage_list.size()):
 		var lst = cage_list[ix][1]

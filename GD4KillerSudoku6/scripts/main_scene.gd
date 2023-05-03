@@ -162,7 +162,7 @@ var Board6x6 = preload("res://scripts/Board6x6.gd")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	var em = $FakeConfettiParticles.emitting
+	#var em = $FakeConfettiParticles.emitting
 	#print($FakeConfettiParticles.emitting)
 	bd = Board6x6.new()
 	print("todaysQuest = ", g.todaysQuest)
@@ -1780,6 +1780,7 @@ func do_auto_memo():
 				else:
 					memo_labels[ix][i].text = ""
 				mask <<= 1
+	update_all_status()
 func _on_auto_memo_button_pressed():
 	do_auto_memo()
 	pass # Replace with function body.
