@@ -94,7 +94,7 @@ var qSolved = false     	# 現問題をクリア済みか？
 #var elapsedTime = 0.0   	# 経過時間（単位：秒）
 var symmetric = true		# 対称形問題
 var qCreating = false		# 問題生成中
-var solvedStat = false		# クリア済み状態
+var is_solved_stat = false		# クリア済み状態
 var paused = false			# ポーズ状態
 var sound = true			# 効果音
 var menuPopuped = false
@@ -239,7 +239,7 @@ func gen_quest():
 	update_cages_sum_labels()
 	$Board/CageGrid.cage_ix = cage_ix
 	$Board/CageGrid.queue_redraw()
-	solvedStat = false
+	is_solved_stat = false
 	g.elapsedTime = 0.0
 	#ans_bit = cell_bit.duplicate()
 	#print_ans()
@@ -382,7 +382,7 @@ func update_all_status():
 	update_num_buttons_disabled()
 	check_duplicated()
 	check_cages()
-	if solvedStat:
+	if is_solved_stat:
 		if !g.todaysQuest:
 			var six = g.qLevel if g.qNumber == 0 else g.qLevel + 3
 			var n = g.stats[six]["NSolved"]
@@ -475,7 +475,7 @@ func _process(delta):
 			if sound:
 				$Audio/Solved.play()		# （キラーン）効果音再生
 		return
-	if !solvedStat && !paused:
+	if !is_solved_stat && !paused:
 		g.elapsedTime += delta
 		var sec = int(g.elapsedTime)
 		var h = sec / (60*60)
@@ -1106,7 +1106,7 @@ func do_emphasize(ix : int, type, fullhouse):
 func is_all_solved_todaysQuest():
 	return g.tqSolvedSec[0] >= 0 && g.tqSolvedSec[1] >= 0 && g.tqSolvedSec[2] >= 0
 func on_solved():
-	solvedStat = true
+	is_solved_stat = true
 	confetti_count_down = 5.0
 	$FakeConfettiParticles._set_emitting(true)
 	$CanvasLayer/ColorRect.show()
@@ -1263,7 +1263,7 @@ func _input(event):
 				flip_memo_num(ix, cur_num)
 		update_all_status()
 		sound_effect(false)
-		if !solvedStat && is_solved():
+		if !is_solved_stat && is_solved():
 			on_solved()
 	elif event is InputEventKey && event.is_pressed():
 		#print(event.as_text())
@@ -1356,7 +1356,7 @@ func num_button_pressed(num : int, button_pressed):
 					num_buttons[num].button_pressed = false
 					update_all_status()
 					sound_effect(false)
-					if !solvedStat && is_solved():
+					if !is_solved_stat && is_solved():
 						on_solved()
 				pass
 			else:		# メモ数字エディットモード
@@ -1916,6 +1916,7 @@ func _on_back_button_pressed():
 	else:
 		get_tree().change_scene_to_file("res://level_scene.tscn")
 func _on_pause_button_pressed():
+	if is_solved_stat: return
 	paused = !paused
 	if paused:
 		for ix in range(N_CELLS):
