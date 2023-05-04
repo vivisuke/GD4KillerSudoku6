@@ -497,6 +497,7 @@ texture = ExtResource("30_i70rx")
 
 [node name="SoundButton" type="TextureButton" parent="HBC3"]
 layout_mode = 2
+toggle_mode = true
 texture_normal = ExtResource("25_fqafo")
 texture_pressed = ExtResource("31_wmhh0")
 
