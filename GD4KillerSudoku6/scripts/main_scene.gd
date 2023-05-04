@@ -2005,3 +2005,11 @@ func _on_button_5_toggled(button_pressed):
 	num_button_pressed(5, button_pressed)
 func _on_button_6_toggled(button_pressed):
 	num_button_pressed(6, button_pressed)
+
+
+func _on_sound_button_toggled(button_pressed):
+	print("sound = ", button_pressed)
+	sound = button_pressed
+	g.settings["Sound"] = sound
+	g.save_settings()
+	pass # Replace with function body.

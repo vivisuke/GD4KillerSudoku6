@@ -657,6 +657,7 @@ script = ExtResource("52_b8vqy")
 [connection signal="toggled" from="HBC2/Button6" to="." method="_on_button_6_toggled"]
 [connection signal="pressed" from="HBC2/DelMemoButton" to="." method="_on_del_memo_button_pressed"]
 [connection signal="pressed" from="HBC2/AutoMemoButton" to="." method="_on_auto_memo_button_pressed"]
+[connection signal="toggled" from="HBC3/SoundButton" to="." method="_on_sound_button_toggled"]
 [connection signal="pressed" from="HBC3/LoopButton" to="." method="_on_loop_button_pressed"]
 [connection signal="pressed" from="HBC3/DeselectButton" to="." method="_on_deselect_button_pressed"]
 [connection signal="toggled" from="HBC3/BackspaceButton" to="." method="_on_backspace_button_toggled"]
