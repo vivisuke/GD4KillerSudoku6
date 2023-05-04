@@ -171,6 +171,9 @@ func _ready():
 	if g.qNumber != 0:
 		g.qName = "%06d" % g.qNumber
 	$TitleBar/Label.text = titleText()
+	g.load_settings()
+	sound = !g.settings.has("Sound") || g.settings["Sound"]
+	$HBC3/SoundButton.button_pressed = sound
 	init_labels()
 	g.load_stats()
 	#
