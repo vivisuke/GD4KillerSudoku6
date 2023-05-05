@@ -514,12 +514,12 @@ horizontal_alignment = 1
 layout_mode = 2
 texture = ExtResource("24_vkisw")
 
-[node name="LoopButton" type="TextureButton" parent="HBC3"]
+[node name="RestartButton" type="TextureButton" parent="HBC3"]
 layout_mode = 2
 texture_normal = ExtResource("26_k4u2k")
 texture_pressed = ExtResource("33_oto57")
 
-[node name="Label" type="Label" parent="HBC3/LoopButton"]
+[node name="Label" type="Label" parent="HBC3/RestartButton"]
 layout_mode = 0
 offset_top = 44.0
 offset_right = 48.0
@@ -658,7 +658,7 @@ script = ExtResource("52_b8vqy")
 [connection signal="pressed" from="HBC2/DelMemoButton" to="." method="_on_del_memo_button_pressed"]
 [connection signal="pressed" from="HBC2/AutoMemoButton" to="." method="_on_auto_memo_button_pressed"]
 [connection signal="toggled" from="HBC3/SoundButton" to="." method="_on_sound_button_toggled"]
-[connection signal="pressed" from="HBC3/LoopButton" to="." method="_on_loop_button_pressed"]
+[connection signal="pressed" from="HBC3/RestartButton" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="HBC3/DeselectButton" to="." method="_on_deselect_button_pressed"]
 [connection signal="toggled" from="HBC3/BackspaceButton" to="." method="_on_backspace_button_toggled"]
 [connection signal="pressed" from="HBC3/TopPageButton" to="." method="_on_top_page_button_pressed"]

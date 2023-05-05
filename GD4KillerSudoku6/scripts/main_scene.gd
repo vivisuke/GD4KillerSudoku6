@@ -1960,7 +1960,7 @@ func do_deselect():
 	update_all_status()
 func is_1cell_cage(ix):
 	return cage_list[cage_ix[ix]][CAGE_IX_LIST].size() == 1
-func _on_loop_button_pressed():
+func _on_restart_button_pressed():
 	if paused: return		# ポーズ中
 	do_deselect()	# 選択解除
 	for ix in range(N_CELLS):
