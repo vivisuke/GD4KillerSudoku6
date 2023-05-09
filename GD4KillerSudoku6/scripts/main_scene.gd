@@ -892,7 +892,7 @@ func gen_cages():
 		for k in range(lst.size()):
 			sum += bit_to_num(cell_bit[lst[k]])
 		item[CAGE_SUM] = sum
-		print(cage_list[ix])
+		#print(cage_list[ix])
 		if sum != 0:
 			cage_labels[lst.min()].text = str(sum)
 		#for k in range(lst.size()): cage_ix[lst[k]] = ix
@@ -1962,6 +1962,7 @@ func is_1cell_cage(ix):
 	return cage_list[cage_ix[ix]][CAGE_IX_LIST].size() == 1
 func _on_restart_button_pressed():
 	if paused: return		# ポーズ中
+	is_solved_stat = false
 	do_deselect()	# 選択解除
 	for ix in range(N_CELLS):
 		if input_labels[ix].text != "" && !is_1cell_cage(ix):

@@ -1,4 +1,4 @@
-﻿extends Node2D
+extends Node2D
 
 
 const N_BUTTONS = 6
@@ -6,7 +6,7 @@ const LVL_BEGINNER = 0
 const LVL_EASY = 1
 const LVL_NORMAL = 2
 
-var Board6x6 = preload("res://scripts/Board6x6.gd")
+var Board6x6 # = preload("res://scripts/Board6x6.gd")
 
 var buttons = []
 #onready var g = get_node("/root/Global")
@@ -14,6 +14,7 @@ var buttons = []
 func _ready():
 	var node = $TestNode2D
 	print($TestNode2D.foo)
+	Board6x6 = preload("res://scripts/Board6x6.gd")
 	#var bd = Board6x6.new()
 	##bd.gen_ans()
 	##bd.print_ans_num()

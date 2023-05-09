@@ -145,6 +145,7 @@ func gen_ans():		# 解答生成
 	#print_ans_num()
 	pass
 func gen_quest(qLvl: int, stxt:String):	# qLevel: 難易度、stxt: シード文字列
+	print("gen_quest")
 	qLevel = qLvl
 	print("seed = ", stxt)
 	seed(stxt.hash())			# for shuffle
@@ -167,18 +168,18 @@ func gen_quest(qLvl: int, stxt:String):	# qLevel: 難易度、stxt: シード文
 		#break
 		#ans_bit = cell_bit.duplicate()
 		#break
+		for ix in range(N_CELLS): cell_bit[ix] = 0
+		fill_1cell_cages()
 		if is_proper_quest():
 			break
 	#print_ans()
-	for ix in range(N_CELLS): cell_bit[ix] = 0
-	fill_1cell_cages()
 	#update_cages_sum_labels()
 	#solvedStat = false
 	#g.elapsedTime = 0.0
 	#ans_bit = cell_bit.duplicate()
 	#print_ans()
 	#for ix in range(N_CELLS): cell_bit[ix] = 0		# 全セルを空欄に
-	print_ans_num()
+	#print_ans_num()
 func print_cells():
 	print("cell_bit[]:")
 	var ix = 0
@@ -328,11 +329,13 @@ func sel_from_lst(ix, lst):		# lst からひとつを選ぶ
 				mn = n2
 				mni = i
 		return lst[mni]
+# ケージ分割処理
 func gen_cages():
 	#for i in range(N_CELLS): cage_labels[i].text = ""
-	cage_list = []
+	cage_list = []		# ケージリスト初期化
 	if qLevel == LVL_NORMAL:
 		# 上2隅を３セルケージ、下2隅は水平２セルケージ
+		# ※ ブロックは3x2 なので、角の３ケージに同じ数字が存在することは無い
 		cage_list.push_back([0, [0, 1, N_HORZ]])				# 左上
 		var ix0 = N_HORZ-1
 		cage_list.push_back([0, [ix0, ix0-1, ix0+N_HORZ]])		# 右上
@@ -366,21 +369,21 @@ func gen_cages():
 			cage_list.push_back([0, [ix0, ix0+1]])
 			ix0 = N_CELLS - 1
 			cage_list.push_back([0, [ix0, ix0-N_HORZ]])
-	for i in range(cage_ix.size()): cage_ix[i] = -1
+	for i in range(cage_ix.size()): cage_ix[i] = -1			# セル→ケージIX テーブル初期化
 	for ix in range(cage_list.size()):
 		var lst = cage_list[ix][1]
-		for k in range(lst.size()): cage_ix[lst[k]] = ix
+		for k in range(lst.size()): cage_ix[lst[k]] = ix	# 各セルのケージIX設定
 	# undone: 入門問題の場合は１セルケージを8つ、初級の場合は２つ生成
 	if qLevel < LVL_NORMAL:
 		var cnt = 4 if qLevel == LVL_BEGINNER else 2
 		while cnt > 0:
-			var ix = rng.randi_range(0, N_CELLS-1)
-			if cage_ix[ix] >= 0: continue
+			var ix = rng.randi_range(0, N_CELLS-1)		# １セルケージをランダムに選ぶ
+			if cage_ix[ix] >= 0: continue				# 既に使用済み
 			cage_ix[ix] = cage_list.size()
 			cage_list.push_back([0, [ix]])
 			cnt -= 1
 	#
-	var ar = []
+	var ar = []		# セルIX格納用配列
 	for ix in range(N_CELLS): ar.push_back(ix)
 	ar.shuffle()
 	for i in range(ar.size()):
@@ -436,8 +439,13 @@ func gen_cages():
 					# ２セルのケージに ix をマージ
 					var i2 = lst2[0] if lst2.size() == 1 else lst2[rng.randi_range(0, lst2.size() - 1)]
 					var lstx = cage_ix[i2]
-					cage_list[lstx][1].push_back(ix)
-					cage_ix[ix] = lstx
+					if (cell_bit[ix] != cell_bit[cage_list[lstx][CAGE_IX_LIST][0]] &&
+						cell_bit[ix] != cell_bit[cage_list[lstx][CAGE_IX_LIST][1]]):
+							cage_list[lstx][CAGE_IX_LIST].push_back(ix)	# 2セルケージに ix を追加→3セルケージに
+							cage_ix[ix] = lstx
+					else:
+						cage_ix[ix] = cage_list.size()
+						cage_list.push_back([0, [ix]])
 				else:
 					cage_ix[ix] = cage_list.size()
 					cage_list.push_back([0, [ix]])
@@ -448,7 +456,7 @@ func gen_cages():
 		for k in range(lst.size()):
 			sum += bit_to_num(cell_bit[lst[k]])
 		item[CAGE_SUM] = sum
-		print(cage_list[ix])
+		#print(cage_list[ix])
 		#if sum != 0:
 		#	cage_labels[lst.min()].text = str(sum)
 		#for k in range(lst.size()): cage_ix[lst[k]] = ix
@@ -512,14 +520,20 @@ func ipq_sub(cix, lix, ub, sum) -> bool:	# false for 解の個数が２以上
 	return nAnswer < 2
 # cage_list をチェック、手がかり数字は無し
 func is_proper_quest() -> bool:
-	nAnswer = 0
-	for ix in range(N_CELLS): cell_bit[ix] = 0
-	for ix in range(N_HORZ):
-		line_used[ix] = 0
-		column_used[ix] = 0
-		box_used[ix] = 0
-	ipq_sub(0, 0, 0, 0)
-	return nAnswer == 1
+	#print_ans_num()
+	#print_cages_ex()
+	#print_cells()
+	if true:
+		return calc_difficulty()> 0
+	else:
+		nAnswer = 0
+		for ix in range(N_CELLS): cell_bit[ix] = 0
+		for ix in range(N_HORZ):
+			line_used[ix] = 0
+			column_used[ix] = 0
+			box_used[ix] = 0
+		ipq_sub(0, 0, 0, 0)
+		return nAnswer == 1
 func fill_1cell_cages():
 	nSpaces = N_CELLS
 	for ci in range(cage_list.size()):
@@ -838,6 +852,8 @@ func init_candidates():		# cell_bit から各セルの候補数字計算
 func cage_bits(cage):
 	var sum = cage[CAGE_SUM]
 	var nc = cage[CAGE_IX_LIST].size()		# セル数
+	if nc == 3 && sum > 15:
+		print_ans_num()
 	if nc == 1:
 		return num_to_bit(sum)
 	else:
