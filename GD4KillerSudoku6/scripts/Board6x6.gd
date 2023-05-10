@@ -153,14 +153,14 @@ func gen_quest(qLvl: int, stxt:String):	# qLevel: 難易度、stxt: シード文
 	rng.set_seed(stxt.hash())
 	while true:
 		gen_ans()
-		gen_cages()
+		gen_cages()					# 各セルをケージに分割
 		if qLevel == LVL_BEGINNER:
 			if count_n_cell_cage(1) < 8:
 				continue			# 再生成
 		#	#split_2cell_cage()		# 1セルケージ数が４未満なら２セルケージを分割
 		#el
 		if qLevel == LVL_NORMAL:
-			merge_2cell_cage()
+			merge_2cell_cage()		# 2セルケージをマージして４セルケージに
 			#merge_2cell_cage()		# for 中級
 			#if count_n_cell_cage(3) <= 3:
 			#merge_2cell_cage()
@@ -251,30 +251,45 @@ func print_cages_ex():		# 罫線でケージ形状表示
 	print(txt+"+")
 func merge_2cell_cage():	# 2セルケージ２つをマージし4セルに
 	#print_cages()
-	while true:
+	while true:				# うまくいくまで試行を続ける
 		var ix = rng.randi_range(0, N_CELLS-1)
-		var cix = cage_ix[ix]
-		if cage_list[cix][CAGE_IX_LIST].size() != 2: continue
+		var cix = cage_ix[ix]					# マージされるケージ
+		if cage_list[cix][CAGE_IX_LIST].size() != 2: continue		# ケージサイズが２でない
+		var bits = (cell_bit[cage_list[cix][CAGE_IX_LIST][0]] |
+					cell_bit[cage_list[cix][CAGE_IX_LIST][1]])
 		var lst2 = []
 		var x = ix % N_HORZ
 		var y = ix / N_HORZ
+		# cage_list[cix] の上下左右を調べ、マージ可能な２セルケージを探す
 		if y != 0:
 			var i2 = xyToIX(x, y-1)
 			if cage_ix[i2] != cix && cage_list[cage_ix[i2]][CAGE_IX_LIST].size() == 2:
-				lst2.push_back(i2)
+				var ci2 = cage_ix[i2]
+				if (((cell_bit[cage_list[ci2][CAGE_IX_LIST][0]] |
+						cell_bit[cage_list[ci2][CAGE_IX_LIST][1]]) & bits) == 0):
+					lst2.push_back(i2)
 		if x != 0:
 			var i2 = xyToIX(x-1, y)
 			if cage_ix[i2] != cix && cage_list[cage_ix[i2]][CAGE_IX_LIST].size() == 2:
-				lst2.push_back(i2)
+				var ci2 = cage_ix[i2]
+				if (((cell_bit[cage_list[ci2][CAGE_IX_LIST][0]] |
+						cell_bit[cage_list[ci2][CAGE_IX_LIST][1]]) & bits) == 0):
+					lst2.push_back(i2)
 		if x != N_HORZ-1:
 			var i2 = xyToIX(x+1, y)
 			if cage_ix[i2] != cix && cage_list[cage_ix[i2]][CAGE_IX_LIST].size() == 2:
-				lst2.push_back(i2)
+				var ci2 = cage_ix[i2]
+				if (((cell_bit[cage_list[ci2][CAGE_IX_LIST][0]] |
+						cell_bit[cage_list[ci2][CAGE_IX_LIST][1]]) & bits) == 0):
+					lst2.push_back(i2)
 		if y != N_VERT-1:
 			var i2 = xyToIX(x, y+1)
 			if cage_ix[i2] != cix && cage_list[cage_ix[i2]][CAGE_IX_LIST].size() == 2:
-				lst2.push_back(i2)
-		if lst2.is_empty(): continue
+				var ci2 = cage_ix[i2]
+				if (((cell_bit[cage_list[ci2][CAGE_IX_LIST][0]] |
+						cell_bit[cage_list[ci2][CAGE_IX_LIST][1]]) & bits) == 0):
+					lst2.push_back(i2)
+		if lst2.is_empty(): continue	# マージ可能な２セルケージが見つからなかった場合
 		var ix2 = lst2[0] if lst2.size() == 1 else lst2[rng.randi_range(0, lst2.size() - 1)]
 		var cix2 = cage_ix[ix2]
 		#print("cix = ", cage_list[cix])
@@ -286,7 +301,7 @@ func merge_2cell_cage():	# 2セルケージ２つをマージし4セルに
 		cage_list[cix2] = [0, []]
 		#print_cages()
 		return
-func gen_cages_3x2():
+func gen_cages_3x2():		# 3x2 単位で分割
 	#for i in range(N_CELLS): cage_labels[i].text = ""
 	cage_list = []
 	for y in range(0, N_VERT, N_VERT/3):
@@ -330,10 +345,7 @@ func sel_from_lst(ix, lst):		# lst からひとつを選ぶ
 				mn = n2
 				mni = i
 		return lst[mni]
-# ケージ分割処理
-func gen_cages():
-	#for i in range(N_CELLS): cage_labels[i].text = ""
-	cage_list = []		# ケージリスト初期化
+func gen_cages_corner():		# 4隅のセルをケージに割り当て
 	if qLevel == LVL_NORMAL:
 		# 上2隅を３セルケージ、下2隅は水平２セルケージ
 		# ※ ブロックは3x2 なので、角の３ケージに同じ数字が存在することは無い
@@ -370,6 +382,11 @@ func gen_cages():
 			cage_list.push_back([0, [ix0, ix0+1]])
 			ix0 = N_CELLS - 1
 			cage_list.push_back([0, [ix0, ix0-N_HORZ]])
+# 各セルをケージ割当処理
+func gen_cages():
+	#for i in range(N_CELLS): cage_labels[i].text = ""
+	cage_list = []		# ケージリスト初期化
+	gen_cages_corner()	# ４隅部分セルをケージ割当
 	for i in range(cage_ix.size()): cage_ix[i] = -1			# セル→ケージIX テーブル初期化
 	for ix in range(cage_list.size()):
 		var lst = cage_list[ix][1]
