@@ -46,6 +46,7 @@ var qLevel					# 問題難易度
 var nSpaces					# 空欄箇所数
 var cert_posnum				# 確定箇所・数字
 var nAnswer
+var difficulty				# 難易度
 var ans_num = []			# 解答の各セル数値、1～N_HORZ
 var cell_bit = []			# 各セル数値（0 | BIT_1 | BIT_2 | ... | BIT_9）
 var quest_cages = []		# クエストケージリスト配列、要素：[sum, ix1, ix2, ...]
@@ -172,7 +173,7 @@ func gen_quest(qLvl: int, stxt:String):	# qLevel: 難易度、stxt: シード文
 		fill_1cell_cages()
 		if is_proper_quest():
 			break
-	#print_ans()
+	print_ans_num()
 	#update_cages_sum_labels()
 	#solvedStat = false
 	#g.elapsedTime = 0.0
@@ -373,22 +374,23 @@ func gen_cages():
 	for ix in range(cage_list.size()):
 		var lst = cage_list[ix][1]
 		for k in range(lst.size()): cage_ix[lst[k]] = ix	# 各セルのケージIX設定
+	# ケージ割り当て済みセルは cage_ix[ix] が設定されている。未割り当ての場合は -1
 	# undone: 入門問題の場合は１セルケージを8つ、初級の場合は２つ生成
 	if qLevel < LVL_NORMAL:
 		var cnt = 4 if qLevel == LVL_BEGINNER else 2
 		while cnt > 0:
 			var ix = rng.randi_range(0, N_CELLS-1)		# １セルケージをランダムに選ぶ
-			if cage_ix[ix] >= 0: continue				# 既に使用済み
+			if cage_ix[ix] >= 0: continue				# 既にケージ割当済み
 			cage_ix[ix] = cage_list.size()
 			cage_list.push_back([0, [ix]])
 			cnt -= 1
 	#
 	var ar = []		# セルIX格納用配列
 	for ix in range(N_CELLS): ar.push_back(ix)
-	ar.shuffle()
+	ar.shuffle()	# シャフル
 	for i in range(ar.size()):
 		var ix = ar[i]
-		if cage_ix[ix] < 0:	# 未分割の場合
+		if cage_ix[ix] < 0:	# セルがケージに未割当の場合
 			if false:
 			#if qLevel == LVL_BEGINNER && i >= ar.size() - N_HORZ*2.2:
 			#if qLevel == LVL_BEGINNER && rng.randf_range(0.0, 1.0) < 0.1:
@@ -449,19 +451,22 @@ func gen_cages():
 				else:
 					cage_ix[ix] = cage_list.size()
 					cage_list.push_back([0, [ix]])
+	calc_cages_sum()
+	quest_cages = cage_list
+	#print_cages()
+func calc_cages_sum():		# 各ケージ合計を計算
 	for ix in range(cage_list.size()):		# 各ケージの合計を計算
 		var item = cage_list[ix]
 		var sum = 0
 		var lst = item[CAGE_IX_LIST]
 		for k in range(lst.size()):
-			sum += bit_to_num(cell_bit[lst[k]])
+			#sum += bit_to_num(cell_bit[lst[k]])
+			sum += ans_num[lst[k]]
 		item[CAGE_SUM] = sum
 		#print(cage_list[ix])
 		#if sum != 0:
 		#	cage_labels[lst.min()].text = str(sum)
 		#for k in range(lst.size()): cage_ix[lst[k]] = ix
-	quest_cages = cage_list
-	#print_cages()
 func ipq_sub(cix, lix, ub, sum) -> bool:	# false for 解の個数が２以上
 	if cix == cage_list.size():
 		nAnswer += 1
@@ -524,7 +529,8 @@ func is_proper_quest() -> bool:
 	#print_cages_ex()
 	#print_cells()
 	if true:
-		return calc_difficulty()> 0
+		difficulty = calc_difficulty()
+		return difficulty > 0
 	else:
 		nAnswer = 0
 		for ix in range(N_CELLS): cell_bit[ix] = 0

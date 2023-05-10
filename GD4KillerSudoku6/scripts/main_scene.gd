@@ -223,7 +223,8 @@ func gen_quest():
 	var stxt = g.qName+str(g.qLevel)
 	if g.qNumber != 0: stxt += "Q"
 	bd.gen_quest(g.qLevel, stxt)
-	var diff = bd.calc_difficulty()
+	#var diff = bd.calc_difficulty()
+	var diff = bd.difficulty
 	print("diff = ", diff)
 	$DiffLabel.text = "Diff: %d" % diff
 	cell_bit = bd.cell_bit
