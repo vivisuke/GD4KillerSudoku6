@@ -1995,6 +1995,7 @@ func _on_memo_button_toggled(button_pressed):
 
 
 func _on_top_page_button_pressed():
+	if paused: return		# ポーズ中
 	get_tree().change_scene_to_file("res://top_scene.tscn")
 	pass # Replace with function body.
 func _on_backspace_button_toggled(button_pressed):
