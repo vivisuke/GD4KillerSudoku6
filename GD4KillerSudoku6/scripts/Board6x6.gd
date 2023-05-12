@@ -153,26 +153,36 @@ func gen_quest(qLvl: int, stxt:String):	# qLevel: 難易度、stxt: シード文
 	rng.set_seed(stxt.hash())
 	while true:
 		gen_ans()
-		gen_cages()					# 各セルをケージに分割
-		if qLevel == LVL_BEGINNER:
-			if count_n_cell_cage(1) < 8:
-				continue			# 再生成
-		#	#split_2cell_cage()		# 1セルケージ数が４未満なら２セルケージを分割
-		#el
-		if qLevel == LVL_NORMAL:
-			merge_2cell_cage()		# 2セルケージをマージして４セルケージに
-			#merge_2cell_cage()		# for 中級
-			#if count_n_cell_cage(3) <= 3:
-			#merge_2cell_cage()
-		#print_cages()
-		#gen_cages_3x2()		# 3x2 単位で分割
-		#break
-		#ans_bit = cell_bit.duplicate()
-		#break
+		if false:	#qLevel == LVL_NORMAL:
+			if !check_center_2x2(): continue	# 中央２ｘ２セルに同じ数字がある
+			gen_cages4()
+			print_cages_ex()
+		else:
+			gen_cages()					# 各セルをケージに分割
+			if qLevel == LVL_BEGINNER:
+				if count_n_cell_cage(1) < 8:
+					continue			# 再生成
+			if qLevel == LVL_NORMAL:
+				merge_2cell_cage()		# 2セルケージをマージして４セルケージに
+				#merge_2cell_cage()		# for 中級
+				#if count_n_cell_cage(3) <= 3:
+				#merge_2cell_cage()
+			#print_cages()
+			#gen_cages_3x2()		# 3x2 単位で分割
 		for ix in range(N_CELLS): cell_bit[ix] = 0
 		fill_1cell_cages()
-		if is_proper_quest():
-			break
+		if is_proper_quest():	# 難易度を計算 → difficulty に格納
+			if qLevel == LVL_NORMAL:
+				if difficulty >= 65:
+					break
+			elif qLevel == LVL_EASY:
+				if difficulty >= 50 && difficulty < 65:
+					break
+			elif qLevel == LVL_BEGINNER:
+				if difficulty < 50:
+					break
+		#is_proper_quest()
+		#break
 	print_ans_num()
 	#update_cages_sum_labels()
 	#solvedStat = false
@@ -345,6 +355,33 @@ func sel_from_lst(ix, lst):		# lst からひとつを選ぶ
 				mn = n2
 				mni = i
 		return lst[mni]
+func check_center_2x2():
+	var ix = xyToIX(2, 2)			# 中央左上
+	return (ans_num[ix] != ans_num[ix+N_HORZ+1] && ans_num[ix+1] != ans_num[ix+N_HORZ])
+func gen_cages4():				# ４セルケージに分ける
+	cage_list.push_back([0, [0, 1, 2, 3]])				# 左上
+	cage_list.push_back([0, [0+N_HORZ, 1+N_HORZ, 2+N_HORZ, 3+N_HORZ]])
+	var ix0 = N_HORZ-2
+	cage_list.push_back([0, [ix0, ix0+N_HORZ, ix0+N_HORZ*2, ix0+N_HORZ*3]])
+	ix0 += 1	# 右上
+	cage_list.push_back([0, [ix0, ix0+N_HORZ, ix0+N_HORZ*2, ix0+N_HORZ*3]])
+	ix0 = N_HORZ * (N_VERT - 1)		# 左下
+	cage_list.push_back([0, [ix0, ix0-N_HORZ, ix0-N_HORZ*2, ix0-N_HORZ*3]])
+	ix0 += 1
+	cage_list.push_back([0, [ix0, ix0-N_HORZ, ix0-N_HORZ*2, ix0-N_HORZ*3]])
+	ix0 = N_CELLS - 1				# 右下
+	cage_list.push_back([0, [ix0, ix0-1, ix0-2, ix0-3]])
+	ix0 -= N_HORZ
+	cage_list.push_back([0, [ix0, ix0-1, ix0-2, ix0-3]])
+	ix0 = xyToIX(2, 2)			# 中央左上
+	cage_list.push_back([0, [ix0, ix0+1, ix0+N_HORZ, ix0+N_HORZ+1]])
+	#
+	for i in range(cage_ix.size()): cage_ix[i] = -1			# セル→ケージIX テーブル初期化
+	for ix in range(cage_list.size()):
+		var lst = cage_list[ix][1]
+		for k in range(lst.size()): cage_ix[lst[k]] = ix	# 各セルのケージIX設定
+	#
+	calc_cages_sum()
 func gen_cages_corner():		# 4隅のセルをケージに割り当て
 	if qLevel == LVL_NORMAL:
 		# 上2隅を３セルケージ、下2隅は水平２セルケージ
