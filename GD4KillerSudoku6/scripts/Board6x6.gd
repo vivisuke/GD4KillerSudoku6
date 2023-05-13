@@ -47,6 +47,7 @@ var nSpaces					# 空欄箇所数
 var cert_posnum				# 確定箇所・数字
 var nAnswer
 var difficulty				# 難易度
+var tech_name = ""
 var ans_num = []			# 解答の各セル数値、1～N_HORZ
 var cell_bit = []			# 各セル数値（0 | BIT_1 | BIT_2 | ... | BIT_9）
 var quest_cages = []		# クエストケージリスト配列、要素：[sum, ix1, ix2, ...]
@@ -642,6 +643,7 @@ func find_last_blank_cell_in_cage() -> bool:		# ケージ内の最後の空白�
 				bix = lst[i]
 		if nspc == 1:
 			cert_posnum = [bix, sum]
+			tech_name = "最後の空欄"
 			return true
 	return false
 func check_fullhouse(x0:int, y0:int, wd:int, ht:int) -> bool:
@@ -658,6 +660,7 @@ func check_fullhouse(x0:int, y0:int, wd:int, ht:int) -> bool:
 	if bix < 0: return false		# 空欄無し
 	var n = bit_to_num(~bits & ALL_BITS)
 	cert_posnum = [bix, n]
+	tech_name = "フルハウス"
 	return true
 func find_fullhouse() -> bool:		# 縦・横・ブロック内の最後の空白セルを探す
 	for y in range(N_VERT):
@@ -734,6 +737,7 @@ func check_rule21(x0:int, y0:int, wd:int, ht:int) -> bool:
 		cert_posnum = [ix0, r - cage_sum_in[cxio]]
 	else:			# エリア内に複数箇所の不定セルがある場合
 		cert_posnum = [ix0, cage_list[cxio][CAGE_SUM] - cage_sum_out[cxio] - r]
+	tech_name = "ルール21"
 	return true
 
 func find_rule21() -> bool:			# ルール21で決まるセルを探す
@@ -803,6 +807,7 @@ func find_locked_double() -> bool:
 								elif cg[CAGE_SUM] == 4: bits1 |= BIT_1 | BIT_3
 								elif cg[CAGE_SUM] == 10: bits1 |= BIT_4 | BIT_6
 								elif cg[CAGE_SUM] == 11: bits1 |= BIT_5 | BIT_6
+				tech_name = "ロックドダブル"
 				if cage[CAGE_SUM] == 3:
 					if (bits0 & BIT_1) != 0:
 						cert_posnum = [cage[CAGE_IX_LIST][0], 2]; return true
@@ -839,6 +844,7 @@ func find_locked_double() -> bool:
 						cert_posnum = [cage[CAGE_IX_LIST][1], 5]; return true
 					if (bits1 & BIT_5) != 0:
 						cert_posnum = [cage[CAGE_IX_LIST][1], 6]; return true
+	tech_name = ""
 	return false
 # 裸のシングルを探す
 # ただし、候補数字がすでに計算されているものとする
@@ -847,6 +853,7 @@ func find_naked_single() -> bool:
 		var c = candidates_bit[ix]
 		if c != 0 && ((c-1)&c) == 0:
 			cert_posnum = [ix, bit_to_num(c)]
+			tech_name = "裸のシングル"
 			return true
 	return false
 #func find_hidden_single_test(c: Array):
@@ -880,6 +887,7 @@ func find_hidden_single_sub(x0:int, y0:int, wd:int, ht:int) -> bool:
 			var c = candidates_bit[ix]
 			if (c & b1) != 0:
 				cert_posnum = [ix, bit_to_num(b1)]
+				tech_name = "隠れたシングル"
 				return true
 	return false		# ここには来ないはずだが、念のため
 # 隠れたシングルを探す
@@ -953,6 +961,7 @@ func remove_lonely_candidates() -> bool:
 # より簡単な解法から順に確定箇所・数字を探す
 # return: 適用できる解法の難易度、0 for 未発見
 func find_certain_posnum() -> int:
+	tech_name = ""
 	if find_last_blank_cell_in_cage(): return 1
 	if find_fullhouse(): return 1
 	if find_locked_double(): return 2

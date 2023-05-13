@@ -107,6 +107,7 @@ var pressed_ticks = -1
 var hint_ix = -1			# ヒントを入れる箇所
 var hint_count_down = 0.0	# 0.0より大きい：ヒント表示カウントダウン中
 var confetti_count_down = 0.0	# 0.0より大きい：紙吹雪表示中
+var hint_state = 0			# ヒント状態
 var hint_next_pos			# 次ボタン位置
 var hint_next_pos0			# 次ボタン初期位置
 var hint_next_vy			# 次ボタン速度
@@ -1215,6 +1216,7 @@ func _input(event):
 			update_all_status()
 			return
 		elif pressed_map == mp:
+			hint_state = 0
 			pressed_ticks = -1
 			input_num = -1
 			var ix = xyToIX(mp.x, mp.y)
@@ -1318,6 +1320,7 @@ func add_falling_coin():
 	fc.angular_velocity = rng.randf_range(0, 1)
 	add_child(fc)
 func num_button_pressed(num : int, button_pressed):
+	hint_state = 0
 	#print("num = ", num)
 	if in_button_pressed: return		# ボタン押下処理中の場合
 	if paused: return			# ポーズ中
@@ -1698,7 +1701,11 @@ func _on_hint_button_pressed():
 		var y = bd.cert_posnum[0] / N_HORZ
 		print("pos = (", x, ", ", y, "), num = ", bd.cert_posnum[1])
 		$Board/TileMap.set_cell(0, Vector2i(x, y), TILE_CIRCLE, Vector2i(0, 0))
-		$MessLabel.text = "○ 部分の数字が確定です。"
+		if hint_state == 0:
+			$MessLabel.text = "○ 部分の数字が確定です。"
+			hint_state = 1
+		else:
+			$MessLabel.text = "%s が適用できます。" % bd.tech_name
 	#var bix = find_last_blank_cell_in_cage()
 	#print("last_blank_cell_in_cage: ", bix)
 	#bix = find_fullhouse()
